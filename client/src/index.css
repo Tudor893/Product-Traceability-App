@@ -1,0 +1,140 @@
+@keyframes slideDownFadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+
+@keyframes slideUpFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeftFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-left-fade-in {
+  opacity: 0;
+  animation: slideLeftFadeIn 1s ease-out forwards;
+  animation-delay: 150ms;
+}
+
+.slide-up-fade-in {
+  opacity: 0;
+  animation: slideUpFadeIn 1s ease-out forwards;
+  animation-delay: 50ms;
+}
+  
+.slide-down-fade-in {
+    opacity: 0;
+    animation: slideDownFadeIn 1s ease-out forwards;
+    animation-delay: 300ms;
+}
+
+.scrollbar {
+  overflow-y: auto;
+  height: 100vh;
+}
+.scrollbar::-webkit-scrollbar{
+  width: 10px;
+}
+.scrollbar::-webkit-scrollbar-track{
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.scrollbar::-webkit-scrollbar-thumb{
+  background: rgba(0, 0, 0, 0.84);
+  border-radius: 10px;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover{
+  background: rgba(0, 0, 0, 0.712);
+  cursor: pointer;
+}
+@media (max-width: 768px) {
+  .scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.bgColorMain {
+  background-color: #707d5b !important;
+  border: 0 !important;
+}
+
+.custom-border{
+  border: 1px dashed black !important;
+}
+
+.custom-border:hover{
+  border-color: #707d5b !important;
+  color: #707d5b !important;
+}
+
+.icon{
+  color:#707d5b;
+  width: 35px;
+  height: 27px;
+}
+
+.responsive-text {
+  font-size: 3.5rem;
+}
+
+@media (max-width: 768px) {
+  .responsive-text {
+      font-size: 2rem;
+      margin-top: 4%;
+  }
+}
+
+@media (max-width: 768px) {
+  .responsive-topMargin {
+      margin-top: 24%;
+  }
+}
+
+@media (max-width: 768px) {
+  .modalMT {
+      margin-top: 24%;
+  }
+}
+
+.responsive-topMarginLoginFooter {
+  margin-top: 7%;
+}
+
+@media (max-width: 768px) {
+  .responsive-topMarginLoginFooter {
+      margin-top: 32%;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-responsive {
+      width: 95% !important;
+  }
+}
+
+@media (min-width: 576px) {
+  .responsive-container {
+      width: 50% !important;
+  }
+}
