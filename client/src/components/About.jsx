@@ -9,7 +9,7 @@ const About = () => {
     const vectorMissionVision = [
         {
             icon: <LuTarget className="icon"/>,
-            title: "Misiunea noastră",
+            title: "Misiunea noastrăa",
             description: "Să transformăm modul în care produsele sunt urmărite prin lanțurile de aprovizionare, oferind transparență totală, de la origine la consumator. Prin tehnologie inovatoare, creăm încredere între producători, distribuitori și consumatori.",
             scope: ["Implementarea tehnologiilor de trasabilitate accesibile pentru orice companie",
                     "Combaterea fraudelor și falsificărilor prin verificare în timp real",
