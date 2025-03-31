@@ -4,6 +4,8 @@ import db from '../dbConfig.js'
 import User from './User.js'
 import FarmerProduct from './FarmerProduct.js'
 import ScannedProduct from './ScannedProduct.js'
+import ProducerProduct from './ProducerProduct.js'
+import ProducerFarmerProduct from './ProducerFarmerProduct.js'
 
 const {Client} = pg
 dotenv.config()
@@ -39,9 +41,15 @@ function FK_Config(){
 
     User.hasMany(ScannedProduct, {foreignKey: 'userId', onDelete: 'CASCADE'})
     ScannedProduct.belongsTo(User, {foreignKey: 'userId'})
+
+    User.hasMany(ProducerProduct, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    ProducerProduct.belongsTo(User, {foreignKey: 'userId'})
     
     FarmerProduct.hasOne(ScannedProduct, {foreignKey: 'productId', as: 'scannedProduct'})
     ScannedProduct.belongsTo(FarmerProduct, {foreignKey: 'productId', as: 'farmerProduct'})
+
+    ProducerProduct.belongsToMany(FarmerProduct, { through: ProducerFarmerProduct, foreignKey: 'producerProductId' })
+    FarmerProduct.belongsToMany(ProducerProduct, { through: ProducerFarmerProduct, foreignKey: 'farmerProductId' })
 }
 
 async function DB_Init() {

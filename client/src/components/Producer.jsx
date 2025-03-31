@@ -62,6 +62,8 @@ const Producer = () => {
 
     const handleDeleteOption = (product) => {
         setSelectedIngredients(selectedIngredients.filter(selectedProduct => selectedProduct.id !== product.id))
+        if(selectedIngredients.length === 1)
+            setShowIngredients(false)
     }
     
     return(
@@ -147,6 +149,23 @@ const Producer = () => {
                                 </Row>
                                 <Row className="g-3 mx-3 my-1">
                                     <Col md>
+                                        <FloatingLabel controlId="floatingProductQuantity" label="Cantitate">
+                                            <Form.Control type="number"></Form.Control>
+                                        </FloatingLabel>
+                                    </Col>
+                                    <Col md className="d-flex justify-content-center">
+                                        <Form.Select>
+                                                <option value="" disabled>Selectează unitatea de măsură</option>
+                                                <option value="Kilogram (kg)">Kilogram (kg)</option>
+                                                <option value="Gram (g)">Gram (g)</option>
+                                                <option value="Litru (L)">Litru (L)</option>
+                                                <option value="Mililitru (ml)">Mililitru (ml)</option>
+                                                <option value="Bucată">Bucată</option>
+                                            </Form.Select> 
+                                    </Col>
+                                </Row>
+                                <Row className="g-3 mx-3 my-1">
+                                    <Col md>
                                         <div className="d-flex flex-wrap border border-1 p-3 rounded-1 overflow-hidden" style={{maxWidth: "100%"}}>
                                             {showIngredients ? (
                                                 selectedIngredients.map((ingredient, index) => (
@@ -219,15 +238,15 @@ const Producer = () => {
                                     )}
                                 <Row className="g-3 mx-3 my-1">
                                     <Col md>
-                                        <FloatingLabel controlId="floatingStorageConditions" label="Condiții de depozitare">
-                                            <Form.Control as="textarea" style={{ minHeight: '100px' }}></Form.Control>
+                                        <FloatingLabel controlId="floatingStorageConditions" label="Condiții de depozitare (maxim 500 de caractere)">
+                                            <Form.Control as="textarea" style={{ minHeight: '100px' }} maxLength={500}></Form.Control>
                                         </FloatingLabel>
                                     </Col>
                                 </Row>
                                 <Row className="g-3 mx-3 my-1">
                                     <Col md>
-                                        <FloatingLabel controlId="floatingNotes" label="Note suplimentare">
-                                            <Form.Control as="textarea" style={{ minHeight: '100px' }}></Form.Control>
+                                        <FloatingLabel controlId="floatingNotes" label="Note suplimentare (maxim 500 de caractere)">
+                                            <Form.Control as="textarea" style={{ minHeight: '100px' }} maxLength={500}></Form.Control>
                                         </FloatingLabel>
                                     </Col>
                                 </Row>

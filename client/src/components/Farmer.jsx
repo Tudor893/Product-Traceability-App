@@ -300,8 +300,8 @@ const Farmer = () => {
                                 </Row>
                                 <Row className="g-3 mx-3 my-1">
                                     <Col md>
-                                        <FloatingLabel controlId="floatingProductDesc" label="Descriere (Opțional)">
-                                            <Form.Control as="textarea" name="description" value={formData.description} onChange={handleChange} style={{ minHeight: '150px' }}></Form.Control>
+                                        <FloatingLabel controlId="floatingProductDesc" label="Descriere (Opțional, maxim 500 de caractere)">
+                                            <Form.Control as="textarea" name="description" value={formData.description} onChange={handleChange} style={{ minHeight: '150px' }} maxLength={500}></Form.Control>
                                             <Form.Text muted>Puteți include informații despre soiuri, metodele de protecție a plantelor, sau alte specificații importante.</Form.Text>
                                         </FloatingLabel>
                                     </Col>
