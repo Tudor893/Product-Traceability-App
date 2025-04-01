@@ -5,7 +5,7 @@ import LoginPage from './components/LoginPage'
 import About from './components/About'
 import CompanyDetails from './components/CompanyDetails'
 import Farmer from './components/Farmer'
-import Producer from './components/Producer'
+import Producer from './components/producer/Producer'
 import AuthProtectedRoute from './components/AuthProtectedRoute'
 import RoleProtectedRoute from './components/RoleProtectedRoute'
 import Unauthorized from './components/Unauthorized'
@@ -32,6 +32,20 @@ const App = () => {
         <Route path='/producator' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Producător">
+              <Producer/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
+        <Route path='/distribuitor' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Distribuitor">
+              <Producer/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
+        <Route path='/client' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Client">
               <Producer/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>

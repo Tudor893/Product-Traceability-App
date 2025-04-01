@@ -107,7 +107,7 @@ export default function QRScanner() {
   }
 
   return (
-    <Container className="mt-4 pb-5">
+    <Container className="mt-4 pb-5 slide-up-fade-in">
       <Row className="justify-content-center">
         <Col md={6}>
           <Card>

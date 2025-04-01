@@ -48,7 +48,7 @@ const Farmer = () => {
         const fetchProducts = async () => {
             try {
                 const token = localStorage.getItem('googleToken')
-                const response = await axios.get('http://localhost:5000/api/products', {
+                const response = await axios.get('http://localhost:5000/api/farmerProducts', {
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
@@ -83,7 +83,7 @@ const Farmer = () => {
         e.preventDefault()
         try{
             const token = localStorage.getItem('googleToken')
-            const response = await axios.post('http://localhost:5000/api/products', formData, {
+            const response = await axios.post('http://localhost:5000/api/farmerProducts', formData, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`

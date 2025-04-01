@@ -6,6 +6,8 @@ import User from './models/User.js'
 import authMiddleware from './authMiddleware.js'
 import FarmerProduct from './models/FarmerProduct.js'
 import ScannedProduct from './models/ScannedProduct.js'
+import ProducerProduct from './models/ProducerProduct.js'
+import ProducerFarmerProduct from './models/ProducerFarmerProduct.js'
 
 const app = express()
 const port = 5000
@@ -111,7 +113,7 @@ app.get('/api/company/:uic', async (req, res) => {
   }
 })
 
-app.post('/api/products', authMiddleware, async (req, res) => {
+app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
   try {
     const {
       productName,
@@ -157,14 +159,14 @@ app.post('/api/products', authMiddleware, async (req, res) => {
   }
 })
 
-app.get('/api/products', authMiddleware, async (req, res) => {
+app.get('/api/farmerProducts', authMiddleware, async (req, res) => {
   try {
     const userEmail = req.user.email
-    const user = await User.findOne({ where: { email: userEmail } });
+    const user = await User.findOne({ where: { email: userEmail } })
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'User not found' })
     }
-    const userId = user.id;
+    const userId = user.id
     
     const products = await FarmerProduct.findAll({
       where: { userId },
@@ -238,6 +240,96 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
   } catch (error) {
     console.error('Error fetching scanned products:', error)
     res.status(500).json({ message: 'Eroare la preluarea produselor scanate' })
+  }
+})
+
+app.post('/api/producerProducts', authMiddleware, async (req, res) => {
+  try {
+      const { 
+          productName, 
+          batch, 
+          quantity, 
+          unit, 
+          productionDate, 
+          expirationDate, 
+          storageConditions, 
+          notes,
+          selectedIngredients
+      } = req.body
+
+      const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const userId = user.id;
+  
+      if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !storageConditions || !selectedIngredients) {
+        return res.status(400).json({ message: 'Missing required fields' })
+      }
+
+      const producerProduct = await ProducerProduct.create({
+          userId: userId,
+          productName,
+          batch,
+          productionDate,
+          expirationDate,
+          quantity,
+          unit,
+          storageConditions,
+          notes: notes || null
+      })
+
+      if (selectedIngredients && selectedIngredients.length > 0) {
+          const associations = selectedIngredients.map(ingredient => {
+              const farmerProductId = ingredient.farmerProduct.id
+
+              return {
+                  producerProductId: producerProduct.id,
+                  farmerProductId: farmerProductId
+              }
+          })
+
+          await ProducerFarmerProduct.bulkCreate(associations)
+      }
+
+      return res.status(201).json({
+          success: true,
+          message: 'Produsul a fost adăugat cu succes!',
+          product: producerProduct
+      })
+  } catch (error) {
+      console.error('Error creating producer product:', error)
+      return res.status(500).json({
+          success: false,
+          message: 'A apărut o eroare la adăugarea produsului.',
+          error: error.message
+      })
+  }
+})
+
+app.get('/api/producerProducts', authMiddleware, async (req, res) => {
+  try {
+      const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } })
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      const userId = user.id
+
+      const products = await ProducerProduct.findAll({
+          where: { userId: userId },
+          order: [['createdAt', 'DESC']]
+      })
+
+      return res.status(200).json(products)
+  } catch (error) {
+      console.error('Error fetching producer products:', error)
+      return res.status(500).json({
+          success: false,
+          message: 'A apărut o eroare la obținerea produselor.',
+          error: error.message
+      })
   }
 })
 
