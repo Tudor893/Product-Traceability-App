@@ -398,7 +398,8 @@ const Farmer = () => {
                                         <QRCodeSVG 
                                             value={JSON.stringify({
                                                 productId: selectedProduct.id,
-                                                productName: selectedProduct.productName
+                                                productName: selectedProduct.productName,
+                                                sender: "fermier"
                                             })}
                                             level="H"
                                             fgColor="#606b4d"

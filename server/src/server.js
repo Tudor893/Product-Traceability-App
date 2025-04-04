@@ -5,7 +5,8 @@ import DB_Init from './models/DB_Init.js'
 import User from './models/User.js'
 import authMiddleware from './authMiddleware.js'
 import FarmerProduct from './models/FarmerProduct.js'
-import ScannedProduct from './models/ScannedProduct.js'
+import ScannedProductByProducer from './models/ScannedProductByProducer.js'
+import ScannedProductByDistributor from './models/ScannedProductByDistributor.js'
 import ProducerProduct from './models/ProducerProduct.js'
 import ProducerFarmerProduct from './models/ProducerFarmerProduct.js'
 
@@ -19,7 +20,8 @@ DB_Init()
 
 const companyRoles = {
   1: 'Producător',
-  86: 'Fermier'
+  86: 'Fermier',
+  94: 'Distribuitor'
 }
 
 function getCompanyRole(uic) {
@@ -182,37 +184,92 @@ app.get('/api/farmerProducts', authMiddleware, async (req, res) => {
 
 app.post('/api/scanned-products', authMiddleware, async (req, res) => {
   try {
-    const { productId } = req.body;
+    const { productId, userRole, sender } = req.body
 
     const userEmail = req.user.email
-    const user = await User.findOne({ where: { email: userEmail } });
+    const user = await User.findOne({ where: { email: userEmail } })
     if (!user) {
-      return res.status(404).json({ message: 'Utilizatorul nu a fost gasit' });
+      return res.status(404).json({ message: 'Utilizatorul nu a fost gasit' })
     }
-    const userId = user.id;
+    const userId = user.id
 
-    const product = await FarmerProduct.findByPk(productId)
-    if (!product) {
-      return res.status(404).json({ message: 'Produsul nu a fost gasit' })
+    if(userRole === "producator"){
+
+      const product = await FarmerProduct.findByPk(productId)
+      if (!product) {
+        return res.status(404).json({ message: 'Produsul nu a fost gasit' })
+      }
+
+      const existingScan = await ScannedProductByProducer.findOne({
+        where: { productId }
+      })
+      
+      if (existingScan) {
+        return res.status(400).json({ message: 'Produs deja scanat' })
+      }
+
+      const scannedProduct = await ScannedProductByProducer.create({
+        userId,
+        productId
+      })
+      
+      res.status(201).json({
+        message: 'Product scanned successful',
+        data: scannedProduct
+      });
+    }else if(userRole === "distribuitor"){
+
+      if(sender === "fermier"){
+
+        const product = await FarmerProduct.findByPk(productId)
+        if (!product) {
+          return res.status(404).json({ message: 'Produsul nu a fost gasit' })
+        }
+
+        const existingScan = await ScannedProductByDistributor.findOne({
+          where: { farmerProductId: productId }
+        })
+        
+        if (existingScan) {
+          return res.status(400).json({ message: 'Produs deja scanat' })
+        }
+
+        const scannedProduct = await ScannedProductByDistributor.create({
+          userId,
+          farmerProductId: productId,
+          producerProductId: null
+        })
+        
+        res.status(201).json({
+          message: 'Product scanned successful',
+          data: scannedProduct
+        })
+      }else if(sender === "producator"){
+        const product = await ProducerProduct.findByPk(productId)
+        if (!product) {
+          return res.status(404).json({ message: 'Produsul nu a fost gasit' })
+        }
+
+        const existingScan = await ScannedProductByDistributor.findOne({
+          where: { producerProductId: productId }
+        })
+        
+        if (existingScan) {
+          return res.status(400).json({ message: 'Produs deja scanat' })
+        }
+
+        const scannedProduct = await ScannedProductByDistributor.create({
+          userId,
+          farmerProductId: null,
+          producerProductId: productId
+        })
+        
+        res.status(201).json({
+          message: 'Product scanned successful',
+          data: scannedProduct
+        });
+      }
     }
-
-    const existingScan = await ScannedProduct.findOne({
-      where: { productId }
-    })
-    
-    if (existingScan) {
-      return res.status(400).json({ message: 'Produs deja scanat' })
-    }
-
-    const scannedProduct = await ScannedProduct.create({
-      userId,
-      productId
-    })
-    
-    res.status(201).json({
-      message: 'Product scanned successful',
-      data: scannedProduct
-    });
   } catch (error) {
     console.error('Error registering product:', error)
     res.status(500).json({ message: 'Request error' })
@@ -227,7 +284,7 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Utilizatorul nu a fost gasit' })
     }
 
-    const scannedProducts = await ScannedProduct.findAll({
+    const scannedProductsByProducer = await ScannedProductByProducer.findAll({
       where: { userId: user.id },
       include: [{
         model: FarmerProduct,
@@ -236,7 +293,7 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
       }],
       order: [['createdAt', 'DESC']]
     })
-    res.status(200).json(scannedProducts)
+    res.status(200).json(scannedProductsByProducer)
   } catch (error) {
     console.error('Error fetching scanned products:', error)
     res.status(500).json({ message: 'Eroare la preluarea produselor scanate' })

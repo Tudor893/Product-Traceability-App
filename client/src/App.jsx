@@ -9,6 +9,7 @@ import Producer from './components/producer/Producer'
 import AuthProtectedRoute from './components/AuthProtectedRoute'
 import RoleProtectedRoute from './components/RoleProtectedRoute'
 import Unauthorized from './components/Unauthorized'
+import Distributor from './components/distributor/Distributor'
 
 const App = () => {
   return (
@@ -39,7 +40,7 @@ const App = () => {
         <Route path='/distribuitor' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Distribuitor">
-              <Producer/>
+              <Distributor/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>

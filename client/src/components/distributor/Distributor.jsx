@@ -1,13 +1,10 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Dashboard from "./Dashboard"
-import AddProduct from "./AddProduct"
-import QRScanner from "../QRScanner"
-import ScannedProducts from "./ScannedProducts"
 import Header from './Header'
 import Navigation from './Navigation'
+import QrScanner from '../QRScanner'
 
-const Producer = () => {
+const Distributor = () => {
     const [active, setIsActive] = useState(1)
     const navigate = useNavigate()
 
@@ -17,16 +14,16 @@ const Producer = () => {
             <Navigation active={active} setIsActive={setIsActive} />
 
             {active === 1 ? (
-                <Dashboard />
+                null
             ) : active === 2 ? (
-                <AddProduct />
+                null
             ) : active === 3 ? (
-                <QRScanner />
+                <QrScanner />
             ) : active === 4 ? (
-                <ScannedProducts />
+                null
             ) : null}  
         </div>
     )
 }
 
-export default Producer
+export default Distributor

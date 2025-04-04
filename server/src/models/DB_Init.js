@@ -3,7 +3,7 @@ import pg from 'pg'
 import db from '../dbConfig.js'
 import User from './User.js'
 import FarmerProduct from './FarmerProduct.js'
-import ScannedProduct from './ScannedProduct.js'
+import ScannedProduct from './ScannedProductByProducer.js'
 import ProducerProduct from './ProducerProduct.js'
 import ProducerFarmerProduct from './ProducerFarmerProduct.js'
 
