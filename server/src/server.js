@@ -184,7 +184,7 @@ app.get('/api/farmerProducts', authMiddleware, async (req, res) => {
 
 app.post('/api/scanned-products', authMiddleware, async (req, res) => {
   try {
-    const { productId, userRole, sender } = req.body
+    const { productId, sender } = req.body
 
     const userEmail = req.user.email
     const user = await User.findOne({ where: { email: userEmail } })
@@ -192,6 +192,11 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Utilizatorul nu a fost gasit' })
     }
     const userId = user.id
+    const userRole = user.role.replace(/[ăâ]/g, "a")
+                              .replace(/[î]/g, "i")
+                              .replace(/[ș]/g, "s")
+                              .replace(/[ț]/g, "t")
+                              .toLowerCase()
 
     if(userRole === "producator"){
 
@@ -284,16 +289,40 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
       return res.status(404).json({ message: 'Utilizatorul nu a fost gasit' })
     }
 
-    const scannedProductsByProducer = await ScannedProductByProducer.findAll({
-      where: { userId: user.id },
-      include: [{
-        model: FarmerProduct,
-        as: 'farmerProduct',
-        required: false
-      }],
-      order: [['createdAt', 'DESC']]
-    })
-    res.status(200).json(scannedProductsByProducer)
+    const userRole = user.role.replace(/[ăâ]/g, "a")
+                              .replace(/[î]/g, "i")
+                              .replace(/[ș]/g, "s")
+                              .replace(/[ț]/g, "t")
+                              .toLowerCase()
+
+    if(userRole === "producator"){
+      const scannedProductsByProducer = await ScannedProductByProducer.findAll({
+        where: { userId: user.id },
+        include: [{
+          model: FarmerProduct,
+          as: 'farmerProduct',
+          required: false
+        }],
+        order: [['createdAt', 'DESC']]
+      })
+      res.status(200).json(scannedProductsByProducer)
+    }else if(userRole === "distribuitor"){
+      const scannedProductsByDistributor = await ScannedProductByDistributor.findAll({
+        where: { userId: user.id },
+        include: [{
+          model: FarmerProduct,
+          as: 'farmerProduct',
+          required: false
+        },
+        {
+          model: ProducerProduct,
+          as: 'producerProduct',
+          required: false
+        }],
+        order: [['createdAt', 'DESC']]
+      })
+      res.status(200).json(scannedProductsByDistributor)
+    }
   } catch (error) {
     console.error('Error fetching scanned products:', error)
     res.status(500).json({ message: 'Eroare la preluarea produselor scanate' })

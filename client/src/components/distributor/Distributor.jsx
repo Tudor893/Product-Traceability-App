@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import Header from './Header'
 import Navigation from './Navigation'
 import QrScanner from '../QRScanner'
+import ScannedProducts from "./ScannedProducts"
+import AddProduct from "./AddProduct"
 
 const Distributor = () => {
     const [active, setIsActive] = useState(1)
@@ -16,11 +18,11 @@ const Distributor = () => {
             {active === 1 ? (
                 null
             ) : active === 2 ? (
-                null
+                <AddProduct />
             ) : active === 3 ? (
                 <QrScanner />
             ) : active === 4 ? (
-                null
+                <ScannedProducts />
             ) : null}  
         </div>
     )

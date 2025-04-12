@@ -8,36 +8,8 @@ export default function QRScanner() {
   const [status, setStatus] = useState(null)
   const [scanner, setScanner] = useState(null)
   const [scanning, setScanning] = useState(false)
-  const [userRole, setUserRole] = useState(null)
-
-  const checkUserRole = async () => {
-    try {
-      const token = localStorage.getItem('googleToken')
-      const response = await axios.get('http://localhost:5000/api/user/status', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      
-      if (response.data && response.status === 200) {
-        setUserRole(response.data.role.replace(/[ăâ]/g, "a")
-                                       .replace(/[î]/g, "i")
-                                      .replace(/[ș]/g, "s")
-                                      .replace(/[ț]/g, "t")
-                                      .toLowerCase())
-      }
-    } catch (error) {
-      console.error("Eroare la obținerea rolului utilizatorului:", error)
-      setStatus({ 
-        type: "danger", 
-        message: `Nu s-a putut determina rolul utilizatorului: ${error.response?.data?.message || error.message}` 
-      })
-    }
-  }
 
   useEffect(() => {
-    checkUserRole()
-
     if (typeof Html5Qrcode !== "undefined") {
       const newScanner = new Html5Qrcode("qr-reader")
       setScanner(newScanner)
@@ -101,7 +73,7 @@ export default function QRScanner() {
       }
       
       const token = localStorage.getItem('googleToken')
-      const response = await axios.post('http://localhost:5000/api/scanned-products', {productId, userRole, sender},
+      const response = await axios.post('http://localhost:5000/api/scanned-products', {productId, sender},
           {headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
