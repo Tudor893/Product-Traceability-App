@@ -3,10 +3,11 @@ import pg from 'pg'
 import db from '../dbConfig.js'
 import User from './User.js'
 import FarmerProduct from './FarmerProduct.js'
-import ScannedProductByProducer from './ScannedProductByProducer.js'
-import ProducerProduct from './ProducerProduct.js'
-import ProducerFarmerProduct from './ProducerFarmerProduct.js'
+import ScannedProductByProcessor from './ScannedProductByProcessor.js'
+import ProcessorProduct from './ProcessorProduct.js'
+import ProcessorFarmerProduct from './ProcessorFarmerProduct.js'
 import ScannedProductByDistributor from './ScannedProductByDistributor.js'
+import DistributorInformation from './DistributorInformation.js'
 
 const {Client} = pg
 dotenv.config()
@@ -40,25 +41,34 @@ function FK_Config(){
     User.hasMany(FarmerProduct, {foreignKey: 'userId', onDelete: 'CASCADE'})
     FarmerProduct.belongsTo(User, {foreignKey: 'userId'})
 
-    User.hasMany(ScannedProductByProducer, {foreignKey: 'userId', onDelete: 'CASCADE'})
-    ScannedProductByProducer.belongsTo(User, {foreignKey: 'userId'})
+    User.hasMany(ScannedProductByProcessor, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    ScannedProductByProcessor.belongsTo(User, {foreignKey: 'userId'})
 
-    User.hasMany(ProducerProduct, {foreignKey: 'userId', onDelete: 'CASCADE'})
-    ProducerProduct.belongsTo(User, {foreignKey: 'userId'})
+    User.hasMany(ProcessorProduct, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    ProcessorProduct.belongsTo(User, {foreignKey: 'userId'})
 
     User.hasMany(ScannedProductByDistributor, {foreignKey: 'userId', onDelete: 'CASCADE'})
     ScannedProductByDistributor.belongsTo(User, {foreignKey: 'userId'})
-    
-    FarmerProduct.hasOne(ScannedProductByProducer, {foreignKey: 'productId', as: 'scannedProduct'})
-    ScannedProductByProducer.belongsTo(FarmerProduct, {foreignKey: 'productId', as: 'farmerProduct'})
 
-    ProducerProduct.belongsToMany(FarmerProduct, { through: ProducerFarmerProduct, foreignKey: 'producerProductId' })
-    FarmerProduct.belongsToMany(ProducerProduct, { through: ProducerFarmerProduct, foreignKey: 'farmerProductId' })
+    User.hasMany(DistributorInformation, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    DistributorInformation.belongsTo(User, {foreignKey: 'userId'})
+    
+    FarmerProduct.hasOne(ScannedProductByProcessor, {foreignKey: 'productId', as: 'scannedProduct'})
+    ScannedProductByProcessor.belongsTo(FarmerProduct, {foreignKey: 'productId', as: 'farmerProduct'})
+
+    ProcessorProduct.belongsToMany(FarmerProduct, { through: ProcessorFarmerProduct, foreignKey: 'processorProductId' })
+    FarmerProduct.belongsToMany(ProcessorProduct, { through: ProcessorFarmerProduct, foreignKey: 'farmerProductId' })
 
     ScannedProductByDistributor.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})
-    ScannedProductByDistributor.belongsTo(ProducerProduct, {foreignKey: 'producerProductId', as: 'producerProduct'})
+    ScannedProductByDistributor.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
     FarmerProduct.hasMany(ScannedProductByDistributor, {foreignKey: 'farmerProductId', as: 'scannedByDistributor'})
-    ProducerProduct.hasMany(ScannedProductByDistributor, {foreignKey: 'producerProductId', as: 'scannedByDistributor'})
+    ProcessorProduct.hasMany(ScannedProductByDistributor, {foreignKey: 'processorProductId', as: 'scannedByDistributor'})
+
+    FarmerProduct.hasMany(DistributorInformation, {foreignKey: 'farmerProductId'})
+    DistributorInformation.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})
+    
+    ProcessorProduct.hasMany(DistributorInformation, {foreignKey: 'processorProductId'})
+    DistributorInformation.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
 }
 
 async function DB_Init() {

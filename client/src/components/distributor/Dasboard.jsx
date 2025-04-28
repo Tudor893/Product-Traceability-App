@@ -12,9 +12,9 @@ const Dashboard = () => {
     const [totalProducts, setTotalProducts] = useState(0)
 
     useEffect(() => {
-        const getProducerProducts = async () => {
+        const getDistributorInfo = async () => {
             const token = localStorage.getItem('googleToken')
-            const response = await axios.get('http://localhost:5000/api/producerProducts', {
+            const response = await axios.get('http://localhost:5000/api/distributorInformation', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -25,7 +25,7 @@ const Dashboard = () => {
                 setTotalProducts(response.data.length)
             }
         }
-        getProducerProducts()
+        getDistributorInfo()
     }, [])
 
     return (
@@ -54,27 +54,18 @@ const Dashboard = () => {
                                         <div>
                                             {products
                                                 .filter(product => 
-                                                    product.productName.toLowerCase().includes(search.toLowerCase())
+                                                    product.farmerProduct?.productName?.toLowerCase().includes(search.toLowerCase())
+                                                    || product.processorProduct?.productName?.toLowerCase().includes(search.toLowerCase())
                                                 )
                                                 .map((product, index) => (
                                                     <Card key={index} className={`mb-3 shadow-sm ${selectedProduct === product ? 'border-2' : 'border-0'}`}  onClick={() => setSelectedProduct(product)} style={{ cursor: 'pointer', borderColor: selectedProduct === product ? '#707d5b' : 'transparent'}}>
                                                         <Card.Body>
                                                             <div className="d-flex flex-column flex-md-row justify-content-between">
                                                                 <div className="overflow-hidden me-md-3" style={{fontSize: '0.9em'}}>
-                                                                    <h5>{product.productName}</h5>
+                                                                    <h5>{product.farmerProduct?.productName || product.processorProduct?.productName}</h5>
                                                                     <p className="text-muted mb-1">
-                                                                        Lot: {product.batch} | Cantitate: {product.quantity} {product.unit}
+                                                                        Lot: {product.farmerProduct?.batch || product.processorProduct?.batch} | Cantitate: {product.farmerProduct?.quantity || product.processorProduct?.quantity} {product.farmerProduct?.unit || product.processorProduct?.unit}
                                                                     </p>
-                                                                    <p className="text-muted mb-1" >
-                                                                        Data producerii: {new Date(product.productionDate).toLocaleDateString()} | Data expirării: {new Date(product.expirationDate).toLocaleDateString()}
-                                                                    </p>
-                                                                    {product.storageConditions && (
-                                                                        <p className="mb-0 mt-2 text-truncate">{product.storageConditions}</p>
-                                                                    )}
-                                                                </div>
-                                                                <div className="text-end">
-                                                                    <h6>Cost: {product.cost} RON/{product.unit}</h6>
-                                                                    <p className="text-muted">Total: {parseFloat(product.cost) * parseFloat(product.quantity)} RON</p>
                                                                 </div>
                                                             </div>
                                                         </Card.Body>
@@ -89,12 +80,14 @@ const Dashboard = () => {
                                 <Card.Body className="p-4 d-flex flex-column justify-content-center align-items-center">
                                     {selectedProduct ? (
                                     <div className="d-flex justify-content-center flex-column align-items-center">
-                                        <h5 className="mb-3 text-center">Cod QR: {selectedProduct.productName}</h5>
+                                        <h5 className="mb-3 text-center">
+                                            Cod QR: {selectedProduct.farmerProduct?.productName || selectedProduct.processorProduct?.productName}
+                                        </h5>
                                         <QRCodeSVG 
                                             value={JSON.stringify({
                                                 productId: selectedProduct.id,
-                                                productName: selectedProduct.productName,
-                                                sender: "producator"
+                                                productName: selectedProduct.farmerProduct?.productName || selectedProduct.processorProduct?.productName,
+                                                sender: "distributor"
                                             })}
                                             level="H"
                                             fgColor="#606b4d"

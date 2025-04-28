@@ -1,38 +1,39 @@
 import { Button, Form, Row, Col, FloatingLabel } from "react-bootstrap"
 import { RiCloseLargeLine } from "react-icons/ri"
 
-const ProductForm = ({ 
-    formData, 
-    handleChange, 
-    selectedIngredients, 
-    showIngredients, 
-    handleDeleteOption, 
-    setIsModalOpen 
+const ProductForm = ({
+    formData,
+    handleChange,
+    selectedProduct,
+    showProduct,
+    handleDeleteOption,
+    setIsModalOpen
 }) => {
     return (
         <>
             <Row className="g-3 mx-3 my-1">
                 <Col md>
-                    <FloatingLabel controlId="floatingProductName" label="Nume produs">
-                        <Form.Control type="text" name="productName" value={formData.productName} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
-                </Col>  
-                <Col md>
-                    <FloatingLabel controlId="floatingProductionDate" label="Data producției">
-                        <Form.Control type="date" name="productionDate" value={formData.productionDate} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
+                    <div className="d-flex flex-wrap border border-1 p-3 rounded-1 overflow-hidden" style={{maxWidth: "100%"}}>
+                        {showProduct ? (
+                            selectedProduct.map((product, index) => (
+                                <div key={index} className="p-2 me-2 mb-2 rounded-1 d-flex justify-content-center align-items-center fw-semibold" style={{color: '#707d5b', backgroundColor: 'rgba(141, 176, 85, 0.23)', whiteSpace: 'nowrap'}}>
+                                    <p className="m-0">{product.farmerProduct?.productName || product.processorProduct?.productName}</p>
+                                    <RiCloseLargeLine className="ms-3 mt-1" onClick={() => {handleDeleteOption(product)}} style={{cursor: 'pointer'}}/>
+                                </div>
+                            ))
+                        ) : (
+                            <small className="text-secondary">Niciun produs selectat</small>
+                        )}
+                    </div>
                 </Col>
             </Row>
             <Row className="g-3 mx-3 my-1">
                 <Col md>
-                    <FloatingLabel controlId="floatingProductBatch" label="Lot">
-                        <Form.Control type="text" name="batch" value={formData.batch} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
-                </Col>
-                <Col md>
-                    <FloatingLabel controlId="floatingExpirationDate" label="Data expirării">
-                        <Form.Control type="date" name="expirationDate" value={formData.expirationDate} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
+                    <Button variant="white"
+                             className="d-flex w-100 justify-content-center custom-border"
+                            onClick={() => setIsModalOpen(true)}>
+                        Adaugă un produs
+                    </Button>
                 </Col>
             </Row>
             <Row className="g-3 mx-3 my-1">
@@ -41,49 +42,73 @@ const ProductForm = ({
                         <Form.Control type="number" name="quantity" value={formData.quantity} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
-                <Col md className="d-flex justify-content-center">
-                    <Form.Select name="unit" value={formData.unit} onChange={handleChange}>
-                        <option value="" disabled>Selectează unitatea de măsură</option>
-                        <option value="Kilogram (kg)">Kilogram (kg)</option>
-                        <option value="Gram (g)">Gram (g)</option>
-                        <option value="Litru (L)">Litru (L)</option>
-                        <option value="Mililitru (ml)">Mililitru (ml)</option>
-                        <option value="Bucată">Bucată</option>
-                    </Form.Select> 
-                </Col>
-            </Row>
-            <Row className="g-3 mx-3 my-1">
                 <Col md>
-                    <div className="d-flex flex-wrap border border-1 p-3 rounded-1 overflow-hidden" style={{maxWidth: "100%"}}>
-                        {showIngredients ? (
-                            selectedIngredients.map((ingredient, index) => (
-                                <div key={index} className="p-2 me-2 mb-2 rounded-1 d-flex justify-content-center align-items-center fw-semibold" style={{color: '#707d5b', backgroundColor: 'rgba(141, 176, 85, 0.23)', whiteSpace: 'nowrap'}}>
-                                    <p className="m-0">{ingredient.farmerProduct.productName}</p>
-                                    <RiCloseLargeLine className="ms-3 mt-1" onClick={() => {handleDeleteOption(ingredient)}} style={{cursor: 'pointer'}}/>
-                                </div>
-                            ))
-                        ) : (
-                            <small className="text-secondary">Niciun ingredient selectat</small>
-                        )}
-                    </div>
-                </Col>
-            </Row>
-            <Row className="g-3 mx-3 my-1">
-                <Col md>
-                    <Button variant="white" 
-                            className="d-flex w-100 justify-content-center custom-border"
-                            onClick={() => setIsModalOpen(true)}>
-                        Adaugă ingrediente
-                    </Button>
-                </Col>
-            </Row>
-            <Row className="g-3 mx-3 my-1">
-                <Col md>
-                    <FloatingLabel controlId="floatingStorageConditions" label="Condiții de depozitare (maxim 500 de caractere)">
-                        <Form.Control as="textarea" style={{ minHeight: '100px' }} maxLength={500} name="storageConditions" value={formData.storageConditions} onChange={handleChange}></Form.Control>
+                    <FloatingLabel controlId="floatingProductWeight" label="Greutate">
+                        <Form.Control type="number" name="weight" value={formData.weight} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
             </Row>
+            
+            <Row className="g-3 mx-3 my-1">
+                <Col md>
+                    <Form.Group className="mb-3">
+                        <Form.Check 
+                            type="checkbox"
+                            id="storedProducts"
+                            label="Produsele au fost depozitate înainte de livrare"
+                            name="wasStored"
+                            checked={formData.wasStored}
+                            onChange={handleChange}
+                        />
+                    </Form.Group>
+                </Col>
+            </Row>
+            
+            {formData.wasStored && (
+                <>
+                    <Row className="g-3 mx-3 my-1">
+                        <Col md>
+                            <FloatingLabel controlId="floatingStorageTemp" label="Temperatura de depozitare (°C)">
+                                <Form.Control type="number" name="storageTemperature" value={formData.storageTemperature} onChange={handleChange} />
+                            </FloatingLabel>
+                        </Col>
+                        <Col md>
+                            <FloatingLabel controlId="floatingStorageDuration" label="Durata depozitării (zile)">
+                                <Form.Control type="number" name="storageDuration" value={formData.storageDuration} onChange={handleChange} />
+                            </FloatingLabel>
+                        </Col>
+                    </Row>
+                    <Row className="g-3 mx-3 my-1">
+                        <Col md>
+                            <FloatingLabel controlId="floatingStorageConditions" label="Condiții de depozitare">
+                                <Form.Select name="storageCondition" value={formData.storageCondition} onChange={handleChange} >
+                                    <option disabled value="">Selectați</option>
+                                    <option value="refrigerator">Frigider</option>
+                                    <option value="freezer">Congelator</option>
+                                    <option value="roomTemperature">Temperatura camerei</option>
+                                    <option value="controlledHumidity">Umiditate controlată</option>
+                                    <option value="other">Alt tip</option>
+                                </Form.Select>
+                            </FloatingLabel>
+                        </Col>
+                    </Row>
+                    {formData.storageCondition === "other" && (
+                        <Row className="g-3 mx-3 my-1">
+                            <Col md>
+                                <FloatingLabel controlId="floatingOtherStorageDetails" label="Specificați condițiile de depozitare">
+                                    <Form.Control 
+                                        type="text" 
+                                        name="otherStorageDetails" 
+                                        value={formData.otherStorageDetails} 
+                                        onChange={handleChange}
+                                    />
+                                </FloatingLabel>
+                            </Col>
+                        </Row>
+                    )}
+                </>
+            )}
+            
             <Row className="g-3 mx-3 my-1">
                 <Col md>
                     <FloatingLabel controlId="floatingNotes" label="Note suplimentare (Opțional, maxim 500 de caractere)">

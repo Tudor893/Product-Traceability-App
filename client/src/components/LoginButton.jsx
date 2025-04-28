@@ -26,7 +26,7 @@ const LoginButton = () => {
                         }
                     })
                     localStorage.setItem('googleToken', token)
-                    navigate('/companyDetails')
+                    navigate('/chooseRole')
                 }}
                 onError={() => {
                     setShowToast(true)

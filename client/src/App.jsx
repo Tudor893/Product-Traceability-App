@@ -5,11 +5,13 @@ import LoginPage from './components/LoginPage'
 import About from './components/About'
 import CompanyDetails from './components/CompanyDetails'
 import Farmer from './components/Farmer'
-import Producer from './components/producer/Producer'
+import Processor from './components/processor/Processor'
 import AuthProtectedRoute from './components/AuthProtectedRoute'
 import RoleProtectedRoute from './components/RoleProtectedRoute'
 import Unauthorized from './components/Unauthorized'
 import Distributor from './components/distributor/Distributor'
+import ChooseRole from './components/ChooseRole'
+import Client from './components/Client'
 
 const App = () => {
   return (
@@ -18,6 +20,11 @@ const App = () => {
         <Route path='/' element={<Home />}/>
         <Route path='/login' element={<LoginPage/>}/>
         <Route path='/about' element={<About/>}/>
+        <Route path='/chooseRole' element={
+          <AuthProtectedRoute>   
+            <ChooseRole />
+          </AuthProtectedRoute>
+        }/>
         <Route path='/companyDetails' element={
           <AuthProtectedRoute>   
             <CompanyDetails/>
@@ -30,10 +37,10 @@ const App = () => {
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/producator' element={
+        <Route path='/procesator' element={
           <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Producător">
-              <Producer/>
+            <RoleProtectedRoute allowedRole="Procesator">
+              <Processor/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
@@ -47,7 +54,7 @@ const App = () => {
         <Route path='/client' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
-              <Producer/>
+              <Client/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>

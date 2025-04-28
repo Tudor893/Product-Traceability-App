@@ -22,6 +22,8 @@ const Farmer = () => {
         category: "",
         quantity: "",
         unit: "",
+        batch: "",
+        weight: "",
         cost: "",
         harvestDate: "",
         location: "",
@@ -102,6 +104,8 @@ const Farmer = () => {
                 category: "",
                 quantity: "",
                 unit: "",
+                batch: "",
+                weight: "",
                 cost: "",
                 harvestDate: "",
                 location: "",
@@ -260,6 +264,18 @@ const Farmer = () => {
                                             <Form.Control type="number" name="quantity" value={formData.quantity} onChange={handleChange}></Form.Control>
                                         </FloatingLabel>
                                     </Col>
+                                    <Col md>
+                                        <FloatingLabel controlId="floatingProductBatchNumber" label="Lot">
+                                            <Form.Control type="text" name="batch" value={formData.batch} onChange={handleChange}></Form.Control>
+                                        </FloatingLabel>
+                                    </Col>
+                                </Row>
+                                <Row className="g-3 mx-3 my-1">
+                                    <Col md>
+                                        <FloatingLabel controlId="floatingProductWeight" label="Greutatea">
+                                            <Form.Control type="number" name="weight" value={formData.weight} onChange={handleChange}></Form.Control>
+                                        </FloatingLabel>
+                                    </Col>
                                     <Col md className="d-flex justify-content-center">
                                         <Form.Select name="unit" value={formData.unit} onChange={handleChange}>
                                                 <option value="" disabled>Selectează unitatea de măsură</option>
@@ -368,7 +384,10 @@ const Farmer = () => {
                                                                 <div className="overflow-hidden me-md-3" style={{fontSize: '0.9em'}}>
                                                                     <h5>{product.productName}</h5>
                                                                     <p className="text-muted mb-1">
-                                                                        Categorie: {product.category} | Cantitate: {product.quantity} {product.unit}
+                                                                        Categorie: {product.category} | Greutate: {product.weight} {product.unit}
+                                                                    </p>
+                                                                    <p className="text-muted mb-1">
+                                                                        Cantitate: {product.quantity}
                                                                     </p>
                                                                     <p className="text-muted mb-1" >
                                                                         Locație: {product.location} | Data recoltării: {new Date(product.harvestDate).toLocaleDateString()}

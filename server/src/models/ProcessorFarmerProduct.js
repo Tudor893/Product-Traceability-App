@@ -1,19 +1,19 @@
 import { Sequelize } from 'sequelize'
 import db from '../dbConfig.js'
-import ProducerProduct from './ProducerProduct.js'
+import ProcessorProduct from './ProcessorProduct.js'
 import FarmerProduct from './FarmerProduct.js'
 
-const ProducerFarmerProduct = db.define('ProducerFarmerProduct', {
+const ProcessorFarmerProduct = db.define('ProcessorFarmerProduct', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    producerProductId: {
+    processorProductId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-            model: ProducerProduct,
+            model: ProcessorProduct,
             key: 'id'
         },
         onDelete: 'CASCADE'
@@ -28,8 +28,8 @@ const ProducerFarmerProduct = db.define('ProducerFarmerProduct', {
         onDelete: 'CASCADE'
     }
 }, {
-    tableName: 'producer_farmer_products',
+    tableName: 'processor_farmer_products',
     timestamps: false
 })
 
-export default ProducerFarmerProduct
+export default ProcessorFarmerProduct

@@ -5,12 +5,12 @@ import { format } from 'date-fns'
 const ProductModal = ({
     isModalOpen,
     setIsModalOpen,
-    searchIngredient,
-    setSearchIngredient,
+    searchProduct,
+    setSearchProduct,
     scannedProducts,
-    selectedIngredients,
-    handleSelectIngredients,
-    setShowIngredients
+    selectedProduct,
+    handleSelectProduct,
+    setShowProduct
 }) => {
     return (
         <Modal size="lg" className="modalMT" show={isModalOpen} onHide={() => setIsModalOpen(false)} backdrop='static'>
@@ -23,20 +23,21 @@ const ProductModal = ({
                         <LuSearch />
                     </InputGroup.Text>
                     <Form.Control
-                        value={searchIngredient}
-                        onChange={(e) => setSearchIngredient(e.target.value)}
-                        placeholder="Caută ingrediente"
+                        value={searchProduct}
+                        onChange={(e) => setSearchProduct(e.target.value)}
+                        placeholder="Caută produse"
                     />
                 </InputGroup>
                 <Row>
                     {scannedProducts
                         .filter(product => 
-                            product.farmerProduct.productName.toLowerCase().includes((searchIngredient).toLowerCase()))
+                            product.farmerProduct?.productName?.toLowerCase().includes(searchProduct.toLowerCase())
+                                || product.processorProduct?.productName?.toLowerCase().includes(searchProduct.toLowerCase()))
                         .map((product, index) => (
                             <Col key={index} xs={12} md={4} className="mb-3">
-                                <Card onClick={() => { handleSelectIngredients(product) }} style={{cursor: 'pointer', backgroundColor: selectedIngredients.some(p => p.id === product.id) ? 'rgba(141, 176, 85, 0.50)' : 'transparent'}}>
+                                <Card onClick={() => { handleSelectProduct(product) }} style={{cursor: 'pointer', backgroundColor: selectedProduct.some(p => p.id === product.id) ? 'rgba(141, 176, 85, 0.50)' : 'transparent'}}>
                                 <Card.Header>
-                                    <Card.Title>{product.farmerProduct.productName}</Card.Title>
+                                    <Card.Title>{product.farmerProduct?.productName || product.processorProduct?.productName}</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
                                     <Card.Text>Scanat la: <br/> {product.createdAt ? 
@@ -48,10 +49,10 @@ const ProductModal = ({
                 </Row>                                       
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={() => {setIsModalOpen(false); setSearchIngredient("") }}>
+                <Button variant="secondary" onClick={() => {setIsModalOpen(false); setSearchProduct("") }}>
                     Închide
                 </Button>
-                <Button className="bgColorMain" onClick={() => {setIsModalOpen(false); setShowIngredients(true)}}>
+                <Button className="bgColorMain" onClick={() => {setIsModalOpen(false); setShowProduct(true)}}>
                     Salvează
                 </Button>
             </Modal.Footer>

@@ -31,6 +31,14 @@ const FarmerProduct = db.define('FarmerProduct', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    batch: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    weight: {
+        type: Sequelize.FLOAT,
+        allowNull: false
+    },
     cost: {
         type: Sequelize.FLOAT,
         allowNull: false

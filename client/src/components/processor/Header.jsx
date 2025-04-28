@@ -11,7 +11,7 @@ const Header = ({ navigate }) => {
                     Înapoi
                 </Button>
             </div>
-            <p className="fw-bold fs-2">Dashboard Producător</p>
+            <p className="fw-bold fs-2">Dashboard Procesator</p>
             <p className="text-secondary">Gestionează procesul de producție și detaliile produselor finite</p>
         </div>
     )

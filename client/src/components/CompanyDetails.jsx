@@ -110,7 +110,7 @@ const CompanyDetails = () => {
                                         'Authorization': `Bearer ${localStorage.getItem('googleToken')}`
                                     }
                                 })
-                                navigate(`/${slug}`, { replace: true });  
+                                navigate(`/${slug}`, { replace: true }) 
                             }}>
                                 <div className="d-flex justify-content-center align-items-center">
                                     Continuați

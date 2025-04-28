@@ -22,24 +22,24 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                         ) : (scannedProducts
                             .filter(product => 
                                 product.farmerProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase())
-                                || product.producerProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase())
+                                || product.processorProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase())
                             )
                             .map((scannedProduct) => (
                                 <tr key={scannedProduct.id}>
-                                    <td className="ps-4">{scannedProduct.farmerProduct?.productName || scannedProduct.producerProduct?.productName || '-'}</td>
+                                    <td className="ps-4">{scannedProduct.farmerProduct?.productName || scannedProduct.processorProduct?.productName || '-'}</td>
                                     <td className="ps-3">
                                         {scannedProduct.createdAt ? 
                                             format(new Date(scannedProduct.createdAt), 'dd.MM.yyyy HH:mm') : '-'}
                                     </td>
                                     <td className="ps-5">
-                                        {scannedProduct.farmerProduct?.quantity || scannedProduct.producerProduct?.quantity || '-'}
+                                        {scannedProduct.farmerProduct?.quantity || scannedProduct.processorProduct?.quantity || '-'}
                                     </td>
                                     {scannedProduct.farmerProduct ? (
                                         <td className="ps-4">
                                             Fermier
                                         </td>) : 
                                         (<td className="ps-4">
-                                            Producător
+                                            Procesator
                                         </td>)}
                                     <td className="ps-4">
                                         <FaEye className="ms-3"/>

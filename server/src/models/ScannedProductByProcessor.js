@@ -1,7 +1,7 @@
 import {Sequelize} from 'sequelize'
 import db from '../dbConfig.js'
 
-const ScannedProductByProducer = db.define('ScannedProductByProducer', {
+const ScannedProductByProcessor = db.define('ScannedProductByProcessor', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -24,8 +24,8 @@ const ScannedProductByProducer = db.define('ScannedProductByProducer', {
         }
     }
 }, {
-    tableName: 'scanned_products_by_producer',
+    tableName: 'scanned_products_by_processor',
     timestamps: true
 })
 
-export default ScannedProductByProducer
+export default ScannedProductByProcessor

@@ -5,6 +5,7 @@ import Navigation from './Navigation'
 import QrScanner from '../QRScanner'
 import ScannedProducts from "./ScannedProducts"
 import AddProduct from "./AddProduct"
+import Dashboard from "./Dasboard"
 
 const Distributor = () => {
     const [active, setIsActive] = useState(1)
@@ -16,7 +17,7 @@ const Distributor = () => {
             <Navigation active={active} setIsActive={setIsActive} />
 
             {active === 1 ? (
-                null
+                <Dashboard />
             ) : active === 2 ? (
                 <AddProduct />
             ) : active === 3 ? (

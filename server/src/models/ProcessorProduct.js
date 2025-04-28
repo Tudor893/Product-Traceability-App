@@ -1,7 +1,7 @@
 import {Sequelize} from 'sequelize'
 import db from '../dbConfig.js'
 
-const ProducerProduct = db.define('ProducerProduct', {
+const ProcessorProduct = db.define('ProcessorProduct', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -49,8 +49,8 @@ const ProducerProduct = db.define('ProducerProduct', {
         allowNull: true
     }
 }, {
-    tableName: 'producer_products',
+    tableName: 'processor_products',
     timestamps: true
 })
 
-export default ProducerProduct
+export default ProcessorProduct

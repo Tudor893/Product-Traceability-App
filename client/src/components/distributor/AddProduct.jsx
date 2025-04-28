@@ -7,20 +7,20 @@ import ProductModal from "./ProductModal"
 import ProductAdvantages from './ProductAdvantages'
 
 const AddProduct = () => {
-    const [searchIngredient, setSearchIngredient] = useState("")
+    const [searchProduct, setSearchProduct] = useState("")
     const [scannedProducts, setScannedProducts] = useState([])
-    const [selectedIngredients, setSelectedIngredients] = useState([])
-    const [showIngredients, setShowIngredients] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState([])
+    const [showProduct, setShowProduct] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [formData, setFormData] = useState({
-        productName: "",
-        batch: "",
         quantity: "",
-        unit: "",
-        productionDate: "",
-        expirationDate: "",
-        storageConditions: "",
-        notes: ""
+        weight: "",
+        notes: "",
+        wasStored: false,
+        storageTemperature: "",
+        storageDuration: "",
+        storageCondition: "",
+        otherStorageDetails: ""
     })
 
     useEffect(() => {
@@ -45,10 +45,10 @@ const AddProduct = () => {
     }
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value, type, checked } = e.target
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value  
+            [name]: type === 'checkbox' ? checked : value
         })) 
     }
 
@@ -59,10 +59,10 @@ const AddProduct = () => {
 
             const productData = {
                 ...formData,
-                selectedIngredients: selectedIngredients
+                selectedProduct: selectedProduct
             }
             
-            const response = await axios.post('http://localhost:5000/api/producerProducts', productData, {
+            const response = await axios.post('http://localhost:5000/api/distributorInformation', productData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -71,18 +71,18 @@ const AddProduct = () => {
     
             if (response.data.success) {
                 setFormData({
-                    productName: "",
-                    batch: "",
                     quantity: "",
-                    unit: "",
-                    productionDate: "",
-                    expirationDate: "",
-                    storageConditions: "",
-                    notes: ""
+                    weight: "",
+                    notes: "",
+                    wasStored: false,
+                    storageTemperature: "",
+                    storageDuration: "",
+                    storageCondition: "",
+                    otherStorageDetails: ""
                 })
 
-                setSelectedIngredients([])
-                setShowIngredients(false)
+                setSelectedProduct([])
+                setShowProduct(false)
             }
         } catch (error) {
             console.error('Error submitting product:', error)
@@ -90,20 +90,14 @@ const AddProduct = () => {
         }
     }
 
-    const handleSelectIngredients = (product) => {
-        const isAlreadySelected = selectedIngredients.some(selectedProduct => selectedProduct.id === product.id)
-    
-        if (isAlreadySelected) {
-            setSelectedIngredients(selectedIngredients.filter(selectedProduct => selectedProduct.id !== product.id))
-        } else {
-            setSelectedIngredients([...selectedIngredients, product])
-        }
+    const handleSelectProduct = (product) => {
+        setSelectedProduct([product])
     }
 
     const handleDeleteOption = (product) => {
-        setSelectedIngredients(selectedIngredients.filter(selectedProduct => selectedProduct.id !== product.id))
-        if(selectedIngredients.length === 1)
-            setShowIngredients(false)
+        setSelectedProduct(selectedProduct.filter(selectedProduct => selectedProduct.id !== product.id))
+        if(selectedProduct.length === 1)
+            setShowProduct(false)
     }
 
     return (
@@ -111,10 +105,10 @@ const AddProduct = () => {
             <Card className="slide-up-fade-in card-responsive border-0" style={{width: '65%'}}>
                 <div className="p-3 ms-4">
                     <Card.Title>
-                        Înregistrează produs procesat
+                        Înregistrează produs pentru livrare
                     </Card.Title>
                     <Card.Subtitle className="text-secondary mt-2" style={{fontSize: '85%'}}>
-                        Adaugă detalii despre procesul de producție
+                        Adaugă detalii despre procesul de transport
                     </Card.Subtitle>
                 </div>
                 <Card.Body>
@@ -122,8 +116,8 @@ const AddProduct = () => {
                         <ProductForm 
                             formData={formData} 
                             handleChange={handleChange} 
-                            selectedIngredients={selectedIngredients} 
-                            showIngredients={showIngredients}
+                            selectedProduct={selectedProduct} 
+                            showProduct={showProduct}
                             handleDeleteOption={handleDeleteOption}
                             setIsModalOpen={setIsModalOpen}
                         />
@@ -132,12 +126,12 @@ const AddProduct = () => {
                             <ProductModal 
                                 isModalOpen={isModalOpen}
                                 setIsModalOpen={setIsModalOpen}
-                                searchIngredient={searchIngredient}
-                                setSearchIngredient={setSearchIngredient}
+                                searchProduct={searchProduct}
+                                setSearchProduct={setSearchProduct}
                                 scannedProducts={scannedProducts}
-                                selectedIngredients={selectedIngredients}
-                                handleSelectIngredients={handleSelectIngredients}
-                                setShowIngredients={setShowIngredients}
+                                selectedProduct={selectedProduct}
+                                handleSelectProduct={handleSelectProduct}
+                                setShowProduct={setShowProduct}
                             />
                         )}
 

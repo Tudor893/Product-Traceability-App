@@ -5,10 +5,11 @@ import DB_Init from './models/DB_Init.js'
 import User from './models/User.js'
 import authMiddleware from './authMiddleware.js'
 import FarmerProduct from './models/FarmerProduct.js'
-import ScannedProductByProducer from './models/ScannedProductByProducer.js'
+import ScannedProductByProcessor from './models/ScannedProductByProcessor.js'
 import ScannedProductByDistributor from './models/ScannedProductByDistributor.js'
-import ProducerProduct from './models/ProducerProduct.js'
-import ProducerFarmerProduct from './models/ProducerFarmerProduct.js'
+import ProcessorProduct from './models/ProcessorProduct.js'
+import ProcessorFarmerProduct from './models/ProcessorFarmerProduct.js'
+import DistributorInformation from './models/DistributorInformation.js'
 
 const app = express()
 const port = 5000
@@ -19,7 +20,7 @@ app.use(cors())
 DB_Init()
 
 const companyRoles = {
-  1: 'Producător',
+  1: 'Procesator',
   86: 'Fermier',
   94: 'Distribuitor'
 }
@@ -122,6 +123,8 @@ app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
       category,
       quantity,
       unit,
+      batch,
+      weight,
       cost,
       harvestDate,
       location,
@@ -135,7 +138,7 @@ app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
     }
     const userId = user.id;
 
-    if (!productName || !category || !quantity || !unit || !cost || !harvestDate || !location) {
+    if (!productName || !category || !quantity || !unit || !cost || !batch || !weight || !harvestDate || !location) {
       return res.status(400).json({ message: 'Missing required fields' })
     }
 
@@ -145,6 +148,8 @@ app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
       category,
       quantity,
       unit,
+      batch,
+      weight,
       cost,
       harvestDate,
       location,
@@ -198,14 +203,14 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
                               .replace(/[ț]/g, "t")
                               .toLowerCase()
 
-    if(userRole === "producator"){
+    if(userRole === "procesator"){
 
       const product = await FarmerProduct.findByPk(productId)
       if (!product) {
         return res.status(404).json({ message: 'Produsul nu a fost gasit' })
       }
 
-      const existingScan = await ScannedProductByProducer.findOne({
+      const existingScan = await ScannedProductByProcessor.findOne({
         where: { productId }
       })
       
@@ -213,7 +218,7 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         return res.status(400).json({ message: 'Produs deja scanat' })
       }
 
-      const scannedProduct = await ScannedProductByProducer.create({
+      const scannedProduct = await ScannedProductByProcessor.create({
         userId,
         productId
       })
@@ -242,21 +247,21 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         const scannedProduct = await ScannedProductByDistributor.create({
           userId,
           farmerProductId: productId,
-          producerProductId: null
+          processorProductId: null
         })
         
         res.status(201).json({
           message: 'Product scanned successful',
           data: scannedProduct
         })
-      }else if(sender === "producator"){
-        const product = await ProducerProduct.findByPk(productId)
+      }else if(sender === "procesator"){
+        const product = await ProcessorProduct.findByPk(productId)
         if (!product) {
           return res.status(404).json({ message: 'Produsul nu a fost gasit' })
         }
 
         const existingScan = await ScannedProductByDistributor.findOne({
-          where: { producerProductId: productId }
+          where: { processorProductId: productId }
         })
         
         if (existingScan) {
@@ -266,7 +271,7 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         const scannedProduct = await ScannedProductByDistributor.create({
           userId,
           farmerProductId: null,
-          producerProductId: productId
+          processorProductId: productId
         })
         
         res.status(201).json({
@@ -295,8 +300,8 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
                               .replace(/[ț]/g, "t")
                               .toLowerCase()
 
-    if(userRole === "producator"){
-      const scannedProductsByProducer = await ScannedProductByProducer.findAll({
+    if(userRole === "procesator"){
+      const scannedProducts = await ScannedProductByProcessor.findAll({
         where: { userId: user.id },
         include: [{
           model: FarmerProduct,
@@ -305,7 +310,7 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
         }],
         order: [['createdAt', 'DESC']]
       })
-      res.status(200).json(scannedProductsByProducer)
+      res.status(200).json(scannedProducts)
     }else if(userRole === "distribuitor"){
       const scannedProductsByDistributor = await ScannedProductByDistributor.findAll({
         where: { userId: user.id },
@@ -315,8 +320,8 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
           required: false
         },
         {
-          model: ProducerProduct,
-          as: 'producerProduct',
+          model: ProcessorProduct,
+          as: 'processorProduct',
           required: false
         }],
         order: [['createdAt', 'DESC']]
@@ -329,7 +334,7 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
   }
 })
 
-app.post('/api/producerProducts', authMiddleware, async (req, res) => {
+app.post('/api/processorProducts', authMiddleware, async (req, res) => {
   try {
       const { 
           productName, 
@@ -354,7 +359,7 @@ app.post('/api/producerProducts', authMiddleware, async (req, res) => {
         return res.status(400).json({ message: 'Missing required fields' })
       }
 
-      const producerProduct = await ProducerProduct.create({
+      const processorProduct = await ProcessorProduct.create({
           userId: userId,
           productName,
           batch,
@@ -371,21 +376,21 @@ app.post('/api/producerProducts', authMiddleware, async (req, res) => {
               const farmerProductId = ingredient.farmerProduct.id
 
               return {
-                  producerProductId: producerProduct.id,
+                  processorProductId: processorProduct.id,
                   farmerProductId: farmerProductId
               }
           })
 
-          await ProducerFarmerProduct.bulkCreate(associations)
+          await ProcessorFarmerProduct.bulkCreate(associations)
       }
 
       return res.status(201).json({
           success: true,
           message: 'Produsul a fost adăugat cu succes!',
-          product: producerProduct
+          product: processorProduct
       })
   } catch (error) {
-      console.error('Error creating producer product:', error)
+      console.error('Error creating processor product:', error)
       return res.status(500).json({
           success: false,
           message: 'A apărut o eroare la adăugarea produsului.',
@@ -394,7 +399,7 @@ app.post('/api/producerProducts', authMiddleware, async (req, res) => {
   }
 })
 
-app.get('/api/producerProducts', authMiddleware, async (req, res) => {
+app.get('/api/processorProducts', authMiddleware, async (req, res) => {
   try {
       const userEmail = req.user.email
       const user = await User.findOne({ where: { email: userEmail } })
@@ -403,17 +408,141 @@ app.get('/api/producerProducts', authMiddleware, async (req, res) => {
       }
       const userId = user.id
 
-      const products = await ProducerProduct.findAll({
+      const products = await ProcessorProduct.findAll({
           where: { userId: userId },
           order: [['createdAt', 'DESC']]
       })
 
       return res.status(200).json(products)
   } catch (error) {
-      console.error('Error fetching producer products:', error)
+      console.error('Error fetching processor products:', error)
       return res.status(500).json({
           success: false,
           message: 'A apărut o eroare la obținerea produselor.',
+          error: error.message
+      })
+  }
+})
+
+app.post('/api/distributorInformation', authMiddleware, async (req, res) => {
+  try {
+      const { 
+          quantity, 
+          weight, 
+          notes,
+          wasStored,
+          storageTemperature, 
+          storageDuration, 
+          storageCondition, 
+          otherStorageDetails, 
+          selectedProduct
+      } = req.body
+
+      const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } })
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      const userId = user.id
+  
+      if (!selectedProduct || selectedProduct.length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: 'Trebuie să selectați cel puțin un produs'
+        })
+      }
+
+      const product = selectedProduct[0]
+      
+      const farmerProductId = product.farmerProduct?.id || null
+      const processorProductId = product.processorProduct?.id || null
+
+        if (!farmerProductId && !processorProductId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Produsul selectat nu are un ID valid'
+            })
+        }
+
+        if (!quantity || !weight) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cantitatea si greutatea sunt obligatorii'
+            })
+        }
+
+        if (wasStored) {
+            if (!storageTemperature || !storageDuration || !storageCondition) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Toate detaliile de depozitare sunt obligatorii cand produsele sunt depozitate'
+                })
+            }
+
+            if (storageCondition === 'other' && !otherStorageDetails) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Detaliile suplimentare sunt obligatorii pentru alte tipuri de depozitare'
+                })
+            }
+        }
+
+        const distributorInfo = await DistributorInformation.create({
+            userId,
+            farmerProductId,
+            processorProductId,
+            quantity,
+            weight,
+            wasStored,
+            storageTemperature: wasStored ? storageTemperature : null,
+            storageDuration: wasStored ? storageDuration : null,
+            storageCondition: wasStored ? storageCondition : null,
+            otherStorageDetails: wasStored && storageCondition === 'other' ? otherStorageDetails : null,
+            notes
+        })
+
+        return res.status(201).json({
+            success: true,
+            message: 'Informatiile despre produs au fost salvate cu succes',
+            distributorInfo
+        })
+    } catch (error) {
+        console.error('Error creating distributor information:', error)
+        return res.status(500).json({
+            success: false,
+            message: 'A aparut o eroare la salvarea informatiilor',
+            error: error.message
+        })
+    }
+})
+
+app.get('/api/distributorInformation', authMiddleware, async (req, res) => {
+  try {
+      const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } })
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      const userId = user.id
+      
+      const distributorInfo = await DistributorInformation.findAll({
+        where: { userId: userId },
+        include: [
+          { model: FarmerProduct,
+            as: "farmerProduct"
+           }, 
+          { model: ProcessorProduct,
+            as: "processorProduct" }
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+
+      return res.status(200).json(distributorInfo)
+  } catch (error) {
+      console.error('Error fetching distributor information:', error)
+      return res.status(500).json({
+          success: false,
+          message: 'A aparut o eroare la preluarea informatiilor',
           error: error.message
       })
   }

@@ -23,11 +23,11 @@ const ScannedProductByDistributor = db.define('ScannedProductByDistributor', {
             key: 'id'
         }
     },
-    producerProductId: {
+    processorProductId: {
         type: Sequelize.INTEGER,
         allowNull: true,
         references: {
-            model: 'producer_products',
+            model: 'processor_products',
             key: 'id'
         }
     }

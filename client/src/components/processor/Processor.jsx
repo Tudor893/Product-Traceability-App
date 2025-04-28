@@ -7,7 +7,7 @@ import ScannedProducts from "./ScannedProducts"
 import Header from './Header'
 import Navigation from './Navigation'
 
-const Producer = () => {
+const Processor = () => {
     const [active, setIsActive] = useState(1)
     const navigate = useNavigate()
 
@@ -29,4 +29,4 @@ const Producer = () => {
     )
 }
 
-export default Producer
+export default Processor
