@@ -37,7 +37,7 @@ const ChooseRole = () => {
                                 .replace(/[ș]/g, "s")
                                 .replace(/[ț]/g, "t")
                                 .toLowerCase()
-                    navigate(`/${slug}`)
+                    navigate(`/${slug}`, { replace: true })
                 }
             } catch (error) {
                 console.error('Eroare verificare status utilizator:', error)
@@ -85,9 +85,9 @@ const ChooseRole = () => {
                                         })
                                 
                                         if (response.data.role === 'Client') {
-                                            navigate('/client', { replace: true });
+                                            navigate('/client', {replace: true})
                                         } else {
-                                            console.error('Rolul nu s-a actualizat corect:', response.data.role);
+                                            console.error('Rolul nu s-a actualizat corect:', response.data.role)
                                         }
                                         } else {
                                         navigate('/companyDetails');

@@ -10,6 +10,7 @@ import ScannedProductByDistributor from './models/ScannedProductByDistributor.js
 import ProcessorProduct from './models/ProcessorProduct.js'
 import ProcessorFarmerProduct from './models/ProcessorFarmerProduct.js'
 import DistributorInformation from './models/DistributorInformation.js'
+import ScannedProductByStore from './models/ScannedProductByStore.js'
 
 const app = express()
 const port = 5000
@@ -22,7 +23,11 @@ DB_Init()
 const companyRoles = {
   1: 'Procesator',
   86: 'Fermier',
-  94: 'Distribuitor'
+  94: 'Distribuitor',
+  15780419: 'Fermier',
+  40890617: 'Procesator',
+  13603950: 'Distribuitor',
+  22891860: 'Magazin'
 }
 
 function getCompanyRole(uic) {
@@ -227,7 +232,7 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         message: 'Product scanned successful',
         data: scannedProduct
       });
-    }else if(userRole === "distribuitor"){
+    }else if(userRole === "distribuitor" || userRole === 'magazin'){
 
       if(sender === "fermier"){
 
@@ -236,19 +241,33 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
           return res.status(404).json({ message: 'Produsul nu a fost gasit' })
         }
 
-        const existingScan = await ScannedProductByDistributor.findOne({
-          where: { farmerProductId: productId }
-        })
+        let existingScan;
+        if(userRole === 'distribuitor'){ 
+          existingScan = await ScannedProductByDistributor.findOne({
+            where: { farmerProductId: productId }
+        })}else if(userRole === 'magazin'){
+            existingScan = await ScannedProductByStore.findOne({
+              where: { farmerProductId: productId }
+          })
+        }
         
         if (existingScan) {
           return res.status(400).json({ message: 'Produs deja scanat' })
         }
 
-        const scannedProduct = await ScannedProductByDistributor.create({
+        let scannedProduct;
+        if(userRole === 'distribuitor'){
+         scannedProduct = await ScannedProductByDistributor.create({
           userId,
           farmerProductId: productId,
           processorProductId: null
-        })
+        })}else if(userRole === 'magazin'){
+          scannedProduct = await ScannedProductByStore.create({
+            userId,
+            farmerProductId: productId,
+            processorProductId: null
+          })
+        }
         
         res.status(201).json({
           message: 'Product scanned successful',
@@ -260,25 +279,41 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
           return res.status(404).json({ message: 'Produsul nu a fost gasit' })
         }
 
-        const existingScan = await ScannedProductByDistributor.findOne({
-          where: { processorProductId: productId }
-        })
+        let existingScan;
+        if(userRole === 'distribuitor'){ 
+          existingScan = await ScannedProductByDistributor.findOne({
+            where: { farmerProductId: productId }
+        })}else if(userRole === 'magazin'){
+            existingScan = await ScannedProductByStore.findOne({
+              where: { farmerProductId: productId }
+          })
+        }
         
         if (existingScan) {
           return res.status(400).json({ message: 'Produs deja scanat' })
         }
 
-        const scannedProduct = await ScannedProductByDistributor.create({
+        let scannedProduct;
+        if(userRole === 'distribuitor'){
+         scannedProduct = await ScannedProductByDistributor.create({
           userId,
           farmerProductId: null,
           processorProductId: productId
-        })
+        })}else if(userRole === 'magazin'){
+          scannedProduct = await ScannedProductByStore.create({
+            userId,
+            farmerProductId: null,
+            processorProductId: productId
+          })
+        }
         
         res.status(201).json({
           message: 'Product scanned successful',
           data: scannedProduct
         });
       }
+    }else if(userRole === 'client'){
+      
     }
   } catch (error) {
     console.error('Error registering product:', error)
@@ -327,6 +362,22 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
         order: [['createdAt', 'DESC']]
       })
       res.status(200).json(scannedProductsByDistributor)
+    }else if(userRole === 'magazin'){
+      const scannedProductsByStore = await ScannedProductByStore.findAll({
+        where: { userId: user.id },
+        include: [{
+          model: FarmerProduct,
+          as: 'farmerProduct',
+          required: false
+        },
+        {
+          model: ProcessorProduct,
+          as: 'processorProduct',
+          required: false
+        }],
+        order: [['createdAt', 'DESC']]
+      })
+      res.status(200).json(scannedProductsByStore)
     }
   } catch (error) {
     console.error('Error fetching scanned products:', error)

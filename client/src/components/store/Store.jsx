@@ -8,7 +8,7 @@ import AddProduct from "./AddProduct"
 import Dashboard from "./Dasboard"
 import SideNavBar from "./SideNavBar"
 
-const Distributor = () => {
+const Store = () => {
     const [active, setIsActive] = useState(1)
     const [expanded, setExpanded] = useState(false)
     const navigate = useNavigate()
@@ -45,4 +45,4 @@ const Distributor = () => {
     )
 }
 
-export default Distributor
+export default Store

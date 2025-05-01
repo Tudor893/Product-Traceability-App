@@ -1,4 +1,4 @@
-const Client = () => {
+const ProductHistory = () => {
     return (
         <div>
             
@@ -6,4 +6,4 @@ const Client = () => {
     )
 }
 
-export default Client
+export default ProductHistory

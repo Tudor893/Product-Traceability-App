@@ -79,11 +79,31 @@
   border: 0 !important;
 }
 
+.textColorMain {
+  color: #707d5b !important;
+}
+
+.with-sidebar {
+  margin-left: 240px;
+  transition: margin-left 0.3s ease;
+}
+
+.with-sidebar.collapsed {
+  margin-left: 64px;
+}
+
+@media (max-width: 768px) {
+  .with-sidebar,
+  .with-sidebar.collapsed {
+    margin-left: 0 !important;
+  }
+}
+
 .custom-border{
   border: 1px dashed black !important;
 }
 
-.custom-border:hover{
+.custom-border:s{
   border-color: #707d5b !important;
   color: #707d5b !important;
 }

@@ -29,7 +29,7 @@ const CompanyDetails = () => {
                                 .replace(/[ș]/g, "s")
                                 .replace(/[ț]/g, "t")
                                 .toLowerCase()
-                    navigate(`/${slug}`)
+                    navigate(`/${slug}`, {replace: true})
                 }
             } catch (error) {
                 console.error('Eroare verificare status utilizator:', error)

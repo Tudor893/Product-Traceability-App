@@ -83,23 +83,23 @@ const ProductForm = ({
                             <FloatingLabel controlId="floatingStorageConditions" label="Condiții de depozitare">
                                 <Form.Select name="storageCondition" value={formData.storageCondition} onChange={handleChange} >
                                     <option disabled value="">Selectați</option>
-                                    <option value="refrigerator">Frigider</option>
-                                    <option value="freezer">Congelator</option>
-                                    <option value="roomTemperature">Temperatura camerei</option>
-                                    <option value="controlledHumidity">Umiditate controlată</option>
-                                    <option value="other">Alt tip</option>
+                                    <option value="frigider">Frigider</option>
+                                    <option value="congelator">Congelator</option>
+                                    <option value="temperatura camerei">Temperatura camerei</option>
+                                    <option value="umiditate controlata">Umiditate controlată</option>
+                                    <option value="alt tip">Alt tip</option>
                                 </Form.Select>
                             </FloatingLabel>
                         </Col>
                     </Row>
-                    {formData.storageCondition === "other" && (
+                    {formData.storageCondition === "alt tip" && (
                         <Row className="g-3 mx-3 my-1">
                             <Col md>
                                 <FloatingLabel controlId="floatingOtherStorageDetails" label="Specificați condițiile de depozitare">
                                     <Form.Control 
-                                        type="text" 
-                                        name="otherStorageDetails" 
-                                        value={formData.otherStorageDetails} 
+                                        type="text"
+                                        name="otherStorageDetails"
+                                        value={formData.otherStorageDetails}
                                         onChange={handleChange}
                                     />
                                 </FloatingLabel>

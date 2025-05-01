@@ -8,6 +8,7 @@ import ProcessorProduct from './ProcessorProduct.js'
 import ProcessorFarmerProduct from './ProcessorFarmerProduct.js'
 import ScannedProductByDistributor from './ScannedProductByDistributor.js'
 import DistributorInformation from './DistributorInformation.js'
+import ScannedProductByStore from './ScannedProductByStore.js'
 
 const {Client} = pg
 dotenv.config()
@@ -52,6 +53,9 @@ function FK_Config(){
 
     User.hasMany(DistributorInformation, {foreignKey: 'userId', onDelete: 'CASCADE'})
     DistributorInformation.belongsTo(User, {foreignKey: 'userId'})
+
+    User.hasMany(ScannedProductByStore, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    ScannedProductByStore.belongsTo(User, {foreignKey: 'userId'})
     
     FarmerProduct.hasOne(ScannedProductByProcessor, {foreignKey: 'productId', as: 'scannedProduct'})
     ScannedProductByProcessor.belongsTo(FarmerProduct, {foreignKey: 'productId', as: 'farmerProduct'})
@@ -63,6 +67,11 @@ function FK_Config(){
     ScannedProductByDistributor.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
     FarmerProduct.hasMany(ScannedProductByDistributor, {foreignKey: 'farmerProductId', as: 'scannedByDistributor'})
     ProcessorProduct.hasMany(ScannedProductByDistributor, {foreignKey: 'processorProductId', as: 'scannedByDistributor'})
+
+    ScannedProductByStore.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})
+    ScannedProductByStore.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
+    FarmerProduct.hasMany(ScannedProductByStore, {foreignKey: 'farmerProductId', as: 'scannedByStore'})
+    ProcessorProduct.hasMany(ScannedProductByStore, {foreignKey: 'processorProductId', as: 'scannedByStore'})
 
     FarmerProduct.hasMany(DistributorInformation, {foreignKey: 'farmerProductId'})
     DistributorInformation.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})

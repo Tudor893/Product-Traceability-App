@@ -4,14 +4,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import LoginPage from './components/LoginPage'
 import About from './components/About'
 import CompanyDetails from './components/CompanyDetails'
-import Farmer from './components/Farmer'
+import Farmer from './components/farmer/Farmer'
 import Processor from './components/processor/Processor'
 import AuthProtectedRoute from './components/AuthProtectedRoute'
 import RoleProtectedRoute from './components/RoleProtectedRoute'
 import Unauthorized from './components/Unauthorized'
 import Distributor from './components/distributor/Distributor'
 import ChooseRole from './components/ChooseRole'
-import Client from './components/Client'
+import Client from './components/client/Client'
+import ProductScanner from './components/client/ProductScanner'
+import Store from './components/store/Store'
 
 const App = () => {
   return (
@@ -55,6 +57,20 @@ const App = () => {
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
               <Client/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
+        <Route path='/productScanner' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Client">
+              <ProductScanner/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
+        <Route path='/magazin' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Magazin">
+              <Store/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
