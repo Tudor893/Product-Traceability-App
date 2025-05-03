@@ -1,7 +1,7 @@
 import {Sequelize} from 'sequelize'
 import db from '../dbConfig.js'
 
-const DistributorInformation = db.define('DistributorInformation', {
+const StoreInformation = db.define('StoreInformation', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -31,6 +31,10 @@ const DistributorInformation = db.define('DistributorInformation', {
             key: 'id'
         }
     },
+    operatorName: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     quantity: {
         type: Sequelize.INTEGER,
         allowNull: false
@@ -39,16 +43,7 @@ const DistributorInformation = db.define('DistributorInformation', {
         type: Sequelize.FLOAT,
         allowNull: false
     },
-    wasStored: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
-    },
     storageTemperature: {
-        type: Sequelize.FLOAT,
-        allowNull: true
-    },
-    storageDuration: {
         type: Sequelize.FLOAT,
         allowNull: true
     },
@@ -65,8 +60,8 @@ const DistributorInformation = db.define('DistributorInformation', {
         allowNull: true
     }
 }, {
-    tableName: 'distributor_information',
+    tableName: 'store_information',
     timestamps: true
 })
 
-export default DistributorInformation
+export default StoreInformation

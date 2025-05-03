@@ -33,7 +33,7 @@ const ProcessorProduct = db.define('ProcessorProduct', {
         allowNull: false
     },
     quantity: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     unit: {

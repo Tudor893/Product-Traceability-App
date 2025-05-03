@@ -2,12 +2,15 @@ import { useEffect, useState } from "react"
 import { Html5Qrcode } from "html5-qrcode"
 import { Card, Alert, Row, Col, Container, Button } from "react-bootstrap"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export default function QRScanner() {
   const [scanResult, setScanResult] = useState("")
   const [status, setStatus] = useState(null)
   const [scanner, setScanner] = useState(null)
   const [scanning, setScanning] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (typeof Html5Qrcode !== "undefined") {
@@ -28,7 +31,7 @@ export default function QRScanner() {
         }
       }
     }
-  }, [])
+  }, [scanning])
 
   const startScanning = async () => {
     if (!scanner) return
@@ -38,10 +41,25 @@ export default function QRScanner() {
       setScanResult("")
 
       const qrCodeSuccessCallback = async decodedText => {
-        const parsedData = JSON.parse(decodedText)
-        setScanResult(decodedText)
-        stopScanning()
-        await registerScannedProduct(parsedData)
+        if(isProcessing)
+          return
+
+        try {
+          setIsProcessing(true)
+
+          const parsedData = JSON.parse(decodedText)
+          setScanResult(decodedText)
+          await stopScanning()
+          await registerScannedProduct(parsedData)
+        } catch (error) {
+          console.error("Error processing QR code:", error)
+          setStatus({ 
+            type: "danger", 
+            message: `Error processing QR code: ${error.message}` 
+          })
+        } finally {
+          setIsProcessing(false);
+        }
       }
       const config = { fps: 10, qrbox: { width: 250, height: 250 } }
       const devices = await Html5Qrcode.getCameras()
@@ -84,6 +102,10 @@ export default function QRScanner() {
           type: "success", 
           message: "Produsul a fost înregistrat cu succes!" 
         })
+        
+        if(response.data.role === 'client'){
+          setTimeout(() => navigate('/istoricProdus'), 2000)
+        }
       } else {
         throw new Error("Răspuns neașteptat de la server")
       }

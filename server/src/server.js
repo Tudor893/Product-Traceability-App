@@ -11,6 +11,8 @@ import ProcessorProduct from './models/ProcessorProduct.js'
 import ProcessorFarmerProduct from './models/ProcessorFarmerProduct.js'
 import DistributorInformation from './models/DistributorInformation.js'
 import ScannedProductByStore from './models/ScannedProductByStore.js'
+import StoreInformation from './models/StoreInformation.js'
+import ScannedProductByClient from './models/ScannedProductByClient.js'
 
 const app = express()
 const port = 5000
@@ -232,7 +234,7 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         message: 'Product scanned successful',
         data: scannedProduct
       });
-    }else if(userRole === "distribuitor" || userRole === 'magazin'){
+    }else if(userRole === "distribuitor" || userRole === 'magazin' || userRole === 'client'){
 
       if(sender === "fermier"){
 
@@ -244,12 +246,20 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         let existingScan;
         if(userRole === 'distribuitor'){ 
           existingScan = await ScannedProductByDistributor.findOne({
-            where: { farmerProductId: productId }
+            where: { farmerProductId: productId,
+              userId
+             }
         })}else if(userRole === 'magazin'){
             existingScan = await ScannedProductByStore.findOne({
-              where: { farmerProductId: productId }
-          })
-        }
+              where: { farmerProductId: productId,
+                userId
+               }
+          })}else if(userRole === 'client'){
+            existingScan = await ScannedProductByClient.findOne({
+              where: { farmerProductId: productId,
+                userId
+               }
+          })}
         
         if (existingScan) {
           return res.status(400).json({ message: 'Produs deja scanat' })
@@ -266,12 +276,17 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
             userId,
             farmerProductId: productId,
             processorProductId: null
-          })
-        }
+          })}else if(userRole === 'client'){
+            scannedProduct = await ScannedProductByClient.create({
+              userId,
+              farmerProductId: productId,
+              processorProductId: null
+            })}
         
         res.status(201).json({
           message: 'Product scanned successful',
-          data: scannedProduct
+          data: scannedProduct,
+          role: userRole
         })
       }else if(sender === "procesator"){
         const product = await ProcessorProduct.findByPk(productId)
@@ -282,12 +297,20 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
         let existingScan;
         if(userRole === 'distribuitor'){ 
           existingScan = await ScannedProductByDistributor.findOne({
-            where: { farmerProductId: productId }
+            where: { processorProductId: productId,
+              userId
+             }
         })}else if(userRole === 'magazin'){
             existingScan = await ScannedProductByStore.findOne({
-              where: { farmerProductId: productId }
-          })
-        }
+              where: { processorProductId: productId,
+                userId
+               }
+          })}else if(userRole === 'client'){
+            existingScan = await ScannedProductByClient.findOne({
+              where: { processorProductId: productId,
+                userId
+               }
+          })}
         
         if (existingScan) {
           return res.status(400).json({ message: 'Produs deja scanat' })
@@ -304,16 +327,19 @@ app.post('/api/scanned-products', authMiddleware, async (req, res) => {
             userId,
             farmerProductId: null,
             processorProductId: productId
-          })
-        }
+          })}else if(userRole === 'client'){
+            scannedProduct = await ScannedProductByClient.create({
+              userId,
+              farmerProductId: null,
+              processorProductId: productId
+            })}
         
         res.status(201).json({
           message: 'Product scanned successful',
-          data: scannedProduct
-        });
+          data: scannedProduct,
+          role: userRole
+        })
       }
-    }else if(userRole === 'client'){
-      
     }
   } catch (error) {
     console.error('Error registering product:', error)
@@ -478,14 +504,14 @@ app.get('/api/processorProducts', authMiddleware, async (req, res) => {
 app.post('/api/distributorInformation', authMiddleware, async (req, res) => {
   try {
       const { 
-          quantity, 
-          weight, 
+          quantity,
+          weight,
           notes,
           wasStored,
-          storageTemperature, 
-          storageDuration, 
-          storageCondition, 
-          otherStorageDetails, 
+          storageTemperature,
+          storageDuration,
+          storageCondition,
+          otherStorageDetails,
           selectedProduct
       } = req.body
 
@@ -536,6 +562,21 @@ app.post('/api/distributorInformation', authMiddleware, async (req, res) => {
                     message: 'Detaliile suplimentare sunt obligatorii pentru alte tipuri de depozitare'
                 })
             }
+        }
+
+        const existingDistributorInfo = await DistributorInformation.findOne({
+          where: {
+            userId,
+            ...(farmerProductId ? {farmerProductId} : {}),
+            ...(processorProductId ? {processorProductId} : {})
+          }
+        })
+
+        if(existingDistributorInfo){
+          return res.status(409).json({
+            success: false,
+            message: 'Exista deja informatii salvate pentru acest produs'
+          })
         }
 
         const distributorInfo = await DistributorInformation.create({
@@ -596,6 +637,334 @@ app.get('/api/distributorInformation', authMiddleware, async (req, res) => {
           message: 'A aparut o eroare la preluarea informatiilor',
           error: error.message
       })
+  }
+})
+
+app.post('/api/storeInformation', authMiddleware, async (req, res) => {
+  try {
+      const { 
+          operatorName,
+          quantity,
+          weight,
+          notes,
+          storageTemperature,
+          storageCondition,
+          otherStorageDetails,
+          selectedProduct
+      } = req.body
+
+      const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } })
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      const userId = user.id
+  
+      if (!selectedProduct || selectedProduct.length === 0) {
+        return res.status(400).json({
+            success: false,
+            message: 'Trebuie să selectați cel puțin un produs'
+        })
+      }
+
+      const product = selectedProduct[0]
+      
+      const farmerProductId = product.farmerProduct?.id || null
+      const processorProductId = product.processorProduct?.id || null
+
+        if (!farmerProductId && !processorProductId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Produsul selectat nu are un ID valid'
+            })
+        }
+
+        if (!operatorName) {
+          return res.status(400).json({
+              success: false,
+              message: 'Numele operatorului este obligatoriu'
+          })
+      }
+
+        if (!quantity || !weight) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cantitatea si greutatea sunt obligatorii'
+            })
+        }
+
+        if (!storageTemperature || !storageCondition) {
+            return res.status(400).json({
+                success: false,
+                message: 'Toate detaliile de depozitare sunt obligatorii cand produsele sunt depozitate'
+            })
+        }
+
+        if (storageCondition === 'other' && !otherStorageDetails) {
+            return res.status(400).json({
+                success: false,
+                message: 'Detaliile suplimentare sunt obligatorii pentru alte tipuri de depozitare'
+            })
+        }
+
+        const existingStoreInfo = await StoreInformation.findOne({
+          where: {
+            userId,
+            ...(farmerProductId ? {farmerProductId} : {}),
+            ...(processorProductId ? {processorProductId} : {})
+          }
+        })
+
+        if(existingStoreInfo){
+          return res.status(409).json({
+            success: false,
+            message: 'Exista deja informatii salvate pentru acest produs'
+          })
+        }
+
+        const storeInfo = await StoreInformation.create({
+            userId,
+            farmerProductId,
+            processorProductId,
+            operatorName,
+            quantity,
+            weight,
+            storageTemperature: storageTemperature,
+            storageCondition: storageCondition,
+            otherStorageDetails: storageCondition === 'other' ? otherStorageDetails : null,
+            notes
+        })
+
+        return res.status(201).json({
+            success: true,
+            message: 'Informatiile despre produs au fost salvate cu succes',
+            storeInfo
+        })
+    } catch (error) {
+        console.error('Error creating store information:', error)
+        return res.status(500).json({
+            success: false,
+            message: 'A aparut o eroare la salvarea informatiilor',
+            error: error.message
+        })
+    }
+})
+
+app.get('/api/storeInformation', authMiddleware, async (req, res) => {
+  try {
+      const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } })
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      const userId = user.id
+      
+      const storeInfo = await StoreInformation.findAll({
+        where: { userId: userId },
+        include: [
+          { model: FarmerProduct,
+            as: "farmerProduct"
+           }, 
+          { model: ProcessorProduct,
+            as: "processorProduct" }
+        ],
+        order: [['createdAt', 'DESC']]
+      })
+
+      return res.status(200).json(storeInfo)
+  } catch (error) {
+      console.error('Error fetching store information:', error)
+      return res.status(500).json({
+          success: false,
+          message: 'A aparut o eroare la preluarea informatiilor',
+          error: error.message  
+      })
+  }
+})
+
+async function getCompanyInfoByUserId(userId) {
+  const userData = await User.findOne({
+    where: {
+      id: userId
+    }
+  })
+  if(userData){
+    return await getCompanyInfo(userData.cui)
+  }
+  return null
+}
+
+app.get('/api/productHistory', async (req, res) => {
+  try {
+    const data = {
+      store: {
+        scannedByStore: false,
+        productData: null,
+        companyInfo: null
+      },
+      distributor:{
+        scannedByDistributor: false,
+        productData: null,
+        companyInfo: null
+      },
+      processor: {
+        scannedByProcessor: false,
+        productData: null,
+        companyInfo: null
+      },
+      farmer: {
+        productData: null,
+        companyInfo: null
+      }
+    }
+
+    const lastRecord = await ScannedProductByClient.findOne({
+      order: [['createdAt', 'DESC']]
+    })
+
+    if (!lastRecord) {
+      return res.status(404).json({message: 'No records found'})
+    }
+
+    let scannedProductByStore
+    let scannedProductByDistributor
+    
+    if(lastRecord.farmerProductId){
+      //Store
+      scannedProductByStore = await ScannedProductByStore.findOne({
+        where: {
+          farmerProductId: lastRecord.farmerProductId
+        }})
+
+        if(scannedProductByStore){
+          data.store.scannedByStore = true
+          const storeInfo = await StoreInformation.findOne({
+            where: {
+              farmerProductId: lastRecord.farmerProductId
+            }
+          })
+          if (storeInfo) {
+            data.store.productData = storeInfo
+            data.store.companyInfo = await getCompanyInfoByUserId(storeInfo.userId)
+          }
+        }
+
+        //Distributor
+        scannedProductByDistributor = await ScannedProductByDistributor.findOne({
+          where: {
+            farmerProductId: lastRecord.farmerProductId
+          }})
+  
+          if(scannedProductByDistributor){
+            data.distributor.scannedByDistributor = true
+            const distributorInfo = await DistributorInformation.findOne({
+              where: {
+                farmerProductId: lastRecord.farmerProductId
+              }
+            })
+            if (distributorInfo) {
+              data.distributor.productData = distributorInfo
+              data.distributor.companyInfo = await getCompanyInfoByUserId(distributorInfo.userId)
+            }
+          }
+
+        //Client
+        const farmerInfo = await FarmerProduct.findOne({
+          where: {
+            id: lastRecord.farmerProductId
+          }
+        })
+        if (farmerInfo) {
+          data.farmer.productData = farmerInfo
+          data.farmer.companyInfo = await getCompanyInfoByUserId(farmerInfo.userId)
+        }
+
+      }else if(lastRecord.processorProductId){
+        //Store
+        scannedProductByStore = await ScannedProductByStore.findOne({
+          where: {
+            processorProductId: lastRecord.processorProductId
+          }})
+
+          if(scannedProductByStore){
+            data.store.scannedByStore = true
+            const storeInfo = await StoreInformation.findOne({
+              where: {
+                processorProductId: lastRecord.processorProductId
+              }
+            })
+            if (storeInfo) {
+              data.store.productData = storeInfo
+              data.store.companyInfo = await getCompanyInfoByUserId(storeInfo.userId)
+            }
+          }
+
+          //Distributor
+          scannedProductByDistributor = await ScannedProductByDistributor.findOne({
+            where: {
+              processorProductId: lastRecord.processorProductId
+            }})
+    
+            if(scannedProductByDistributor){
+              data.distributor.scannedByDistributor = true
+              const distributorInfo = await DistributorInformation.findOne({
+                where: {
+                  processorProductId: lastRecord.processorProductId
+                }
+              })
+              if (distributorInfo) {
+                data.distributor.productData = distributorInfo
+                data.distributor.companyInfo = await getCompanyInfoByUserId(distributorInfo.userId)
+              }
+            }
+          
+          //Processor
+            const processorInfo = await ProcessorProduct.findOne({
+              where: {
+                id: lastRecord.processorProductId
+              }
+            })
+            if (processorInfo) {
+              data.processor.productData = processorInfo
+              data.processor.companyInfo = await getCompanyInfoByUserId(processorInfo.userId)
+            }
+
+          //Farmer productss
+          const farmerProducts = await ProcessorFarmerProduct.findAll({
+            where: {
+              processorProductId: lastRecord.processorProductId
+            }
+          })
+
+          if(farmerProducts && farmerProducts.length > 0){
+            const farmerProductIds = farmerProducts.map(fp => fp.farmerProductId)
+
+            const farmerProductsData = await FarmerProduct.findAll({
+              where: {
+                id: farmerProductIds
+              }
+            })
+
+            if(farmerProductsData && farmerProductsData.length > 0){
+              const completedFarmerProducts = await Promise.all(
+                farmerProductsData.map(async (product) => {
+                  const companyInfo = await getCompanyInfoByUserId(product.userId)
+                    return {
+                      ...product.toJSON(),
+                      companyInfo
+                    }
+                  })
+              )
+              data.farmer.productData = completedFarmerProducts
+              data.farmer.companyInfo = completedFarmerProducts.map(product => product.companyInfo)
+            }
+          }
+    }
+
+    return res.status(200).json(data)
+  } catch (error) {
+    console.error('Error fetching last record:', error)
+    res.status(500).json({message: 'Internal server error'})
   }
 })
 

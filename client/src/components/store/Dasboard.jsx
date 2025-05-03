@@ -14,7 +14,7 @@ const Dashboard = () => {
     useEffect(() => {
         const getDistributorInfo = async () => {
             const token = localStorage.getItem('googleToken')
-            const response = await axios.get('http://localhost:5000/api/distributorInformation', {
+            const response = await axios.get('http://localhost:5000/api/storeInformation', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`

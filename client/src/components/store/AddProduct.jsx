@@ -13,12 +13,11 @@ const AddProduct = () => {
     const [showProduct, setShowProduct] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [formData, setFormData] = useState({
+        operatorName: "",
         quantity: "",
         weight: "",
         notes: "",
-        wasStored: false,
         storageTemperature: "",
-        storageDuration: "",
         storageCondition: "",
         otherStorageDetails: ""
     })
@@ -45,10 +44,10 @@ const AddProduct = () => {
     }
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target
+        const { name, value} = e.target
         setFormData((prevData) => ({
             ...prevData,
-            [name]: type === 'checkbox' ? checked : value
+            [name]: value
         })) 
     }
 
@@ -62,7 +61,7 @@ const AddProduct = () => {
                 selectedProduct: selectedProduct
             }
             
-            const response = await axios.post('http://localhost:5000/api/distributorInformation', productData, {
+            const response = await axios.post('http://localhost:5000/api/storeInformation', productData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -71,12 +70,11 @@ const AddProduct = () => {
     
             if (response.data.success) {
                 setFormData({
+                    operatorName: "",
                     quantity: "",
                     weight: "",
                     notes: "",
-                    wasStored: false,
                     storageTemperature: "",
-                    storageDuration: "",
                     storageCondition: "",
                     otherStorageDetails: ""
                 })

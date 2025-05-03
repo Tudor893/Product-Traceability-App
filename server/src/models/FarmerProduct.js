@@ -24,7 +24,7 @@ const FarmerProduct = db.define('FarmerProduct', {
         allowNull: false
     },
     quantity: {
-        type: Sequelize.FLOAT,
+        type: Sequelize.INTEGER,
         allowNull: false
     },
     unit: {

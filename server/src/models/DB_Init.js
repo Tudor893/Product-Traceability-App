@@ -9,6 +9,8 @@ import ProcessorFarmerProduct from './ProcessorFarmerProduct.js'
 import ScannedProductByDistributor from './ScannedProductByDistributor.js'
 import DistributorInformation from './DistributorInformation.js'
 import ScannedProductByStore from './ScannedProductByStore.js'
+import StoreInformation from './StoreInformation.js'
+import ScannedProductByClient from './ScannedProductByClient.js'
 
 const {Client} = pg
 dotenv.config()
@@ -57,6 +59,12 @@ function FK_Config(){
     User.hasMany(ScannedProductByStore, {foreignKey: 'userId', onDelete: 'CASCADE'})
     ScannedProductByStore.belongsTo(User, {foreignKey: 'userId'})
     
+    User.hasMany(StoreInformation, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    StoreInformation.belongsTo(User, {foreignKey: 'userId'})
+
+    User.hasMany(ScannedProductByClient, {foreignKey: 'userId', onDelete: 'CASCADE'})
+    ScannedProductByClient.belongsTo(User, {foreignKey: 'userId'})
+    
     FarmerProduct.hasOne(ScannedProductByProcessor, {foreignKey: 'productId', as: 'scannedProduct'})
     ScannedProductByProcessor.belongsTo(FarmerProduct, {foreignKey: 'productId', as: 'farmerProduct'})
 
@@ -73,11 +81,22 @@ function FK_Config(){
     FarmerProduct.hasMany(ScannedProductByStore, {foreignKey: 'farmerProductId', as: 'scannedByStore'})
     ProcessorProduct.hasMany(ScannedProductByStore, {foreignKey: 'processorProductId', as: 'scannedByStore'})
 
+    ScannedProductByClient.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})
+    ScannedProductByClient.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
+    FarmerProduct.hasMany(ScannedProductByClient, {foreignKey: 'farmerProductId', as: 'scannedByClient'})
+    ProcessorProduct.hasMany(ScannedProductByClient, {foreignKey: 'processorProductId', as: 'scannedByClient'})
+
     FarmerProduct.hasMany(DistributorInformation, {foreignKey: 'farmerProductId'})
     DistributorInformation.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})
     
     ProcessorProduct.hasMany(DistributorInformation, {foreignKey: 'processorProductId'})
     DistributorInformation.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
+    
+    FarmerProduct.hasMany(StoreInformation, {foreignKey: 'farmerProductId'})
+    StoreInformation.belongsTo(FarmerProduct, {foreignKey: 'farmerProductId', as: 'farmerProduct'})
+    
+    ProcessorProduct.hasMany(StoreInformation, {foreignKey: 'processorProductId'})
+    StoreInformation.belongsTo(ProcessorProduct, {foreignKey: 'processorProductId', as: 'processorProduct'})
 }
 
 async function DB_Init() {

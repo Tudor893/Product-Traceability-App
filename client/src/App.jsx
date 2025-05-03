@@ -14,6 +14,7 @@ import ChooseRole from './components/ChooseRole'
 import Client from './components/client/Client'
 import ProductScanner from './components/client/ProductScanner'
 import Store from './components/store/Store'
+import ProductHistory from './components/client/ProductHistory'
 
 const App = () => {
   return (
@@ -53,6 +54,13 @@ const App = () => {
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
+        <Route path='/magazin' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Magazin">
+              <Store/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
         <Route path='/client' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
@@ -60,17 +68,17 @@ const App = () => {
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/productScanner' element={
+        <Route path='/scanareProduse' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
               <ProductScanner/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/magazin' element={
+        <Route path='/istoricProdus' element={
           <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Magazin">
-              <Store/>
+            <RoleProtectedRoute allowedRole="Client">
+              <ProductHistory/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>

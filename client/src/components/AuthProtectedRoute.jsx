@@ -27,7 +27,6 @@ const AuthProtectedRoute = ({ children }) => {
                 setIsAuthenticated(false)
             }
         }
-
         verifyToken()
     }, [])
 
