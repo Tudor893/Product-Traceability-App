@@ -707,14 +707,22 @@ app.post('/api/storeInformation', authMiddleware, async (req, res) => {
             })
         }
 
-        const existingStoreInfo = await StoreInformation.findOne({
-          where: {
-            userId,
-            ...(farmerProductId ? {farmerProductId} : {}),
-            ...(processorProductId ? {processorProductId} : {})
-          }
-        })
-
+        let existingStoreInfo;
+        if(farmerProductId){
+           existingStoreInfo = await StoreInformation.findOne({
+            where: {
+              userId,
+              farmerProductId
+            }
+          })
+        }else if(processorProductId){
+          existingStoreInfo = await StoreInformation.findOne({
+            where: {
+              userId,
+              processorProductId
+            }
+          })
+        }
         if(existingStoreInfo){
           return res.status(409).json({
             success: false,
@@ -794,22 +802,24 @@ async function getCompanyInfoByUserId(userId) {
   return null
 }
 
-app.get('/api/productHistory', async (req, res) => {
+app.get('/api/productHistory', authMiddleware, async (req, res) => {
   try {
     const data = {
       store: {
         scannedByStore: false,
         productData: null,
+        scannedAt: null,
         companyInfo: null
       },
       distributor:{
         scannedByDistributor: false,
         productData: null,
+        scannedAt: null,
         companyInfo: null
       },
       processor: {
-        scannedByProcessor: false,
         productData: null,
+        scannedAt: null,
         companyInfo: null
       },
       farmer: {
@@ -818,7 +828,15 @@ app.get('/api/productHistory', async (req, res) => {
       }
     }
 
+    const userEmail = req.user.email
+      const user = await User.findOne({ where: { email: userEmail } })
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+      }
+      const userId = user.id
+
     const lastRecord = await ScannedProductByClient.findOne({
+      where: { userId: userId},
       order: [['createdAt', 'DESC']]
     })
 
@@ -838,6 +856,7 @@ app.get('/api/productHistory', async (req, res) => {
 
         if(scannedProductByStore){
           data.store.scannedByStore = true
+          data.store.scannedAt = scannedProductByStore.createdAt
           const storeInfo = await StoreInformation.findOne({
             where: {
               farmerProductId: lastRecord.farmerProductId
@@ -857,6 +876,7 @@ app.get('/api/productHistory', async (req, res) => {
   
           if(scannedProductByDistributor){
             data.distributor.scannedByDistributor = true
+            data.distributor.scannedAt = scannedProductByDistributor.createdAt
             const distributorInfo = await DistributorInformation.findOne({
               where: {
                 farmerProductId: lastRecord.farmerProductId
@@ -888,6 +908,7 @@ app.get('/api/productHistory', async (req, res) => {
 
           if(scannedProductByStore){
             data.store.scannedByStore = true
+            data.store.scannedAt = scannedProductByStore.createdAt
             const storeInfo = await StoreInformation.findOne({
               where: {
                 processorProductId: lastRecord.processorProductId
@@ -907,6 +928,7 @@ app.get('/api/productHistory', async (req, res) => {
     
             if(scannedProductByDistributor){
               data.distributor.scannedByDistributor = true
+              data.distributor.scannedAt = scannedProductByDistributor.createdAt
               const distributorInfo = await DistributorInformation.findOne({
                 where: {
                   processorProductId: lastRecord.processorProductId
@@ -919,6 +941,12 @@ app.get('/api/productHistory', async (req, res) => {
             }
           
           //Processor
+          const scannedProductByProcessor = await ScannedProductByProcessor.findOne({
+            where: {
+              id: lastRecord.processorProductId
+            }})
+            data.processor.scannedAt = scannedProductByProcessor.createdAt
+
             const processorInfo = await ProcessorProduct.findOne({
               where: {
                 id: lastRecord.processorProductId

@@ -66,10 +66,10 @@ const ProductForm = ({
                     <FloatingLabel controlId="floatingStorageConditions" label="Condiții de depozitare">
                         <Form.Select name="storageCondition" value={formData.storageCondition} onChange={handleChange} >
                             <option disabled value="">Selectați</option>
-                            <option value="refrigerator">Frigider</option>
-                            <option value="freezer">Congelator</option>
-                            <option value="roomTemperature">Temperatura camerei</option>
-                            <option value="controlledHumidity">Umiditate controlată</option>
+                            <option value="frigider">Frigider</option>
+                            <option value="congelator">Congelator</option>
+                            <option value="temperatura camerei">Temperatura camerei</option>
+                            <option value="umiditate controlată">Umiditate controlată</option>
                             <option value="other">Alt tip</option>
                         </Form.Select>
                     </FloatingLabel>

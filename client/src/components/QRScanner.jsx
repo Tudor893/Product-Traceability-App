@@ -46,7 +46,6 @@ export default function QRScanner() {
 
         try {
           setIsProcessing(true)
-
           const parsedData = JSON.parse(decodedText)
           setScanResult(decodedText)
           await stopScanning()
@@ -121,6 +120,7 @@ export default function QRScanner() {
   const stopScanning = async () => {
     if (scanner && scanning) {
       try {
+        setScanning(false)
         await scanner.stop()
         setScanning(false)
       } catch (err) {
