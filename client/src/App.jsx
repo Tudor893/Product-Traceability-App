@@ -14,7 +14,8 @@ import ChooseRole from './components/ChooseRole'
 import Client from './components/client/Client'
 import ProductScanner from './components/client/ProductScanner'
 import Store from './components/store/Store'
-import ProductHistory from './components/client/ProductHistory'
+import SingleProductHistory from './components/client/SingleProductHistory'
+import AllProductHistory from './components/client/AllProductHistory'
 
 const App = () => {
   return (
@@ -78,7 +79,21 @@ const App = () => {
         <Route path='/istoricProdus' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
-              <ProductHistory/>
+              <SingleProductHistory/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
+        <Route path='/istoricProduse' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Client">
+              <AllProductHistory/>
+            </RoleProtectedRoute>
+          </AuthProtectedRoute>
+        }/>
+        <Route path='/istoricProdus/:sender/:id' element={
+          <AuthProtectedRoute>
+            <RoleProtectedRoute allowedRole="Client">
+              <SingleProductHistory/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>

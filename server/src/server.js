@@ -13,6 +13,7 @@ import DistributorInformation from './models/DistributorInformation.js'
 import ScannedProductByStore from './models/ScannedProductByStore.js'
 import StoreInformation from './models/StoreInformation.js'
 import ScannedProductByClient from './models/ScannedProductByClient.js'
+import CompanyInformation from './models/CompanyInformation.js'
 
 const app = express()
 const port = 5000
@@ -112,6 +113,15 @@ app.get('/api/company/:uic', async (req, res) => {
   try {
     const companyData = await getCompanyInfo(uic)
     const companyRole = getCompanyRole(uic)
+
+    if (companyData && companyData.name) {
+      await CompanyInformation.create({
+        uic: companyData.cui,
+        name: companyData.name,
+        county: companyData.address.county,
+        country: companyData.address.country
+      })
+    }
     
     if (companyData && companyData.name) {
       res.status(200).json({ companyName: companyData.name, companyRole: companyRole })
@@ -796,13 +806,18 @@ async function getCompanyInfoByUserId(userId) {
       id: userId
     }
   })
+
   if(userData){
-    return await getCompanyInfo(userData.cui)
+    return await CompanyInformation.findOne({
+      where: {
+        uic: String(userData.cui)
+      }
+    })
   }
   return null
 }
 
-app.get('/api/productHistory', authMiddleware, async (req, res) => {
+app.get('/api/productHistory/:sender?/:id?', authMiddleware, async (req, res) => {
   try {
     const data = {
       store: {
@@ -819,7 +834,6 @@ app.get('/api/productHistory', authMiddleware, async (req, res) => {
       },
       processor: {
         productData: null,
-        scannedAt: null,
         companyInfo: null
       },
       farmer: {
@@ -828,6 +842,8 @@ app.get('/api/productHistory', authMiddleware, async (req, res) => {
       }
     }
 
+    const {sender, id} = req.params
+
     const userEmail = req.user.email
       const user = await User.findOne({ where: { email: userEmail } })
       if (!user) {
@@ -835,10 +851,30 @@ app.get('/api/productHistory', authMiddleware, async (req, res) => {
       }
       const userId = user.id
 
-    const lastRecord = await ScannedProductByClient.findOne({
-      where: { userId: userId},
-      order: [['createdAt', 'DESC']]
-    })
+      let lastRecord
+
+    if(!sender && !id){
+       lastRecord = await ScannedProductByClient.findOne({
+        where: {userId: userId},
+        order: [['createdAt', 'DESC']]
+      })
+    }else if(sender && id){
+      if(sender === 'fermier'){
+         lastRecord = await ScannedProductByClient.findOne({
+          where: {
+            userId: userId,
+            farmerProductId: id
+          }
+        })
+      }else if(sender === 'procesator'){
+         lastRecord = await ScannedProductByClient.findOne({
+          where: {
+            userId: userId,
+            processorProductId: id
+          }
+        })
+      }
+    }
 
     if (!lastRecord) {
       return res.status(404).json({message: 'No records found'})
@@ -941,12 +977,6 @@ app.get('/api/productHistory', authMiddleware, async (req, res) => {
             }
           
           //Processor
-          const scannedProductByProcessor = await ScannedProductByProcessor.findOne({
-            where: {
-              id: lastRecord.processorProductId
-            }})
-            data.processor.scannedAt = scannedProductByProcessor.createdAt
-
             const processorInfo = await ProcessorProduct.findOne({
               where: {
                 id: lastRecord.processorProductId
@@ -994,6 +1024,43 @@ app.get('/api/productHistory', authMiddleware, async (req, res) => {
     console.error('Error fetching last record:', error)
     res.status(500).json({message: 'Internal server error'})
   }
+})
+
+app.get('/api/scannedProductsByClient', authMiddleware, async (req, res) => {
+  try {
+    const userEmail = req.user.email
+    const user = await User.findOne({ where: { email: userEmail } })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    const userId = user.id
+
+    const products = await ScannedProductByClient.findAll({
+        where: { userId: userId },
+        order: [['createdAt', 'DESC']],
+        include: [
+          {
+            model: FarmerProduct,
+            as: 'farmerProduct',
+            attributes: ['productName']
+          },
+          {
+            model: ProcessorProduct,
+            as: 'processorProduct',
+            attributes: ['productName']
+          }
+        ]
+    })
+    
+    return res.status(200).json(products)
+} catch (error) {
+    console.error('Error fetching processor products:', error)
+    return res.status(500).json({
+        success: false,
+        message: 'A apărut o eroare la obținerea produselor.',
+        error: error.message
+    })
+}
 })
 
 app.listen(port, () => {

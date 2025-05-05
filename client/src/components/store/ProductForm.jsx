@@ -70,12 +70,12 @@ const ProductForm = ({
                             <option value="congelator">Congelator</option>
                             <option value="temperatura camerei">Temperatura camerei</option>
                             <option value="umiditate controlată">Umiditate controlată</option>
-                            <option value="other">Alt tip</option>
+                            <option value="alt tip">Alt tip</option>
                         </Form.Select>
                     </FloatingLabel>
                 </Col>
             </Row>
-            {formData.storageCondition === "other" && (
+            {formData.storageCondition === "alt tip" && (
                 <Row className="g-3 mx-3 my-1">
                     <Col md>
                         <FloatingLabel controlId="floatingOtherStorageDetails" label="Specificați condițiile de depozitare">

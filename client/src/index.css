@@ -103,7 +103,7 @@
   border: 1px dashed black !important;
 }
 
-.custom-border:s{
+.custom-border:hover{
   border-color: #707d5b !important;
   color: #707d5b !important;
 }
@@ -157,4 +157,9 @@
   .responsive-container {
       width: 50% !important;
   }
+}
+
+.ingredientHover:hover{
+  background-color: #fafafa;
+  text-decoration: underline;
 }

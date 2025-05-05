@@ -17,14 +17,14 @@ const Client = () => {
         {
             icon: <LuHistory size={30} color="white"/>,
             title: "Istoric",
-            desc: "Vezi produsele anterior scanate",
-            navigator: '/'
+            desc: "Vezi produsele scanate anterior",
+            navigator: '/istoricProduse'
         }
     ]
 
     return (
         <div>
-            <TraceLinkHeader/>
+            <TraceLinkHeader backPath='/'/>
             <div className="d-flex flex-column justify-content-center align-items-center">
                 <h2 className="mt-3 textColorMain">Trasabilitatea produsului</h2>
                 <p className="mt-3 text-secondary w-50 text-center">Scanează un cod QR al produsului pentru a vizualiza întregul său parcurs sau verifică istoricul tău de scanări</p>

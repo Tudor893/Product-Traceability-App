@@ -39,10 +39,11 @@ export default function QRScanner() {
     try {
       setScanning(true)
       setScanResult("")
+      let hasProcessed = false
 
       const qrCodeSuccessCallback = async decodedText => {
-        if(isProcessing)
-          return
+        if (hasProcessed) return
+          hasProcessed = true;
 
         try {
           setIsProcessing(true)
@@ -101,7 +102,7 @@ export default function QRScanner() {
           type: "success", 
           message: "Produsul a fost înregistrat cu succes!" 
         })
-        
+
         if(response.data.role === 'client'){
           setTimeout(() => navigate('/istoricProdus'), 2000)
         }
