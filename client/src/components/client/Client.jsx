@@ -12,13 +12,13 @@ const Client = () => {
             icon: <LuQrCode size={30} color="white"/>,
             title: "Scanează codul qr",
             desc: "Scanează pentru a vedea traseul unui produs",
-            navigator: '/scanareProduse'
+            navigator: '/client/scanareProduse'
         },
         {
             icon: <LuHistory size={30} color="white"/>,
             title: "Istoric",
             desc: "Vezi produsele scanate anterior",
-            navigator: '/istoricProduse'
+            navigator: '/client/istoricProduse'
         }
     ]
 

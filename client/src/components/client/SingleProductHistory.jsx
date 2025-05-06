@@ -20,26 +20,40 @@ const SingleProductHistory = () => {
         const getProductHistory = async () => {
             try {
                 setLoading(true)
-                if(!sender && !id){
-                    const response = await axios.get("http://localhost:5000/api/productHistory", {
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${localStorage.getItem("googleToken")}`
-                        },
-                    })
-                    if(response.status === 200){
-                        setProductInfo(response.data)
-                    }
-                }else if(sender && id){
-                    const response = await axios.get(`http://localhost:5000/api/productHistory/${sender}/${id}`, {
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${localStorage.getItem("googleToken")}`
-                        },
-                    })
+                if(localStorage.getItem('googleToken')){
+                    if(!sender && !id){
+                        const response = await axios.get("http://localhost:5000/api/client/productHistory", {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${localStorage.getItem("googleToken")}`
+                            }
+                        })
+                        if(response.status === 200){
+                            setProductInfo(response.data)
+                        }
+                    }else if(sender && id){
+                        const response = await axios.get(`http://localhost:5000/api/client/productHistory/${sender}/${id}`, {
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${localStorage.getItem("googleToken")}`
+                            }
+                        })
 
-                    if (response.status === 200) {
-                        setProductInfo(response.data)
+                        if (response.status === 200) {
+                            setProductInfo(response.data)
+                        }
+                    }
+                }else{
+                    if(sender && id){
+                        const response = await axios.get(`http://localhost:5000/api/productHistory/${sender}/${id}`, {
+                            headers: {
+                                "Content-Type": "application/json",
+                            }
+                        })
+
+                        if (response.status === 200) {
+                            setProductInfo(response.data)
+                        }
                     }
                 }
             } catch (error) {
@@ -274,9 +288,16 @@ const SingleProductHistory = () => {
                             )}
                         </Card.Body>
                     </Card>
-                    <hr className="mt-5" style={{ width: '94%', borderTop: '1px solid #aaa' }} />
-                    <CommentSection />
-                    </div>) : active === 2 && (
+                    {localStorage.getItem('googleToken') ? (
+                        <>
+                            <hr className="mt-5" style={{ width: '94%', borderTop: '1px solid #aaa' }} />
+                            <CommentSection productId={productInfo.processor.productData?.id} type={'processor'}/>
+                        </>
+                    ) : (
+                        null
+                    )}
+                    </div>
+                    ) : active === 2 && (
                         <Card className="mt-4 card-responsive" style={{width: '60%'}}>
                             <Card.Body>
                                 <p className="d-flex align-items-center fw-semibold p-1" style={{fontSize: '1.2em'}}>
@@ -518,14 +539,25 @@ const SingleProductHistory = () => {
                             )}
                         </Card.Body>
                     </Card>
-                    <CommentSection />
+                    {localStorage.getItem('googleToken') ? (
+                        <>
+                            <hr className="mt-5" style={{ width: '94%', borderTop: '1px solid #aaa' }} />
+                            <CommentSection productId={productInfo.farmer.productData?.id} type={'farmer'}/>                        
+                        </>
+                    ) : (
+                        null
+                    )}
                 </div>
             )}
 }
 
     return (
         <div className="scrollbar">
-            <TraceLinkHeader backPath='/scanareProduse'/>
+            {localStorage.getItem('googleToken') ? (
+                <TraceLinkHeader backPath='/client/scanareProduse'/>
+            ) : (
+                <TraceLinkHeader backPath='/scanareProduse'/>
+            )}
             {renderContent()}
         </div>
     )

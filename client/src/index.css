@@ -133,7 +133,7 @@
 
 @media (max-width: 768px) {
   .modalMT {
-      margin-top: 24%;
+      margin-top: 24% !important;
   }
 }
 

@@ -52,7 +52,9 @@ const NavigationBar = () => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mx-auto fw-semibold text-secondary text-center text-lg-start" style={{ gap: '30px', fontSize: '0.85em' }}>
                             <Nav.Link href="/">Acasă</Nav.Link>
-                            <Nav.Link href="#features">Caracteristici</Nav.Link>
+                            {localStorage.getItem('googleToken') && (
+                                <Nav.Link href="/profil">Profil</Nav.Link>
+                            )}
                             <Nav.Link href={userRole ? `${userRole
                                                 .replace(/[ăâ]/g, "a")
                                                 .replace(/[î]/g, "i")
@@ -61,15 +63,23 @@ const NavigationBar = () => {
                                                 .toLowerCase()}` : '/login'}>
                                 Dashboard
                             </Nav.Link>
-                            <Nav.Link href="#pricing">Prețuri</Nav.Link>
+                            <Nav.Link href="/scanareProduse">Scanează un produs</Nav.Link>
                             <Nav.Link href="/about">Despre</Nav.Link>
                         </Nav>
                         
-                        <div className="d-flex justify-content-center mt-3 mt-lg-0">
+                        {!localStorage.getItem('googleToken') ? (
+                            <div className="d-flex justify-content-center mt-3 mt-lg-0">
+                                <Button className='bgColorMain rounded-pill fw-semibold' onClick={() => navigate('/login')}>
+                                    Autentificare
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="d-flex justify-content-center mt-3 mt-lg-0">
                             <Button className='bgColorMain rounded-pill fw-semibold' onClick={() => navigate('/login')}>
-                                Autentificare
+                                Schimbă contul
                             </Button>
                         </div>
+                        )}
                     </Navbar.Collapse>
                 </div>
             </Navbar>

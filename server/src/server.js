@@ -14,6 +14,7 @@ import ScannedProductByStore from './models/ScannedProductByStore.js'
 import StoreInformation from './models/StoreInformation.js'
 import ScannedProductByClient from './models/ScannedProductByClient.js'
 import CompanyInformation from './models/CompanyInformation.js'
+import Comment from './models/Comment.js'
 
 const app = express()
 const port = 5000
@@ -101,7 +102,7 @@ app.get('/api/user/status', authMiddleware, async (req, res) => {
           return res.status(404).json({ message: 'User not found' })
       }
 
-      res.status(200).json({ role: user.role, detailsCompleted: user.detailsCompleted })
+      res.status(200).json(user)
   } catch (error) {
       res.status(500).json({ message: 'Internal server error' })
   }
@@ -817,9 +818,148 @@ async function getCompanyInfoByUserId(userId) {
   return null
 }
 
-app.get('/api/productHistory/:sender?/:id?', authMiddleware, async (req, res) => {
+async function farmerHistory(data, id) {
+  //Store
+  const scannedProductByStore = await ScannedProductByStore.findOne({
+    where: {
+      farmerProductId: id
+    }})
+
+    if(scannedProductByStore){
+      data.store.scannedByStore = true
+      data.store.scannedAt = scannedProductByStore.createdAt
+      const storeInfo = await StoreInformation.findOne({
+        where: {
+          farmerProductId: id
+        }
+      })
+      if (storeInfo) {
+        data.store.productData = storeInfo
+        data.store.companyInfo = await getCompanyInfoByUserId(storeInfo.userId)
+      }
+    }
+
+    //Distributor
+    const scannedProductByDistributor = await ScannedProductByDistributor.findOne({
+      where: {
+        farmerProductId: id
+      }})
+
+      if(scannedProductByDistributor){
+        data.distributor.scannedByDistributor = true
+        data.distributor.scannedAt = scannedProductByDistributor.createdAt
+        const distributorInfo = await DistributorInformation.findOne({
+          where: {
+            farmerProductId: id
+          }
+        })
+        if (distributorInfo) {
+          data.distributor.productData = distributorInfo
+          data.distributor.companyInfo = await getCompanyInfoByUserId(distributorInfo.userId)
+        }
+      }
+
+    //Client
+    const farmerInfo = await FarmerProduct.findOne({
+      where: {
+        id: id
+      }
+    })
+    if (farmerInfo) {
+      data.farmer.productData = farmerInfo
+      data.farmer.companyInfo = await getCompanyInfoByUserId(farmerInfo.userId)
+    }
+    return data
+}
+
+async function processorHistory(data, id) {
+  //Store
+  const scannedProductByStore = await ScannedProductByStore.findOne({
+    where: {
+      processorProductId: id
+    }})
+
+    if(scannedProductByStore){
+      data.store.scannedByStore = true
+      data.store.scannedAt = scannedProductByStore.createdAt
+      const storeInfo = await StoreInformation.findOne({
+        where: {
+          processorProductId: id
+        }
+      })
+      if (storeInfo) {
+        data.store.productData = storeInfo
+        data.store.companyInfo = await getCompanyInfoByUserId(storeInfo.userId)
+      }
+    }
+
+    //Distributor
+    const scannedProductByDistributor = await ScannedProductByDistributor.findOne({
+      where: {
+        processorProductId: id
+      }})
+
+      if(scannedProductByDistributor){
+        data.distributor.scannedByDistributor = true
+        data.distributor.scannedAt = scannedProductByDistributor.createdAt
+        const distributorInfo = await DistributorInformation.findOne({
+          where: {
+            processorProductId: id
+          }
+        })
+        if (distributorInfo) {
+          data.distributor.productData = distributorInfo
+          data.distributor.companyInfo = await getCompanyInfoByUserId(distributorInfo.userId)
+        }
+      }
+    
+    //Processor
+      const processorInfo = await ProcessorProduct.findOne({
+        where: {
+          id: id
+        }
+      })
+      if (processorInfo) {
+        data.processor.productData = processorInfo
+        data.processor.companyInfo = await getCompanyInfoByUserId(processorInfo.userId)
+      }
+
+    //Farmer productss
+    const farmerProducts = await ProcessorFarmerProduct.findAll({
+      where: {
+        processorProductId: id
+      }
+    })
+
+    if(farmerProducts && farmerProducts.length > 0){
+      const farmerProductIds = farmerProducts.map(fp => fp.farmerProductId)
+
+      const farmerProductsData = await FarmerProduct.findAll({
+        where: {
+          id: farmerProductIds
+        }
+      })
+
+      if(farmerProductsData && farmerProductsData.length > 0){
+        const completedFarmerProducts = await Promise.all(
+          farmerProductsData.map(async (product) => {
+            const companyInfo = await getCompanyInfoByUserId(product.userId)
+              return {
+                ...product.toJSON(),
+                companyInfo
+              }
+            })
+        )
+        data.farmer.productData = completedFarmerProducts
+        data.farmer.companyInfo = completedFarmerProducts.map(product => product.companyInfo)
+      }
+    }
+    return data
+}
+
+app.get('/api/client/productHistory/:sender?/:id?', authMiddleware, async (req, res) => {
   try {
-    const data = {
+    let data = {
       store: {
         scannedByStore: false,
         productData: null,
@@ -845,13 +985,13 @@ app.get('/api/productHistory/:sender?/:id?', authMiddleware, async (req, res) =>
     const {sender, id} = req.params
 
     const userEmail = req.user.email
-      const user = await User.findOne({ where: { email: userEmail } })
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' })
-      }
-      const userId = user.id
+    const user = await User.findOne({ where: { email: userEmail } })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    const userId = user.id
 
-      let lastRecord
+    let lastRecord
 
     if(!sender && !id){
        lastRecord = await ScannedProductByClient.findOne({
@@ -879,145 +1019,52 @@ app.get('/api/productHistory/:sender?/:id?', authMiddleware, async (req, res) =>
     if (!lastRecord) {
       return res.status(404).json({message: 'No records found'})
     }
-
-    let scannedProductByStore
-    let scannedProductByDistributor
     
     if(lastRecord.farmerProductId){
-      //Store
-      scannedProductByStore = await ScannedProductByStore.findOne({
-        where: {
-          farmerProductId: lastRecord.farmerProductId
-        }})
-
-        if(scannedProductByStore){
-          data.store.scannedByStore = true
-          data.store.scannedAt = scannedProductByStore.createdAt
-          const storeInfo = await StoreInformation.findOne({
-            where: {
-              farmerProductId: lastRecord.farmerProductId
-            }
-          })
-          if (storeInfo) {
-            data.store.productData = storeInfo
-            data.store.companyInfo = await getCompanyInfoByUserId(storeInfo.userId)
-          }
-        }
-
-        //Distributor
-        scannedProductByDistributor = await ScannedProductByDistributor.findOne({
-          where: {
-            farmerProductId: lastRecord.farmerProductId
-          }})
-  
-          if(scannedProductByDistributor){
-            data.distributor.scannedByDistributor = true
-            data.distributor.scannedAt = scannedProductByDistributor.createdAt
-            const distributorInfo = await DistributorInformation.findOne({
-              where: {
-                farmerProductId: lastRecord.farmerProductId
-              }
-            })
-            if (distributorInfo) {
-              data.distributor.productData = distributorInfo
-              data.distributor.companyInfo = await getCompanyInfoByUserId(distributorInfo.userId)
-            }
-          }
-
-        //Client
-        const farmerInfo = await FarmerProduct.findOne({
-          where: {
-            id: lastRecord.farmerProductId
-          }
-        })
-        if (farmerInfo) {
-          data.farmer.productData = farmerInfo
-          data.farmer.companyInfo = await getCompanyInfoByUserId(farmerInfo.userId)
-        }
+      data = await farmerHistory(data, lastRecord.farmerProductId)
 
       }else if(lastRecord.processorProductId){
-        //Store
-        scannedProductByStore = await ScannedProductByStore.findOne({
-          where: {
-            processorProductId: lastRecord.processorProductId
-          }})
-
-          if(scannedProductByStore){
-            data.store.scannedByStore = true
-            data.store.scannedAt = scannedProductByStore.createdAt
-            const storeInfo = await StoreInformation.findOne({
-              where: {
-                processorProductId: lastRecord.processorProductId
-              }
-            })
-            if (storeInfo) {
-              data.store.productData = storeInfo
-              data.store.companyInfo = await getCompanyInfoByUserId(storeInfo.userId)
-            }
-          }
-
-          //Distributor
-          scannedProductByDistributor = await ScannedProductByDistributor.findOne({
-            where: {
-              processorProductId: lastRecord.processorProductId
-            }})
-    
-            if(scannedProductByDistributor){
-              data.distributor.scannedByDistributor = true
-              data.distributor.scannedAt = scannedProductByDistributor.createdAt
-              const distributorInfo = await DistributorInformation.findOne({
-                where: {
-                  processorProductId: lastRecord.processorProductId
-                }
-              })
-              if (distributorInfo) {
-                data.distributor.productData = distributorInfo
-                data.distributor.companyInfo = await getCompanyInfoByUserId(distributorInfo.userId)
-              }
-            }
-          
-          //Processor
-            const processorInfo = await ProcessorProduct.findOne({
-              where: {
-                id: lastRecord.processorProductId
-              }
-            })
-            if (processorInfo) {
-              data.processor.productData = processorInfo
-              data.processor.companyInfo = await getCompanyInfoByUserId(processorInfo.userId)
-            }
-
-          //Farmer productss
-          const farmerProducts = await ProcessorFarmerProduct.findAll({
-            where: {
-              processorProductId: lastRecord.processorProductId
-            }
-          })
-
-          if(farmerProducts && farmerProducts.length > 0){
-            const farmerProductIds = farmerProducts.map(fp => fp.farmerProductId)
-
-            const farmerProductsData = await FarmerProduct.findAll({
-              where: {
-                id: farmerProductIds
-              }
-            })
-
-            if(farmerProductsData && farmerProductsData.length > 0){
-              const completedFarmerProducts = await Promise.all(
-                farmerProductsData.map(async (product) => {
-                  const companyInfo = await getCompanyInfoByUserId(product.userId)
-                    return {
-                      ...product.toJSON(),
-                      companyInfo
-                    }
-                  })
-              )
-              data.farmer.productData = completedFarmerProducts
-              data.farmer.companyInfo = completedFarmerProducts.map(product => product.companyInfo)
-            }
-          }
+        data = await processorHistory(data, lastRecord.processorProductId)
     }
+
+    return res.status(200).json(data)
+  } catch (error) {
+    console.error('Error fetching last record:', error)
+    res.status(500).json({message: 'Internal server error'})
+  }
+})
+
+app.get('/api/productHistory/:sender?/:id?', async (req, res) => {
+  try {
+    let data = {
+      store: {
+        scannedByStore: false,
+        productData: null,
+        scannedAt: null,
+        companyInfo: null
+      },
+      distributor:{
+        scannedByDistributor: false,
+        productData: null,
+        scannedAt: null,
+        companyInfo: null
+      },
+      processor: {
+        productData: null,
+        companyInfo: null
+      },
+      farmer: {
+        productData: null,
+        companyInfo: null
+      }
+    }
+
+    const {sender, id} = req.params
+    if(sender === 'fermier'){
+      data = await farmerHistory(data, id)
+      }else if(sender === 'procesator'){
+        data = await processorHistory(data, id)
+      }
 
     return res.status(200).json(data)
   } catch (error) {
@@ -1061,6 +1108,63 @@ app.get('/api/scannedProductsByClient', authMiddleware, async (req, res) => {
         error: error.message
     })
 }
+})
+
+app.post('/api/addComment', authMiddleware, async (req, res) => {
+  const { farmerProductId, processorProductId, message } = req.body
+  const userEmail = req.user.email
+
+  if (!message || (!farmerProductId && !processorProductId)) {
+    return res.status(400).json({message: 'Missing required fields'})
+  }
+
+  try {
+    const user = await User.findOne({ where: { email: userEmail } })
+    if (!user) {
+      return res.status(404).json({message: 'User not found'})
+    }
+
+    const newComment = await Comment.create({
+      userId: user.id,
+      farmerProductId: farmerProductId || null,
+      processorProductId: processorProductId || null,
+      message,
+    })
+
+    res.status(201).json({message: 'Comment added'})
+  } catch (error) {
+    console.error('Error adding comment:', error)
+    res.status(500).json({message: 'Internal server error'})
+  }
+})
+
+app.get('/api/getComments', async (req, res) => {
+  const { farmerProductId, processorProductId } = req.query
+  
+  if (!farmerProductId && !processorProductId) {
+    return res.status(400).json({message: 'Product id is required'})
+  }
+  
+  try {
+    const comments = await Comment.findAll({
+      where: {
+        ...(farmerProductId ? {farmerProductId} : {}),
+        ...(processorProductId ? {processorProductId} : {})
+      },
+      include: [
+        {
+          model: User,
+          attributes: ['name']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    })
+    
+    res.status(200).json(comments)
+  } catch (error) {
+    console.error('Error fetching comments:', error)
+    res.status(500).json({message: 'Internal server error'})
+  }
 })
 
 app.listen(port, () => {

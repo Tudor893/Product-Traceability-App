@@ -82,7 +82,7 @@ const AllProductHistory = () => {
                                                 <td><FaArrowAltCircleRight className="ms-4" size={23} style={{cursor: 'pointer'}} onClick={() => {
                                                     const sender = product.farmerProductId ? 'fermier' : 'procesator'
                                                     const id = product.farmerProductId || product.processorProductId
-                                                    navigate(`/istoricProdus/${sender}/${id}`)
+                                                    navigate(`/client/istoricProdus/${sender}/${id}`)
                                                     }}/>
                                                 </td>
                                             </tr>

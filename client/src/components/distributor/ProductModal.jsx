@@ -13,7 +13,7 @@ const ProductModal = ({
     setShowProduct
 }) => {
     return (
-        <Modal size="lg" className="modalMT" show={isModalOpen} onHide={() => setIsModalOpen(false)} backdrop='static'>
+        <Modal size="lg" className="modalMT" show={isModalOpen} onHide={() => setIsModalOpen(false)} backdrop='static' keyboard={false}>
             <Modal.Header>
                 <Modal.Title>Adaugă produse</Modal.Title>
             </Modal.Header>

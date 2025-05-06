@@ -91,23 +91,27 @@ export default function QRScanner() {
       }
       
       const token = localStorage.getItem('googleToken')
-      const response = await axios.post('http://localhost:5000/api/scanned-products', {productId, sender},
-          {headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-      }})
-    
-      if (response.data && response.status === 201) {
-        setStatus({ 
-          type: "success", 
-          message: "Produsul a fost înregistrat cu succes!" 
-        })
+      if(!token){
+        setTimeout(() => navigate(`/istoricProdus/${sender}/${productId}`), 2000)
+      }else{
+        const response = await axios.post('http://localhost:5000/api/scanned-products', {productId, sender},
+            {headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+        }})
+      
+        if (response.data && response.status === 201) {
+          setStatus({ 
+            type: "success", 
+            message: "Produsul a fost înregistrat cu succes!" 
+          })
 
-        if(response.data.role === 'client'){
-          setTimeout(() => navigate('/istoricProdus'), 2000)
+          if(response.data.role === 'client'){
+            setTimeout(() => navigate('/client/istoricProdus'), 2000)
+          }
+        } else {
+          throw new Error("Răspuns neașteptat de la server")
         }
-      } else {
-        throw new Error("Răspuns neașteptat de la server")
       }
     } catch (error) {
       console.error("Eroare la înregistrarea produsului:", error)

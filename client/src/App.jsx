@@ -12,10 +12,12 @@ import Unauthorized from './components/Unauthorized'
 import Distributor from './components/distributor/Distributor'
 import ChooseRole from './components/ChooseRole'
 import Client from './components/client/Client'
-import ProductScanner from './components/client/ProductScanner'
+import ProductScannerClient from './components/client/ProductScanner'
 import Store from './components/store/Store'
 import SingleProductHistory from './components/client/SingleProductHistory'
 import AllProductHistory from './components/client/AllProductHistory'
+import ProductScanner from './components/noUser/ProductScanner'
+import Profile from './components/Profile'
 
 const App = () => {
   return (
@@ -69,36 +71,47 @@ const App = () => {
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/scanareProduse' element={
+        <Route path='/client/scanareProduse' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
-              <ProductScanner/>
+              <ProductScannerClient/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/istoricProdus' element={
+        <Route path='/client/istoricProdus' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
               <SingleProductHistory/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/istoricProduse' element={
+        <Route path='/client/istoricProduse' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
               <AllProductHistory/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
-        <Route path='/istoricProdus/:sender/:id' element={
+        <Route path='/client/istoricProdus/:sender/:id' element={
           <AuthProtectedRoute>
             <RoleProtectedRoute allowedRole="Client">
               <SingleProductHistory/>
             </RoleProtectedRoute>
           </AuthProtectedRoute>
         }/>
+        <Route path='/scanareProduse' element={
+          <ProductScanner/>
+        }/>
+        <Route path='/istoricProdus/:sender/:id' element={
+          <SingleProductHistory/>
+        }/>
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/*" element={<Home />} />
+        <Route path='/profil' element={
+          <AuthProtectedRoute>   
+            <Profile />
+          </AuthProtectedRoute>
+        }/>
       </Routes>
     </div>
   )
