@@ -35,13 +35,9 @@ const FarmerProduct = db.define('FarmerProduct', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    weight: {
-        type: Sequelize.FLOAT,
-        allowNull: false
-    },
     cost: {
         type: Sequelize.FLOAT,
-        allowNull: false
+        allowNull: true
     },
     harvestDate: {
         type: Sequelize.DATE,

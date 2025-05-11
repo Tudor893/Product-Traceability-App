@@ -11,16 +11,16 @@ import SideNavBar from "./SideNavBar";
 import NavButtons from "./NavButtons";
 
 const Farmer = () => {
-    const [active, setIsActive] = useState(1);
-    const [products, setProducts] = useState([]);
-    const [totalProducts, setTotalProducts] = useState(0);
-    const [totalIncome, setTotalIncome] = useState(0);
-    const [expanded, setExpanded] = useState(false);
-    const navigate = useNavigate();
+    const [active, setIsActive] = useState(1)
+    const [products, setProducts] = useState([])
+    const [totalProducts, setTotalProducts] = useState(0)
+    const [totalIncome, setTotalIncome] = useState(0)
+    const [expanded, setExpanded] = useState(false)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        fetchProducts();
-    }, []);
+        fetchProducts()
+    }, [])
 
     const fetchProducts = async () => {
         try {
@@ -30,27 +30,27 @@ const Farmer = () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
-            });
+            })
 
-            setProducts(response.data);
-            setTotalProducts(response.data.length);
+            setProducts(response.data)
+            setTotalProducts(response.data.length)
 
             const income = response.data.reduce((total, product) => {
-                return total + (parseFloat(product.cost) * parseFloat(product.quantity));
-            }, 0);
+                return total + (parseFloat(product.cost || 0) * parseFloat(product.quantity));
+            }, 0)
 
-            setTotalIncome(income);
+            setTotalIncome(income)
         } catch (error) {
-            console.error('Error fetching products:', error);
+            console.error('Error fetching products:', error)
         }
     };
 
     const handleAddProduct = (newProduct) => {
-        setProducts([newProduct, ...products]);
-        setTotalProducts(totalProducts + 1);
+        setProducts([newProduct, ...products])
+        setTotalProducts(totalProducts + 1)
 
-        const productIncome = parseFloat(newProduct.cost) * parseFloat(newProduct.quantity);
-        setTotalIncome(totalIncome + productIncome);
+        const productIncome = parseFloat(newProduct.cost) * parseFloat(newProduct.quantity)
+        setTotalIncome(totalIncome + productIncome)
     };
 
     return (

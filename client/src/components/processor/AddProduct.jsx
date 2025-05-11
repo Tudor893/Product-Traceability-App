@@ -19,6 +19,7 @@ const AddProduct = () => {
         unit: "",
         productionDate: "",
         expirationDate: "",
+        cost: "",
         storageConditions: "",
         notes: ""
     })
@@ -77,6 +78,7 @@ const AddProduct = () => {
                     unit: "",
                     productionDate: "",
                     expirationDate: "",
+                    cost: "",
                     storageConditions: "",
                     notes: ""
                 })

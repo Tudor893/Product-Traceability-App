@@ -15,10 +15,10 @@ const ProductCard = ({ product, isSelected, onSelect }) => {
                     <div className="overflow-hidden me-md-3" style={{fontSize: '0.9em'}}>
                         <h5>{product.productName}</h5>
                         <p className="text-muted mb-1">
-                            Categorie: {product.category} | Greutate: {product.weight} {product.unit}
+                            Categorie: {product.category}
                         </p>
                         <p className="text-muted mb-1">
-                            Cantitate: {product.quantity}
+                            Cantitate: {product.quantity}  {product.unit}
                         </p>
                         <p className="text-muted mb-1" >
                             Locație: {product.location} | Data recoltării: {new Date(product.harvestDate).toLocaleDateString()}
@@ -27,10 +27,12 @@ const ProductCard = ({ product, isSelected, onSelect }) => {
                             <p className="mb-0 mt-2 text-truncate">{product.description}</p>
                         )}
                     </div>
+                    {product.cost !== null &&
                     <div className="text-end">
                         <h6>Cost: {product.cost} RON/{product.unit}</h6>
                         <p className="text-muted">Total: {parseFloat(product.cost) * parseFloat(product.quantity)} RON</p>
                     </div>
+                    }
                 </div>
             </Card.Body>
         </Card>

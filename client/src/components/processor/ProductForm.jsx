@@ -54,6 +54,13 @@ const ProductForm = ({
             </Row>
             <Row className="g-3 mx-3 my-1">
                 <Col md>
+                    <FloatingLabel controlId="floatingProductCost" label="Cost per unitate (Opțional, afișat exclusiv dumneavoastră)">
+                        <Form.Control type="number" name="cost" value={formData.cost} onChange={handleChange}></Form.Control>
+                    </FloatingLabel>
+                </Col>
+            </Row>
+            <Row className="g-3 mx-3 my-1">
+                <Col md>
                     <div className="d-flex flex-wrap border border-1 p-3 rounded-1 overflow-hidden" style={{maxWidth: "100%"}}>
                         {showIngredients ? (
                             selectedIngredients.map((ingredient, index) => (

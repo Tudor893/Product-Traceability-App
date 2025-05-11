@@ -40,6 +40,10 @@ const ProcessorProduct = db.define('ProcessorProduct', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    cost: {
+        type: Sequelize.INTEGER,
+        allowNull: true
+    },
     storageConditions: {
         type: Sequelize.TEXT,
         allowNull: true

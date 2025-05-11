@@ -14,7 +14,6 @@ const AddProduct = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [formData, setFormData] = useState({
         quantity: "",
-        weight: "",
         notes: "",
         wasStored: false,
         storageTemperature: "",
@@ -72,7 +71,6 @@ const AddProduct = () => {
             if (response.data.success) {
                 setFormData({
                     quantity: "",
-                    weight: "",
                     notes: "",
                     wasStored: false,
                     storageTemperature: "",

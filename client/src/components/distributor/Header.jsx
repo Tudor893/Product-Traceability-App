@@ -12,7 +12,7 @@ const Header = ({ navigate }) => {
                 </Button>
             </div>
             <p className="fw-bold fs-2">Dashboard Distribuitor</p>
-            <p className="text-secondary">Gestionează procesul de producție și detaliile produselor finite</p>
+            <p className="text-secondary">Gestionează distribuția, comenzile și livrările către clienți sau parteneri</p>
         </div>
     )
 }

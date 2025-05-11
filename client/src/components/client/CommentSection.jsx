@@ -21,7 +21,6 @@ const CommentSection = ({productId, type}) => {
             })
             if(response.status === 200){
                 setComments(response.data)
-                console.log(response.data);
             }
         }
         getComments()

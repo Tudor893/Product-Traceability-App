@@ -1,7 +1,8 @@
-import {Button, Navbar, Nav} from 'react-bootstrap'
+import {Button, Navbar, Nav, Dropdown} from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { googleLogout } from '@react-oauth/google'
 
 const NavigationBar = () => {
 
@@ -31,6 +32,12 @@ const NavigationBar = () => {
 
         getUserRole()
     }, [])
+
+    const handleLogout = () => {
+        googleLogout()
+        localStorage.removeItem('googleToken')
+        navigate('/login')
+    }
 
     return(
         <div>
@@ -63,7 +70,9 @@ const NavigationBar = () => {
                                                 .toLowerCase()}` : '/login'}>
                                 Dashboard
                             </Nav.Link>
-                            <Nav.Link href="/scanareProduse">Scanează un produs</Nav.Link>
+                            {!localStorage.getItem('googleToken') && (
+                                <Nav.Link href="/scanareProduse">Scanează un produs</Nav.Link>
+                            )}
                             <Nav.Link href="/about">Despre</Nav.Link>
                         </Nav>
                         
@@ -75,10 +84,21 @@ const NavigationBar = () => {
                             </div>
                         ) : (
                             <div className="d-flex justify-content-center mt-3 mt-lg-0">
-                            <Button className='bgColorMain rounded-pill fw-semibold' onClick={() => navigate('/login')}>
-                                Schimbă contul
-                            </Button>
-                        </div>
+                                <Dropdown drop='start'>
+                                    <Dropdown.Toggle className='bgColorMain rounded-pill fw-semibold px-3'>
+                                        Cont
+                                    </Dropdown.Toggle>
+
+                                    <Dropdown.Menu>
+                                        <Dropdown.Item onClick={() => navigate('/login')}>
+                                            Schimbă contul
+                                        </Dropdown.Item>
+                                        <Dropdown.Item onClick={handleLogout}>
+                                            Delogare
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                         )}
                     </Navbar.Collapse>
                 </div>

@@ -13,25 +13,32 @@ export default function QRScanner() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (typeof Html5Qrcode !== "undefined") {
+    if (typeof Html5Qrcode !== "undefined" && !scanner) {
       const newScanner = new Html5Qrcode("qr-reader")
       setScanner(newScanner)
     }
 
     return () => {
-      if (scanner) {
-        if (scanning) {
-          scanner.stop().catch(err => console.error("Error stopping scanner:", err))
-        }
-        const element = document.getElementById("qr-reader")
-        if (element) {
-          while (element.firstChild) {
-            element.removeChild(element.firstChild)
+    const cleanup = async () => {
+        if (scanner) {
+          try {
+            const isScanning = await scanner.getState() === Html5Qrcode.STATE_SCANNING
+            if (isScanning) {
+              await scanner.stop()
+            }
+          } catch (err) {
+            console.warn("Cleanup warning:", err.message)
           }
         }
+
+        const element = document.getElementById("qr-reader")
+        if (element) {
+          element.innerHTML = ""
+        }
       }
+      cleanup()
     }
-  }, [scanning])
+  }, [scanner])
 
   const startScanning = async () => {
     if (!scanner) return
@@ -46,10 +53,16 @@ export default function QRScanner() {
           hasProcessed = true;
 
         try {
-          setIsProcessing(true)
           const parsedData = JSON.parse(decodedText)
           setScanResult(decodedText)
-          await stopScanning()
+          setScanning(false)
+
+          try {
+            await scanner.stop()
+          } catch (err) {
+            console.warn("Scanner was already stopped or in the process of stopping")
+          }
+
           await registerScannedProduct(parsedData)
         } catch (error) {
           console.error("Error processing QR code:", error)
@@ -57,8 +70,6 @@ export default function QRScanner() {
             type: "danger", 
             message: `Error processing QR code: ${error.message}` 
           })
-        } finally {
-          setIsProcessing(false);
         }
       }
       const config = { fps: 10, qrbox: { width: 250, height: 250 } }
@@ -72,9 +83,10 @@ export default function QRScanner() {
         )
       } else {
         alert("No camera found on this device!")
+        setScanning(false)
       }
     } catch (err) {
-      console.error("Error starting scanner:", err)
+      console.error("Error starting scanner:", err)   
       setScanning(false)
     }
   }
@@ -123,9 +135,9 @@ export default function QRScanner() {
   }
 
   const stopScanning = async () => {
-    if (scanner && scanning) {
+    if (scanner) {
+      setScanning(false)
       try {
-        setScanning(false)
         await scanner.stop()
         setScanning(false)
       } catch (err) {

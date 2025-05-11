@@ -11,9 +11,15 @@ const ActivityItem = ({ product }) => {
                             {new Date(product.createdAt).toLocaleDateString()} | {product.quantity} {product.unit}
                         </small>
                     </div>
-                    <div>
-                        <span className="badge bg-success">{parseFloat(product.cost) * parseFloat(product.quantity)} RON</span>
-                    </div>
+                    {product.cost ? (
+                        <div>
+                            <span className="badge bg-success">{parseFloat(product.cost) * parseFloat(product.quantity)} RON</span>
+                        </div>
+                    ) : (
+                        <div>
+                            <span className="badge bg-warning">Preț nespecificat</span>
+                        </div>
+                    )}
                 </div>
             </Card.Body>
         </Card>

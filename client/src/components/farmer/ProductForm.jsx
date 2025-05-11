@@ -29,18 +29,6 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
                         <Form.Control type="number" name="quantity" value={formData.quantity} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
-                <Col md>
-                    <FloatingLabel controlId="floatingProductBatchNumber" label="Lot">
-                        <Form.Control type="text" name="batch" value={formData.batch} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
-                </Col>
-            </Row>
-            <Row className="g-3 mx-3 my-1">
-                <Col md>
-                    <FloatingLabel controlId="floatingProductWeight" label="Greutatea">
-                        <Form.Control type="number" name="weight" value={formData.weight} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
-                </Col>
                 <Col md className="d-flex justify-content-center">
                     <Form.Select name="unit" value={formData.unit} onChange={handleChange}>
                         <option value="" disabled>Selectează unitatea de măsură</option>
@@ -54,12 +42,10 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
             </Row>
             <Row className="g-3 mx-3 my-1">
                 <Col md>
-                    <FloatingLabel controlId="floatingProductCost" label="Cost per unitate (neafișat clientilor)">
-                        <Form.Control type="number" name="cost" value={formData.cost} onChange={handleChange}></Form.Control>
+                    <FloatingLabel controlId="floatingProductBatchNumber" label="Lot">
+                        <Form.Control type="text" name="batch" value={formData.batch} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
-            </Row>
-            <Row className="g-3 mx-3 my-1">
                 <Col md>
                     <FloatingLabel controlId="floatingProductDate" label="Data recoltării">
                         <Form.Control type="date" name="harvestDate" value={formData.harvestDate} onChange={handleChange}></Form.Control>
@@ -68,6 +54,13 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
                 <Col md>
                     <FloatingLabel controlId="floatingProductLocation" label="Locație">
                         <Form.Control type="text" name="location" value={formData.location} onChange={handleChange}></Form.Control>
+                    </FloatingLabel>
+                </Col>
+            </Row>
+            <Row className="g-3 mx-3 my-1">
+                <Col md>
+                    <FloatingLabel controlId="floatingProductCost" label="Cost per unitate (Opțional, afișat exclusiv dumneavoastră)">
+                        <Form.Control type="number" name="cost" value={formData.cost} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
             </Row>

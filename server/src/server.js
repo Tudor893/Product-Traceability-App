@@ -142,7 +142,6 @@ app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
       quantity,
       unit,
       batch,
-      weight,
       cost,
       harvestDate,
       location,
@@ -156,7 +155,7 @@ app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
     }
     const userId = user.id;
 
-    if (!productName || !category || !quantity || !unit || !cost || !batch || !weight || !harvestDate || !location) {
+    if (!productName || !category || !quantity || !unit || !batch || !harvestDate || !location) {
       return res.status(400).json({ message: 'Missing required fields' })
     }
 
@@ -167,8 +166,7 @@ app.post('/api/farmerProducts', authMiddleware, async (req, res) => {
       quantity,
       unit,
       batch,
-      weight,
-      cost,
+      cost: cost || null,
       harvestDate,
       location,
       description: description || null
@@ -425,13 +423,14 @@ app.get('/api/scanned-products', authMiddleware, async (req, res) => {
 app.post('/api/processorProducts', authMiddleware, async (req, res) => {
   try {
       const { 
-          productName, 
-          batch, 
-          quantity, 
-          unit, 
-          productionDate, 
-          expirationDate, 
-          storageConditions, 
+          productName,
+          batch,
+          quantity,
+          unit,
+          productionDate,
+          expirationDate,
+          storageConditions,
+          cost,
           notes,
           selectedIngredients
       } = req.body
@@ -443,7 +442,7 @@ app.post('/api/processorProducts', authMiddleware, async (req, res) => {
       }
       const userId = user.id;
   
-      if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !storageConditions || !selectedIngredients) {
+      if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !cost || !storageConditions || !selectedIngredients) {
         return res.status(400).json({ message: 'Missing required fields' })
       }
 
@@ -455,6 +454,7 @@ app.post('/api/processorProducts', authMiddleware, async (req, res) => {
           expirationDate,
           quantity,
           unit,
+          cost,
           storageConditions,
           notes: notes || null
       })
@@ -516,7 +516,6 @@ app.post('/api/distributorInformation', authMiddleware, async (req, res) => {
   try {
       const { 
           quantity,
-          weight,
           notes,
           wasStored,
           storageTemperature,
@@ -552,7 +551,7 @@ app.post('/api/distributorInformation', authMiddleware, async (req, res) => {
             })
         }
 
-        if (!quantity || !weight) {
+        if (!quantity) {
             return res.status(400).json({
                 success: false,
                 message: 'Cantitatea si greutatea sunt obligatorii'
@@ -595,7 +594,6 @@ app.post('/api/distributorInformation', authMiddleware, async (req, res) => {
             farmerProductId,
             processorProductId,
             quantity,
-            weight,
             wasStored,
             storageTemperature: wasStored ? storageTemperature : null,
             storageDuration: wasStored ? storageDuration : null,
@@ -656,7 +654,6 @@ app.post('/api/storeInformation', authMiddleware, async (req, res) => {
       const { 
           operatorName,
           quantity,
-          weight,
           notes,
           storageTemperature,
           storageCondition,
@@ -697,7 +694,7 @@ app.post('/api/storeInformation', authMiddleware, async (req, res) => {
           })
       }
 
-        if (!quantity || !weight) {
+        if (!quantity) {
             return res.status(400).json({
                 success: false,
                 message: 'Cantitatea si greutatea sunt obligatorii'
@@ -747,7 +744,6 @@ app.post('/api/storeInformation', authMiddleware, async (req, res) => {
             processorProductId,
             operatorName,
             quantity,
-            weight,
             storageTemperature: storageTemperature,
             storageCondition: storageCondition,
             otherStorageDetails: storageCondition === 'other' ? otherStorageDetails : null,

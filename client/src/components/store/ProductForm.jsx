@@ -49,11 +49,6 @@ const ProductForm = ({
                         <Form.Control type="number" name="quantity" value={formData.quantity} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
-                <Col md>
-                    <FloatingLabel controlId="floatingProductWeight" label="Greutate">
-                        <Form.Control type="number" name="weight" value={formData.weight} onChange={handleChange}></Form.Control>
-                    </FloatingLabel>
-                </Col>
             </Row>
             
             <Row className="g-3 mx-3 my-1">

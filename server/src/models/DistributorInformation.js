@@ -35,10 +35,6 @@ const DistributorInformation = db.define('DistributorInformation', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    weight: {
-        type: Sequelize.FLOAT,
-        allowNull: false
-    },
     wasStored: {
         type: Sequelize.BOOLEAN,
         allowNull: false,

@@ -39,10 +39,6 @@ const StoreInformation = db.define('StoreInformation', {
         type: Sequelize.INTEGER,
         allowNull: false
     },
-    weight: {
-        type: Sequelize.FLOAT,
-        allowNull: false
-    },
     storageTemperature: {
         type: Sequelize.FLOAT,
         allowNull: true

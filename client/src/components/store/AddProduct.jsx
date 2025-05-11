@@ -15,7 +15,6 @@ const AddProduct = () => {
     const [formData, setFormData] = useState({
         operatorName: "",
         quantity: "",
-        weight: "",
         notes: "",
         storageTemperature: "",
         storageCondition: "",
@@ -72,7 +71,6 @@ const AddProduct = () => {
                 setFormData({
                     operatorName: "",
                     quantity: "",
-                    weight: "",
                     notes: "",
                     storageTemperature: "",
                     storageCondition: "",

@@ -4,12 +4,54 @@ import { Button, Row, Col, InputGroup, Form, Card } from "react-bootstrap"
 import { LuSearch } from "react-icons/lu"
 import {QRCodeSVG}  from 'qrcode.react'
 import { BsBoxSeam } from "react-icons/bs"
+import jsPDF from "jspdf"
+import { useRef } from "react"
 
 const Dashboard = () => {
     const [products, setProducts] = useState([])
     const [search, setSearch] = useState('')
     const [selectedProduct, setSelectedProduct] = useState(null)
     const [totalProducts, setTotalProducts] = useState(0)
+    const qrCodeRef = useRef(null)
+
+    const downloadAsPDF = () => {
+            if (!selectedProduct || !qrCodeRef.current) return
+            
+            const canvas = document.createElement("canvas")
+            const svg = qrCodeRef.current.querySelector("svg")
+            const bbox = svg.getBoundingClientRect()
+            
+            canvas.width = bbox.width
+            canvas.height = bbox.height
+            
+            const ctx = canvas.getContext("2d")
+            const svgData = new XMLSerializer().serializeToString(svg)
+            const img = new Image()
+            
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+                const imgData = canvas.toDataURL("image/png")
+            
+                const pdf = new jsPDF({
+                    orientation: "portrait",
+                    unit: "mm",
+                    format: "a4"
+                })
+                
+                const pdfWidth = pdf.internal.pageSize.getWidth()
+                
+                pdf.setFontSize(18)
+                pdf.text(`QR: ${selectedProduct.productName}`, pdfWidth/2, 30, { align: "center" });
+                
+                const imgWidth = 100
+                const imgHeight = 100
+                pdf.addImage(imgData, "PNG", (pdfWidth-imgWidth)/2, 50, imgWidth, imgHeight)
+                
+                pdf.save(`QR_${selectedProduct.productName.replace(/\s+/g, '_')}.pdf`)
+            }
+            
+            img.src = `data:image/svg+xml;base64,${btoa(svgData)}`
+        }
 
     useEffect(() => {
         const getProcessorProducts = async () => {
@@ -88,7 +130,7 @@ const Dashboard = () => {
                             <Card className="rounded-4 border-0 w-100">
                                 <Card.Body className="p-4 d-flex flex-column justify-content-center align-items-center">
                                     {selectedProduct ? (
-                                    <div className="d-flex justify-content-center flex-column align-items-center">
+                                    <div className="d-flex justify-content-center flex-column align-items-center" ref={qrCodeRef}>
                                         <h5 className="mb-3 text-center">Cod QR: {selectedProduct.productName}</h5>
                                         <QRCodeSVG 
                                             value={JSON.stringify({
@@ -100,7 +142,7 @@ const Dashboard = () => {
                                             fgColor="#606b4d"
                                             size={200}
                                         />
-                                        <Button className="mt-3 bgColorMain rounded-pill fw-semibold">Descarcă codul QR</Button>
+                                        <Button className="mt-3 bgColorMain rounded-pill fw-semibold" onClick={downloadAsPDF}>Descarcă codul QR</Button>
                                         <small className="mt-2 text-secondary text-center">Codul QR poate fi scanat pentru a accesa toate detaliile produsului</small>
                                     </div>
                                 ) : (
