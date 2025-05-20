@@ -56,7 +56,7 @@ const Dashboard = () => {
     useEffect(() => {
         const getProcessorProducts = async () => {
             const token = localStorage.getItem('googleToken')
-            const response = await axios.get('http://localhost:5000/api/processorProducts', {
+            const response = await axios.get('http://localhost:5000/api/processor/products', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`

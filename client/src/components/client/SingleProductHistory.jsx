@@ -22,7 +22,7 @@ const SingleProductHistory = () => {
                 setLoading(true)
                 if(localStorage.getItem('googleToken')){
                     if(!sender && !id){
-                        const response = await axios.get("http://localhost:5000/api/client/productHistory", {
+                        const response = await axios.get("http://localhost:5000/api/client/product-history", {
                             headers: {
                                 "Content-Type": "application/json",
                                 "Authorization": `Bearer ${localStorage.getItem("googleToken")}`
@@ -32,7 +32,7 @@ const SingleProductHistory = () => {
                             setProductInfo(response.data)
                         }
                     }else if(sender && id){
-                        const response = await axios.get(`http://localhost:5000/api/client/productHistory/${sender}/${id}`, {
+                        const response = await axios.get(`http://localhost:5000/api/client/product-history/${sender}/${id}`, {
                             headers: {
                                 "Content-Type": "application/json",
                                 "Authorization": `Bearer ${localStorage.getItem("googleToken")}`
@@ -45,7 +45,7 @@ const SingleProductHistory = () => {
                     }
                 }else{
                     if(sender && id){
-                        const response = await axios.get(`http://localhost:5000/api/productHistory/${sender}/${id}`, {
+                        const response = await axios.get(`http://localhost:5000/api/client/product-history/${sender}/${id}`, {
                             headers: {
                                 "Content-Type": "application/json",
                             }

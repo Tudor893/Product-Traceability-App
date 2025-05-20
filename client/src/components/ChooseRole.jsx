@@ -70,7 +70,7 @@ const ChooseRole = () => {
                                 <p className="text-secondary">{desc.text}</p>
                                 <Button className="bgColorMain my-2" onClick={async () => {
                                     if (desc.title === "Client") {
-                                        await axios.put('http://localhost:5000/api/userDetails', {
+                                        await axios.put('http://localhost:5000/api/user/details', {
                                             companyRole: 'Client'
                                         }, {
                                             headers: {

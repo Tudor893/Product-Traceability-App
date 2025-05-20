@@ -25,7 +25,7 @@ const Farmer = () => {
     const fetchProducts = async () => {
         try {
             const token = localStorage.getItem('googleToken');
-            const response = await axios.get('http://localhost:5000/api/farmerProducts', {
+            const response = await axios.get('http://localhost:5000/api/farmer/products', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`

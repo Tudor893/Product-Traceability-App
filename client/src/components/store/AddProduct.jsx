@@ -60,7 +60,7 @@ const AddProduct = () => {
                 selectedProduct: selectedProduct
             }
             
-            const response = await axios.post('http://localhost:5000/api/storeInformation', productData, {
+            const response = await axios.post('http://localhost:5000/api/store/information', productData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`

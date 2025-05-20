@@ -100,7 +100,7 @@ const CompanyDetails = () => {
                                 .replace(/[ș]/g, "s")
                                 .replace(/[ț]/g, "t")
                                 .toLowerCase()
-                                await axios.put('http://localhost:5000/api/userDetails', {
+                                await axios.put('http://localhost:5000/api/user/details', {
                                     uic,
                                     companyName,
                                     companyRole

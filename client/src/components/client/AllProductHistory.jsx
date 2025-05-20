@@ -15,7 +15,7 @@ const AllProductHistory = () => {
         const getProducts = async () => {
             try {
                 setLoading(true)
-                const response = await axios.get("http://localhost:5000/api/scannedProductsByClient", {
+                const response = await axios.get("http://localhost:5000/api/client/scanned-products", {
                     headers: {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${localStorage.getItem("googleToken")}`

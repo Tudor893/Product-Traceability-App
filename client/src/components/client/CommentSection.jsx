@@ -10,7 +10,7 @@ const CommentSection = ({productId, type}) => {
 
     useEffect(() => {
         const getComments = async () => {
-            const response = await axios.get("http://localhost:5000/api/getComments", {
+            const response = await axios.get("http://localhost:5000/api/client/comments", {
                 params: {
                     farmerProductId: type === 'farmer' ? productId : undefined,
                     processorProductId: type === 'processor' ? productId : undefined
@@ -32,7 +32,7 @@ const CommentSection = ({productId, type}) => {
 
     const handleSubmit = () => {
         const addComment = async () => {
-            const response = await axios.post("http://localhost:5000/api/addComment", {
+            const response = await axios.post("http://localhost:5000/api/client/comments", {
                 farmerProductId: type === 'farmer' ? productId : undefined,
                 processorProductId: type === 'processor' ? productId : undefined,
                 message: wroteComment
@@ -43,7 +43,7 @@ const CommentSection = ({productId, type}) => {
                 }
             })
             if(response.status === 201){
-                const refreshedComments = await axios.get("http://localhost:5000/api/getComments", {
+                const refreshedComments = await axios.get("http://localhost:5000/api/client/comments", {
                     params: {
                         farmerProductId: type === 'farmer' ? productId : undefined,
                         processorProductId: type === 'processor' ? productId : undefined
@@ -71,7 +71,7 @@ const CommentSection = ({productId, type}) => {
                     <Button variant="white" className="fw-semibold border border-1" style={{fontSize: '0.9em'}} onClick={() => setShow(true)}>Adaugă comentariu</Button>
                 </div>
                 <Card.Body  style={{maxHeight: '200px', overflowY: 'auto'}}>
-                    {setShow && (
+                    {show && (
                         <Modal show={show} onHide={() => setShow(false)} backdrop='static' keyboard={false} style={{marginTop: '6%'}} className="modalMT">
                             <Modal.Header className="d-flex">
                                 <h5 className="mx-auto">Adaugă un comentariu</h5>
@@ -85,7 +85,7 @@ const CommentSection = ({productId, type}) => {
                                 <Button variant="secondary" onClick={() => setShow(false)}>
                                     Închide
                                 </Button>
-                                <Button variant="dark" onClick={handleSubmit}>Posteză</Button>
+                                <Button variant="dark" onClick={handleSubmit}>Postează</Button>
                             </Modal.Footer>
                         </Modal>
                     )}

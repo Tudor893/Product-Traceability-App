@@ -31,7 +31,7 @@ const AddProductView = ({ onProductAdded }) => {
         e.preventDefault()
         try {
             const token = localStorage.getItem('googleToken')
-            const response = await axios.post('http://localhost:5000/api/farmerProducts', formData, {
+            const response = await axios.post('http://localhost:5000/api/farmer/products', formData, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
