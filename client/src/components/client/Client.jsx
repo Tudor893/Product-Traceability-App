@@ -25,9 +25,9 @@ const Client = () => {
     return (
         <div>
             <TraceLinkHeader backPath='/'/>
-            <div className="d-flex flex-column justify-content-center align-items-center">
+            <div className="d-flex flex-column justify-content-center align-items-center responsive-text-15">
                 <h2 className="mt-3 textColorMain">Trasabilitatea produsului</h2>
-                <p className="mt-3 text-secondary w-50 text-center">Scanează un cod QR al produsului pentru a vizualiza întregul său parcurs sau verifică istoricul tău de scanări</p>
+                <p className="mt-3 text-secondary col-lg-6 col-9 text-center">Scanează un cod QR al produsului pentru a vizualiza întregul său parcurs sau verifică istoricul tău de scanări</p>
             </div>
 
             <Container className="mt-3 pt-3">
@@ -35,7 +35,7 @@ const Client = () => {
                     {buttonInfo.map((info, index) => (
                         <Col key={index} xs={12}>
                             <Card
-                                className="d-flex flex-row align-items-center p-3 shadow-sm mx-auto"
+                                className="card-responsive d-flex flex-row align-items-center p-3 shadow-sm mx-auto"
                                 style={{width: '40%', borderRadius: "12px", cursor: 'pointer' }}
                                 onClick={() => navigate(`${info.navigator}`)}
                             >

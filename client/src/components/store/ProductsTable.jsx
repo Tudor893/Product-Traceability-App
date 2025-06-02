@@ -9,20 +9,23 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                     <tr style={{fontSize: '0.86em'}}>
                         <th className="ps-4 text-secondary fw-normal">PRODUS</th>
                         <th className="ps-4 text-secondary fw-normal">DATA SCANĂRII</th>
+                        <th className="ps-4 text-secondary fw-normal">LOT</th>
                         <th className="ps-4 text-secondary fw-normal">CANTITATE</th>
                         <th className="ps-4 text-secondary fw-normal">PROVINE DE LA</th>
-                        <th className="ps-4 text-secondary fw-normal">DETALII</th>
+                        <th className="text-secondary fw-normal">DETALII</th>
                     </tr>
                 </thead>
                 <tbody>
                     {scannedProducts.length === 0 ? (
                         <tr>
-                            <td colSpan="5" className="text-center py-4">Nu există produse scanate</td>
+                            <td colSpan="6" className="text-center py-4">Nu există produse scanate</td>
                         </tr>
                         ) : (scannedProducts
                             .filter(product => 
                                 product.farmerProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase())
                                 || product.processorProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase())
+                                || product.farmerProduct?.batch?.toLowerCase().includes(searchScanned.toLowerCase())
+                                || product.processorProduct?.batch?.toLowerCase().includes(searchScanned.toLowerCase())
                             )
                             .map((scannedProduct) => (
                                 <tr key={scannedProduct.id}>
@@ -30,6 +33,9 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                                     <td className="ps-3">
                                         {scannedProduct.createdAt ? 
                                             format(new Date(scannedProduct.createdAt), 'dd.MM.yyyy HH:mm') : '-'}
+                                    </td>
+                                    <td className="ps-3">
+                                        {scannedProduct.farmerProduct?.batch || scannedProduct.processorProduct?.batch || '-'}
                                     </td>
                                     <td className="ps-5">
                                         {scannedProduct.farmerProduct?.quantity || scannedProduct.processorProduct?.quantity || '-'}
@@ -41,7 +47,7 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                                         (<td className="ps-4">
                                             Procesator
                                         </td>)}
-                                    <td className="ps-4">
+                                    <td className="ps-2">
                                         <FaEye className="ms-3"/>
                                     </td>
                                 </tr>

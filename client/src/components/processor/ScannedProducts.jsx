@@ -41,7 +41,7 @@ const ScannedProducts = () => {
 
     return (
         <div className="pb-5">
-            <Card className="mt-5 border-0 p-3 slide-up-fade-in" style={{marginLeft: '2.6%', marginRight: '2.6%'}}>
+            <Card className="mt-3 border-0 p-3 slide-up-fade-in" style={{marginLeft: '2.6%', marginRight: '2.6%'}}>
                 <Card.Title className="p-3 fw-semibold">
                     Produse Scanate
                 </Card.Title>
@@ -55,13 +55,13 @@ const ScannedProducts = () => {
                         <Form.Control
                             value={searchScanned}
                             onChange={(e) => setSearchScanned(e.target.value)}
-                            placeholder="Caută produsele dupa numele lor"
+                            placeholder="Caută produsele dupa numele sau lotul lor"
                         />
                     </InputGroup>
 
                     <ProductsTable 
-                        scannedProducts={scannedProducts} 
-                        searchScanned={searchScanned} 
+                        scannedProducts={scannedProducts}
+                        searchScanned={searchScanned}
                     />
                 </Card.Body>
             </Card>

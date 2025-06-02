@@ -28,7 +28,7 @@ router.post('/products', authMiddleware, async (req, res) => {
       }
       const userId = user.id;
   
-      if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !cost || !storageConditions || !selectedIngredients) {
+      if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !storageConditions || !selectedIngredients) {
         return res.status(400).json({ message: 'Missing required fields' })
       }
 
@@ -40,7 +40,7 @@ router.post('/products', authMiddleware, async (req, res) => {
           expirationDate,
           quantity,
           unit,
-          cost,
+          cost: cost || null,
           storageConditions,
           notes: notes || null
       })

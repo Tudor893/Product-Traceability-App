@@ -1,4 +1,4 @@
-import { Card } from "react-bootstrap"
+import { Card, Badge } from "react-bootstrap"
 
 const ProductCard = ({ product, isSelected, onSelect }) => {
     return (
@@ -13,7 +13,27 @@ const ProductCard = ({ product, isSelected, onSelect }) => {
             <Card.Body>
                 <div className="d-flex flex-column flex-md-row justify-content-between">
                     <div className="overflow-hidden me-md-3" style={{fontSize: '0.9em'}}>
-                        <h5>{product.productName}</h5>
+                        <div className="d-flex align-items-center gap-2 mb-2">
+                            <h5 className="mb-0">
+                                {product.productName} 
+                            </h5>
+                            {product.bio && (
+                                    <Badge 
+                                        bg="success" 
+                                        className="fs-6"
+                                        style={{
+                                            backgroundColor: '#28a745',
+                                            fontSize: '0.75rem',
+                                            padding: '0.25rem 0.5rem'
+                                        }}
+                                    >
+                                        BIO
+                                    </Badge>
+                            )}
+                        </div>
+                        <p className="text-muted mb-1">
+                            LOT: {product.batch}
+                        </p>
                         <p className="text-muted mb-1">
                             Categorie: {product.category}
                         </p>

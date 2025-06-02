@@ -126,6 +126,22 @@
 }
 
 @media (max-width: 768px) {
+  .responsive-text-15 {
+      margin-top: 15%;
+  }
+}
+
+.responsive-login {
+  margin-top: 4%;
+}
+
+@media (max-width: 768px) {
+  .responsive-login {
+      margin-top: 24%;
+  }
+}
+
+@media (max-width: 768px) {
   .responsive-topMargin {
       margin-top: 24%;
   }
@@ -163,3 +179,4 @@
   background-color: #fafafa;
   text-decoration: underline;
 }
+  

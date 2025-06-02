@@ -32,11 +32,11 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
                 <Col md className="d-flex justify-content-center">
                     <Form.Select name="unit" value={formData.unit} onChange={handleChange}>
                         <option value="" disabled>Selectează unitatea de măsură</option>
-                        <option value="Kilogram (kg)">Kilogram (kg)</option>
-                        <option value="Gram (g)">Gram (g)</option>
-                        <option value="Litru (L)">Litru (L)</option>
-                        <option value="Mililitru (ml)">Mililitru (ml)</option>
-                        <option value="Bucată">Bucată</option>
+                        <option value="Kilograme (kg)">Kilograme (kg)</option>
+                        <option value="Grame (g)">Grame (g)</option>
+                        <option value="Litrii (L)">Litrii (L)</option>
+                        <option value="Mililitrii (ml)">Mililitrii (ml)</option>
+                        <option value="Bucăți">Bucăți</option>
                     </Form.Select> 
                 </Col>
             </Row>
@@ -66,10 +66,27 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
             </Row>
             <Row className="g-3 mx-3 my-1">
                 <Col md>
-                    <Form.Group controlId="formFile" className="mb-3">
-                        <Form.Label>Certificat bio (Opțional)</Form.Label>
-                        <Form.Control type="file" name="certificate" onChange={handleChange} />
-                    </Form.Group>
+                    <Form.Label className="text-secondary">Bio</Form.Label>
+                    <div>
+                        <Form.Check className="text-secondary"
+                            inline
+                            type="radio"
+                            name="bio"
+                            label="Da"
+                            value="1"
+                            checked={formData.bio === "1"}
+                            onChange={handleChange}
+                        />
+                        <Form.Check className="text-secondary"
+                            inline
+                            type="radio"
+                            name="bio"
+                            label="Nu"
+                            value="0"
+                            checked={formData.bio === "0"}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </Col>
             </Row>
             <Row className="g-3 mx-3 my-1">

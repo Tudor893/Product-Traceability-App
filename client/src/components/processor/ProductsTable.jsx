@@ -9,6 +9,7 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                     <tr style={{fontSize: '0.86em'}}>
                         <th className="ps-4 text-secondary fw-normal">PRODUS</th>
                         <th className="ps-4 text-secondary fw-normal">DATA SCANĂRII</th>
+                        <th className="ps-4 text-secondary fw-normal">LOT</th>
                         <th className="ps-4 text-secondary fw-normal">CATEGORIE</th>
                         <th className="ps-4 text-secondary fw-normal">CANTITATE</th>
                         <th className="ps-4 text-secondary fw-normal">LOCAȚIE</th>
@@ -18,11 +19,12 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                 <tbody>
                     {scannedProducts.length === 0 ? (
                         <tr>
-                            <td colSpan="6" className="text-center py-4">Nu există produse scanate</td>
+                            <td colSpan="7" className="text-center py-4">Nu există produse scanate</td>
                         </tr>
                         ) : (scannedProducts
                             .filter(product => 
-                                product.farmerProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase())
+                                product.farmerProduct?.productName?.toLowerCase().includes(searchScanned.toLowerCase()) ||
+                                product.farmerProduct?.batch?.toLowerCase().includes(searchScanned.toLowerCase())
                             )
                             .map((scannedProduct) => (
                                 <tr key={scannedProduct.id}>
@@ -31,6 +33,7 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                                         {scannedProduct.createdAt ? 
                                             format(new Date(scannedProduct.createdAt), 'dd.MM.yyyy HH:mm') : '-'}
                                     </td>
+                                    <td className="ps-4">{scannedProduct.farmerProduct?.batch || '-'}</td>
                                     <td className="ps-4">{scannedProduct.farmerProduct?.category || '-'}</td>
                                     <td className="ps-4">
                                         {scannedProduct.farmerProduct?.quantity || '-'} {scannedProduct.farmerProduct?.unit || ''}

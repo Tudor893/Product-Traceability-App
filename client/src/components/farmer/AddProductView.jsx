@@ -1,11 +1,10 @@
 import { useState } from "react"
 import { Card } from "react-bootstrap"
-import { QRCodeSVG } from 'qrcode.react'
 import axios from "axios"
 import ProductForm from "./ProductForm"
+import { ToastContainer, toast } from 'react-toastify'
 
 const AddProductView = ({ onProductAdded }) => {
-    const [show, setShow] = useState(false)
     const [formData, setFormData] = useState({
         productName: "",
         category: "",
@@ -15,20 +14,35 @@ const AddProductView = ({ onProductAdded }) => {
         cost: "",
         harvestDate: "",
         location: "",
-        certificate: null,
+        bio: "",
         description: ""
     })
 
     const handleChange = (e) => {
-        const {name, value, type, files} = e.target
+        const {name, value} = e.target
         setFormData((prevData) => ({
             ...prevData,
-            [name]: type === "file" ? files[0] : value  
+            [name]: value  
         })) 
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        const { productName, category, quantity, unit, batch, harvestDate, bio, location } = formData
+        if (!productName || !category || !quantity || !unit || !batch || !harvestDate || !location || !bio) {
+            toast.error("Completează toate câmpurile obligatorii.")
+            return
+        }
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const harvDate = new Date(harvestDate)
+        harvDate.setHours(0, 0, 0, 0)
+        if (harvDate > today) {
+            toast.error("Data recoltării nu poate fi în viitor.")
+            return
+        }
+        
         try {
             const token = localStorage.getItem('googleToken')
             const response = await axios.post('http://localhost:5000/api/farmer/products', formData, {
@@ -39,7 +53,6 @@ const AddProductView = ({ onProductAdded }) => {
             })
 
             onProductAdded(response.data.product)
-            setShow(true)
             setFormData({
                 productName: "",
                 category: "",
@@ -49,26 +62,19 @@ const AddProductView = ({ onProductAdded }) => {
                 cost: "",
                 harvestDate: "",
                 location: "",
-                certificate: null,
+                bio: "",
                 description: ""
             })
-        } catch(error) {
-            console.log(error)
+            
+            toast.success("Produsul a fost adăugat cu succes!")
+        } catch (error) {
+            console.log("A apărut o eroare la trimiterea formularului:", error)
         }
     }
 
-    const qrData = JSON.stringify({
-        productName: formData.productName,
-        category: formData.category,
-        quantity: formData.quantity,
-        unit: formData.unit,
-        harvestDate: formData.harvestDate,
-        location: formData.location,
-        description: formData.description
-    })
-
     return (
         <div className="d-flex justify-content-center mt-4 flex-column align-items-center">
+            <ToastContainer position="top-right" autoClose={3000} />
             <Card className="slide-up-fade-in border-0 card-responsive" style={{width: '65%'}}>
                 <div className="p-3 ms-4">
                     <Card.Title>
@@ -84,18 +90,13 @@ const AddProductView = ({ onProductAdded }) => {
                         handleChange={handleChange} 
                         handleSubmit={handleSubmit} 
                     />
-                    {show && (
-                        <div className="d-flex justify-content-center mt-4">
-                            <QRCodeSVG value={qrData} size={200} />
-                        </div>
-                    )}
                 </Card.Body>
             </Card>
             <div className="mt-5 responsive-container d-flex align-items-center flex-column text-center pb-5">
                 <div className="fw-semibold fs-5">
                     Avantajele înregistrării produselor
                 </div>
-                <div className="mt-3">
+                <div className="mt-3 col-11">
                     Prin adăugarea produselor în sistemul nostru, oferim consumatorilor acces la informații complete despre originea, calitatea și metodele de producție ale produselor dumneavoastră, construind încredere și valoare adăugată.
                 </div>
             </div>

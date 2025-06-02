@@ -3,14 +3,14 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { TfiComment } from "react-icons/tfi"
 
-const CommentSection = ({productId, type}) => {
+const FeedbackSection = ({productId, type}) => {
     const [comments, setComments] = useState([])
     const [show, setShow] = useState(false)
     const [wroteComment, setWroteComment] = useState('')
 
     useEffect(() => {
         const getComments = async () => {
-            const response = await axios.get("http://localhost:5000/api/client/comments", {
+            const response = await axios.get("http://localhost:5000/api/client/feedback", {
                 params: {
                     farmerProductId: type === 'farmer' ? productId : undefined,
                     processorProductId: type === 'processor' ? productId : undefined
@@ -32,7 +32,7 @@ const CommentSection = ({productId, type}) => {
 
     const handleSubmit = () => {
         const addComment = async () => {
-            const response = await axios.post("http://localhost:5000/api/client/comments", {
+            const response = await axios.post("http://localhost:5000/api/client/feedback", {
                 farmerProductId: type === 'farmer' ? productId : undefined,
                 processorProductId: type === 'processor' ? productId : undefined,
                 message: wroteComment
@@ -43,7 +43,7 @@ const CommentSection = ({productId, type}) => {
                 }
             })
             if(response.status === 201){
-                const refreshedComments = await axios.get("http://localhost:5000/api/client/comments", {
+                const refreshedComments = await axios.get("http://localhost:5000/api/client/feedback", {
                     params: {
                         farmerProductId: type === 'farmer' ? productId : undefined,
                         processorProductId: type === 'processor' ? productId : undefined
@@ -68,7 +68,7 @@ const CommentSection = ({productId, type}) => {
             <Card className="mt-4 card-responsive" style={{width: '60%'}}>            
                 <div className="d-flex justify-content-between p-3">
                     <h4 className="p-1 mt-2 py-0">Feedback clienți</h4>
-                    <Button variant="white" className="fw-semibold border border-1" style={{fontSize: '0.9em'}} onClick={() => setShow(true)}>Adaugă comentariu</Button>
+                    <Button variant="white" className="fw-semibold border border-1" style={{fontSize: '0.9em'}} onClick={() => setShow(true)}>Adaugă feedback</Button>
                 </div>
                 <Card.Body  style={{maxHeight: '200px', overflowY: 'auto'}}>
                     {show && (
@@ -124,4 +124,4 @@ const CommentSection = ({productId, type}) => {
     )
 }
 
-export default CommentSection
+export default FeedbackSection

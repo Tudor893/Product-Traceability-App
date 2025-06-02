@@ -18,101 +18,104 @@ import SingleProductHistory from './components/client/SingleProductHistory'
 import AllProductHistory from './components/client/AllProductHistory'
 import ProductScanner from './components/noUser/ProductScanner'
 import Profile from './components/Profile'
+import { AuthProvider } from './components/AuthContext'
 
 const App = () => {
   return (
     <div>
-      <Routes>
-        <Route path='/' element={<Home />}/>
-        <Route path='/login' element={<LoginPage/>}/>
-        <Route path='/about' element={<About/>}/>
-        <Route path='/chooseRole' element={
-          <AuthProtectedRoute>   
-            <ChooseRole />
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/companyDetails' element={
-          <AuthProtectedRoute>   
-            <CompanyDetails/>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/fermier' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Fermier">
-             <Farmer/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/procesator' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Procesator">
-              <Processor/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/distribuitor' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Distribuitor">
-              <Distributor/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/magazin' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Magazin">
-              <Store/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/client' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Client">
-              <Client/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/client/scanareProduse' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Client">
-              <ProductScannerClient/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/client/istoricProdus' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Client">
-              <SingleProductHistory/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/client/istoricProduse' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Client">
-              <AllProductHistory/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/client/istoricProdus/:sender/:id' element={
-          <AuthProtectedRoute>
-            <RoleProtectedRoute allowedRole="Client">
-              <SingleProductHistory/>
-            </RoleProtectedRoute>
-          </AuthProtectedRoute>
-        }/>
-        <Route path='/scanareProduse' element={
-          <ProductScanner/>
-        }/>
-        <Route path='/istoricProdus/:sender/:id' element={
-          <SingleProductHistory/>
-        }/>
-        <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/*" element={<Home />} />
-        <Route path='/profil' element={
-          <AuthProtectedRoute>   
-            <Profile />
-          </AuthProtectedRoute>
-        }/>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path='/' element={<Home />}/>
+          <Route path='/login' element={<LoginPage/>}/>
+          <Route path='/about' element={<About/>}/>
+          <Route path='/chooseRole' element={
+            <AuthProtectedRoute>   
+              <ChooseRole />
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/companyDetails' element={
+            <AuthProtectedRoute>   
+              <CompanyDetails/>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/fermier' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Fermier">
+              <Farmer/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/procesator' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Procesator">
+                <Processor/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/distribuitor' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Distribuitor">
+                <Distributor/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/magazin' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Magazin">
+                <Store/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/client' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Client">
+                <Client/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/client/scanareProduse' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Client">
+                <ProductScannerClient/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/client/istoricProdus' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Client">
+                <SingleProductHistory/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/client/istoricProduse' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Client">
+                <AllProductHistory/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/client/istoricProdus/:sender/:id' element={
+            <AuthProtectedRoute>
+              <RoleProtectedRoute allowedRole="Client">
+                <SingleProductHistory/>
+              </RoleProtectedRoute>
+            </AuthProtectedRoute>
+          }/>
+          <Route path='/scanareProduse' element={
+            <ProductScanner/>
+          }/>
+          <Route path='/istoricProdus/:sender/:id' element={
+            <SingleProductHistory/>
+          }/>
+          <Route path="/unauthorized" element={<Unauthorized />} />
+          <Route path="/*" element={<Home />} />
+          <Route path='/profil' element={
+            <AuthProtectedRoute>   
+              <Profile />
+            </AuthProtectedRoute>
+          }/>
+        </Routes>
+      </AuthProvider>
     </div>
   )
 }

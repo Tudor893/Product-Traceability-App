@@ -6,8 +6,8 @@ const ProductScanner = () => {
         <div className="scrollbar">
             <TraceLinkHeader backPath='/client'/>
             <div className="d-flex flex-column justify-content-center align-items-center">
-                <h2>Urmărește parcursul produsului tău</h2>
-                <p className="mt-2">Scanează orice cod de bare al unui produs pentru a descoperi originea, procesul de producție și traseul complet de distribuție</p>
+                <h2 className="text-center responsive-text-15">Urmărește parcursul produsului tău</h2>
+                <p className="mt-2 text-center">Scanează orice cod QR al unui produs pentru a descoperi originea, procesul de producție și traseul complet de distribuție</p>
             </div>
             <QRScanner />
         </div>

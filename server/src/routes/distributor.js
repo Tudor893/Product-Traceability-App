@@ -94,7 +94,7 @@ router.post('/information', authMiddleware, async (req, res) => {
             storageDuration: wasStored ? storageDuration : null,
             storageCondition: wasStored ? storageCondition : null,
             otherStorageDetails: wasStored && storageCondition === 'other' ? otherStorageDetails : null,
-            notes
+            notes: notes || null
         })
 
         return res.status(201).json({

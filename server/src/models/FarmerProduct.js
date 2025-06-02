@@ -47,6 +47,10 @@ const FarmerProduct = db.define('FarmerProduct', {
         type: Sequelize.STRING,
         allowNull: false
     },
+    bio: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
     description: {
         type: Sequelize.TEXT,
         allowNull: true

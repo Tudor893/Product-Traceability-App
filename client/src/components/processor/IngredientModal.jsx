@@ -15,7 +15,7 @@ const IngredientModal = ({
     return (
         <Modal size="lg" className="modalMT" show={isModalOpen} onHide={() => setIsModalOpen(false)} backdrop='static' keyboard={false}>
             <Modal.Header>
-                <Modal.Title>Adaugă produse</Modal.Title>
+                <Modal.Title>Adaugă ingrediente</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ maxHeight: '64vh', overflowY: 'auto' }}>
                 <InputGroup className="mb-4">

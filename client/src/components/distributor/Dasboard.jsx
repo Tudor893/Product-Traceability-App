@@ -39,7 +39,7 @@ const Dashboard = () => {
                                 <Form.Control
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Caută produse după numele lor"
+                                    placeholder="Caută produse după numele sau lotul lor"
                                 />
                             </InputGroup>
 
@@ -56,6 +56,8 @@ const Dashboard = () => {
                                                 .filter(product => 
                                                     product.farmerProduct?.productName?.toLowerCase().includes(search.toLowerCase())
                                                     || product.processorProduct?.productName?.toLowerCase().includes(search.toLowerCase())
+                                                    || product.farmerProduct?.batch?.toLowerCase().includes(search.toLowerCase())
+                                                    || product.processorProduct?.batch?.toLowerCase().includes(search.toLowerCase())
                                                 )
                                                 .map((product, index) => (
                                                     <Card key={index} className={`mb-3 shadow-sm ${selectedProduct === product ? 'border-2' : 'border-0'}`}  onClick={() => setSelectedProduct(product)} style={{ cursor: 'pointer', borderColor: selectedProduct === product ? '#707d5b' : 'transparent'}}>

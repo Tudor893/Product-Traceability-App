@@ -13,7 +13,7 @@ const About = () => {
             description: "Să transformăm modul în care produsele sunt urmărite prin lanțurile de aprovizionare, oferind transparență totală, de la origine la consumator. Prin tehnologie inovatoare, creăm încredere între producători, distribuitori și consumatori.",
             scope: ["Implementarea tehnologiilor de trasabilitate accesibile pentru orice companie",
                     "Combaterea fraudelor și falsificărilor prin verificare în timp real",
-                    "Oferirea consumatorilor accesul la informații complete despre produse" ]
+                    "Accesul consumatorilor la informații complete despre produse" ]
         },
         {
             icon:<LuEye className="icon"/> ,
@@ -52,7 +52,7 @@ const About = () => {
                 <Container className='text-center' style={{marginTop: '6%'}}>
                     <p className='mt-5 rounded-pill d-inline-flex py-1 px-3 fw-semibold' style={{fontSize: '0.75em', backgroundColor: 'rgba(141, 176, 85, 0.23)'}}>Misiune și viziune</p>
                     <p className='fw-bold fs-1 fs-md-2 fs-sm-3'>Construim un viitor sustenabil prin transparență</p>
-                    <p className='mt-3 text-secondary mx-auto' style={{width: '70%', fontSize: '1.1em'}}>Credem că transparența în lanțurile de aprovizionare este esențială pentru un viitor sustenabil și pentru încrederea consumatorilor în produsele pe care le aleg.</p>
+                    <p className='mt-3 text-secondary col-lg-8 col-11 mx-auto' style={{fontSize: '1.1em'}}>Credem că transparența în lanțurile de aprovizionare este esențială pentru un viitor sustenabil și pentru încrederea consumatorilor în produsele pe care le aleg.</p>
                 </Container>
 
                 <Container className='mt-5'>

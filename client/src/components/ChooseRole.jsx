@@ -4,9 +4,11 @@ import { BsFileText } from 'react-icons/bs'
 import { useNavigate } from "react-router-dom"
 import { useEffect } from "react"
 import axios from 'axios'
+import { useAuth } from './AuthContext'
 
 const ChooseRole = () => {
     const navigate = useNavigate()
+    const { user } = useAuth()
 
     const description = [
         {
@@ -21,30 +23,21 @@ const ChooseRole = () => {
         }
     ]
 
-    useEffect(() => {
+     useEffect(() => {
         async function checkUserStatus() {
-            try {
-                const response = await axios.get('http://localhost:5000/api/user/status', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('googleToken')}`
-                    }
-                })
-    
-                if (response.data.detailsCompleted) {
-                    const slug = response.data.role
-                                .replace(/[ăâ]/g, "a")
-                                .replace(/[î]/g, "i")
-                                .replace(/[ș]/g, "s")
-                                .replace(/[ț]/g, "t")
-                                .toLowerCase()
-                    navigate(`/${slug}`, { replace: true })
-                }
-            } catch (error) {
-                console.error('Eroare verificare status utilizator:', error)
+            if (user && user.detailsCompleted) {
+                const slug = user.role
+                            .replace(/[ăâ]/g, "a")
+                            .replace(/[î]/g, "i")
+                            .replace(/[ș]/g, "s")
+                            .replace(/[ț]/g, "t")
+                            .toLowerCase()
+                navigate(`/${slug}`, { replace: true })
             }
         }
         checkUserStatus()
-    }, [navigate])
+    }, [navigate, user])
+
 
     return (
         <div>
@@ -90,7 +83,7 @@ const ChooseRole = () => {
                                             console.error('Rolul nu s-a actualizat corect:', response.data.role)
                                         }
                                         } else {
-                                        navigate('/companyDetails');
+                                            navigate('/companyDetails');
                                         }
                                     }}
                                     >

@@ -5,6 +5,7 @@ import axios from "axios"
 import ProductForm from "./ProductForm"
 import IngredientModal from "./IngredientModal"
 import ProductAdvantages from './ProductAdvantages'
+import { ToastContainer, toast } from 'react-toastify'
 
 const AddProduct = () => {
     const [searchIngredient, setSearchIngredient] = useState("")
@@ -55,6 +56,37 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const {productName, batch, quantity, unit, productionDate, expirationDate, storageConditions } = formData
+
+        if (!productName || !batch || !quantity || !unit ||!productionDate || !expirationDate || !storageConditions) {
+            toast.error("Completează toate câmpurile obligatorii.")
+            return
+        }
+
+        if (selectedIngredients.length === 0) {
+            toast.error("Selectează cel puțin un ingredient.")
+            return
+        }
+
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const prodDate = new Date(productionDate)
+        prodDate.setHours(0, 0, 0, 0)
+        const expDate = new Date(expirationDate)
+        
+        if (prodDate > today) {
+            toast.error("Data producției nu poate fi în viitor.")
+            return
+        }
+        if (expDate < today) {
+            toast.error("Data expirării nu poate fi în trecut.")
+            return
+        }
+        if (expDate <= prodDate) {
+            toast.error("Data expirării trebuie să fie după data producției.")
+            return
+        }
         try {
             const token = localStorage.getItem('googleToken')
 
@@ -85,10 +117,11 @@ const AddProduct = () => {
 
                 setSelectedIngredients([])
                 setShowIngredients(false)
+                toast.success("Produsul a fost adăugat cu succes!")
             }
         } catch (error) {
             console.error('Error submitting product:', error)
-            alert("A apărut o eroare la adăugarea produsului.")
+            toast.warn("Nu se pot introduce produse cu același lot de mai multe ori!")
         }
     }
 
@@ -110,6 +143,7 @@ const AddProduct = () => {
 
     return (
         <div className="d-flex justify-content-center mt-4 flex-column align-items-center">
+            <ToastContainer position="top-right" autoClose={3000} />
             <Card className="slide-up-fade-in card-responsive border-0" style={{width: '65%'}}>
                 <div className="p-3 ms-4">
                     <Card.Title>

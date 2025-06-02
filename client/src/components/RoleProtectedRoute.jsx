@@ -1,42 +1,18 @@
-import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import axios from 'axios'
+import { useAuth } from './AuthContext'
 
 const RoleProtectedRoute = ({ children, allowedRole }) => {
-    const [userRole, setUserRole] = useState(null)
-    const [loading, setLoading] = useState(true)
+    const { user, isAuthenticated, isLoading } = useAuth()
 
-    useEffect(() => {
-        const getUserRole = async () => {
-            const token = localStorage.getItem('googleToken')
-            if (!token) {
-                setUserRole(null)
-                setLoading(false)
-                return
-            }
-
-            try {
-                const response = await axios.get('http://localhost:5000/api/user/status', {
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    }
-                })
-                setUserRole(response.data.role)
-            } catch (error) {
-                setUserRole(null)
-            }
-            setLoading(false)
-        }
-
-        getUserRole()
-    }, [])
-
-    if (loading) {
+    if (isLoading) {
         return <div>Loading...</div>
     }
-    
-    if (allowedRole !== userRole) {
+
+    if (!isAuthenticated) {
+        return <Navigate to="/login" />
+    }
+
+    if (allowedRole && user?.role && user?.role !== allowedRole) {
         return <Navigate to="/unauthorized" />
     }
 

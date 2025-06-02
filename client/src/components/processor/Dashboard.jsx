@@ -81,7 +81,7 @@ const Dashboard = () => {
                                 <Form.Control
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Caută produse după numele lor"
+                                    placeholder="Caută produse după numele sau lotul lor"
                                 />
                             </InputGroup>
 
@@ -96,7 +96,8 @@ const Dashboard = () => {
                                         <div>
                                             {products
                                                 .filter(product => 
-                                                    product.productName.toLowerCase().includes(search.toLowerCase())
+                                                    product.productName.toLowerCase().includes(search.toLowerCase()) 
+                                                    || product.batch.toLowerCase().includes(search.toLowerCase())
                                                 )
                                                 .map((product, index) => (
                                                     <Card key={index} className={`mb-3 shadow-sm ${selectedProduct === product ? 'border-2' : 'border-0'}`}  onClick={() => setSelectedProduct(product)} style={{ cursor: 'pointer', borderColor: selectedProduct === product ? '#707d5b' : 'transparent'}}>
@@ -114,10 +115,12 @@ const Dashboard = () => {
                                                                         <p className="mb-0 mt-2 text-truncate">{product.storageConditions}</p>
                                                                     )}
                                                                 </div>
+                                                                {product.cost !== null &&
                                                                 <div className="text-end">
                                                                     <h6>Cost: {product.cost} RON/{product.unit}</h6>
                                                                     <p className="text-muted">Total: {parseFloat(product.cost) * parseFloat(product.quantity)} RON</p>
                                                                 </div>
+                                                                }
                                                             </div>
                                                         </Card.Body>
                                                     </Card>

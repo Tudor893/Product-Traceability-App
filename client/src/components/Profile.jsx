@@ -1,5 +1,3 @@
-import axios from "axios"
-import { useEffect, useState } from "react"
 import { Container, Card } from "react-bootstrap"
 import TraceLinkHeader from "./TraceLinkHeader"
 import { IoPersonOutline } from "react-icons/io5"
@@ -7,9 +5,10 @@ import { AiOutlineMail } from "react-icons/ai"
 import { IoBusinessOutline } from "react-icons/io5"
 import { MdOutlineBusinessCenter } from "react-icons/md"
 import { LuKeyRound } from "react-icons/lu"
+import { useAuth } from "./AuthContext"
 
 const Profile = () => {
-    const [user, setUser] = useState()
+    const { user, isLoading } = useAuth()
 
     const details = [
         {
@@ -39,30 +38,9 @@ const Profile = () => {
         }
     ]
 
-    useEffect(() => {
-        const getUserRole = async () => {
-            const token = localStorage.getItem('googleToken')
-            try {
-                const response = await axios.get('http://localhost:5000/api/user/status', {
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    }
-                })
-                if(response.status === 200){
-                    setUser(response.data)
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        getUserRole()
-    }, [])
-
     return (
         <div className="scrollbar">
-            {!user ? (
+            {isLoading || !user ? (
                 <p>Loading...</p>
             ) : (
                 <div>

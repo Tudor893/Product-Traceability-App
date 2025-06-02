@@ -44,11 +44,11 @@ const ProductForm = ({
                 <Col md className="d-flex justify-content-center">
                     <Form.Select name="unit" value={formData.unit} onChange={handleChange}>
                         <option value="" disabled>Selectează unitatea de măsură</option>
-                        <option value="Kilogram (kg)">Kilogram (kg)</option>
-                        <option value="Gram (g)">Gram (g)</option>
-                        <option value="Litru (L)">Litru (L)</option>
-                        <option value="Mililitru (ml)">Mililitru (ml)</option>
-                        <option value="Bucată">Bucată</option>
+                        <option value="Kilograme (kg)">Kilograme (kg)</option>
+                        <option value="Grame (g)">Grame (g)</option>
+                        <option value="Litrii (L)">Litrii (L)</option>
+                        <option value="Mililitrii (ml)">Mililitrii (ml)</option>
+                        <option value="Bucăți">Bucăți</option>
                     </Form.Select> 
                 </Col>
             </Row>

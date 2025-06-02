@@ -5,6 +5,7 @@ import axios from "axios"
 import ProductForm from "./ProductForm"
 import ProductModal from "./ProductModal"
 import ProductAdvantages from './ProductAdvantages'
+import { ToastContainer, toast } from 'react-toastify'
 
 const AddProduct = () => {
     const [searchProduct, setSearchProduct] = useState("")
@@ -52,6 +53,27 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+
+        const {operatorName, quantity, storageTemperature, storageCondition, otherStorageDetails } = formData
+
+        if (selectedProduct.length !== 1) {
+            toast.error("Selectează un produs pentru recepție.")
+            return
+        }
+        if(!operatorName){
+            toast.error("Completează numele operatorului.")
+            return
+        } 
+        if(!quantity){
+            toast.error("Completează cantitatea recepționată.")
+            return
+        }
+
+        if (!storageTemperature ||(!storageCondition && !otherStorageDetails)) {
+                toast.error("Completează toate detaliile de depozitare.")
+                return
+        }
+
         try {
             const token = localStorage.getItem('googleToken')
 
@@ -79,10 +101,11 @@ const AddProduct = () => {
 
                 setSelectedProduct([])
                 setShowProduct(false)
+                toast.success("Produsul a fost înregistrat cu succes!")
             }
         } catch (error) {
             console.error('Error submitting product:', error)
-            alert("A apărut o eroare la adăugarea produsului.")
+            toast.warn("Produsul a fost deja înregistrat!")
         }
     }
 
@@ -98,6 +121,7 @@ const AddProduct = () => {
 
     return (
         <div className="d-flex justify-content-center mt-4 flex-column align-items-center">
+            <ToastContainer position="top-right" autoClose={3000} />
             <Card className="slide-up-fade-in card-responsive border-0" style={{width: '65%'}}>
                 <div className="p-3 ms-4">
                     <Card.Title>

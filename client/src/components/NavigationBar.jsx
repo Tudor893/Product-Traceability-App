@@ -1,41 +1,15 @@
 import {Button, Navbar, Nav, Dropdown} from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { googleLogout } from '@react-oauth/google'
+import { useAuth } from './AuthContext'
+
 
 const NavigationBar = () => {
 
-    const [userRole, setUserRole] = useState(null)
+    const { user, isAuthenticated, logout } = useAuth()
     const navigate = useNavigate()
 
-    useEffect(() => {
-        const getUserRole = async () => {
-            const token = localStorage.getItem('googleToken')
-            if (!token) {
-                setUserRole(null)
-                return
-            }
-
-            try {
-                const response = await axios.get('http://localhost:5000/api/user/status', {
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
-                    }
-                })
-                setUserRole(response.data.role)
-            } catch (error) {
-                setUserRole(null)
-            }
-        }
-
-        getUserRole()
-    }, [])
-
     const handleLogout = () => {
-        googleLogout()
-        localStorage.removeItem('googleToken')
+        logout()
         navigate('/login')
     }
 
@@ -59,10 +33,10 @@ const NavigationBar = () => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mx-auto fw-semibold text-secondary text-center text-lg-start" style={{ gap: '30px', fontSize: '0.85em' }}>
                             <Nav.Link href="/">Acasă</Nav.Link>
-                            {localStorage.getItem('googleToken') && (
+                            {isAuthenticated && (
                                 <Nav.Link href="/profil">Profil</Nav.Link>
                             )}
-                            <Nav.Link href={userRole ? `${userRole
+                            <Nav.Link href={user?.role ? `${user?.role
                                                 .replace(/[ăâ]/g, "a")
                                                 .replace(/[î]/g, "i")
                                                 .replace(/[ș]/g, "s")
@@ -70,13 +44,13 @@ const NavigationBar = () => {
                                                 .toLowerCase()}` : '/login'}>
                                 Dashboard
                             </Nav.Link>
-                            {!localStorage.getItem('googleToken') && (
+                            {!isAuthenticated && (
                                 <Nav.Link href="/scanareProduse">Scanează un produs</Nav.Link>
                             )}
                             <Nav.Link href="/about">Despre</Nav.Link>
                         </Nav>
                         
-                        {!localStorage.getItem('googleToken') ? (
+                        {!isAuthenticated ? (
                             <div className="d-flex justify-content-center mt-3 mt-lg-0">
                                 <Button className='bgColorMain rounded-pill fw-semibold' onClick={() => navigate('/login')}>
                                     Autentificare

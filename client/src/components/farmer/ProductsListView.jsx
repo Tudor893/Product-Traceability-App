@@ -11,7 +11,8 @@ const ProductsListView = ({ products }) => {
 
     const filteredProducts = products.filter(product => 
         product.productName.toLowerCase().includes(search.toLowerCase()) ||
-        product.category.toLowerCase().includes(search.toLowerCase())
+        product.category.toLowerCase().includes(search.toLowerCase()) ||
+        product.batch.toLowerCase().includes(search.toLowerCase())
     )
 
     return (
@@ -25,7 +26,7 @@ const ProductsListView = ({ products }) => {
                         <Form.Control
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Caută produse după numele sau categoria lor"
+                            placeholder="Caută produse după numele, categoria sau lotul lor"
                         />
                     </InputGroup>
 

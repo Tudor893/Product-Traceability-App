@@ -4,39 +4,32 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Footer from "./Footer"
 import axios from 'axios'
+import { useAuth } from './AuthContext'
 
 const CompanyDetails = () => {
 
     const navigate = useNavigate()
+    const { user } = useAuth()
     const [uic, setUIC] = useState("")
     const [companyName, setCompanyName] = useState("")
     const [companyRole, setCompanyRole] = useState("")
     const [buttonActive, setButtonActive] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         async function checkUserStatus() {
-            try {
-                const response = await axios.get('http://localhost:5000/api/user/status', {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('googleToken')}`
-                    }
-                })
-    
-                if (response.data.detailsCompleted) {
-                    const slug = response.data.role
-                                .replace(/[ăâ]/g, "a")
-                                .replace(/[î]/g, "i")
-                                .replace(/[ș]/g, "s")
-                                .replace(/[ț]/g, "t")
-                                .toLowerCase()
-                    navigate(`/${slug}`, {replace: true})
-                }
-            } catch (error) {
-                console.error('Eroare verificare status utilizator:', error)
+            if (user && user.detailsCompleted) {
+                const slug = user.role
+                            .replace(/[ăâ]/g, "a")
+                            .replace(/[î]/g, "i")
+                            .replace(/[ș]/g, "s")
+                            .replace(/[ț]/g, "t")
+                            .toLowerCase()
+                navigate(`/${slug}`, {replace: true})
             }
         }
         checkUserStatus()
-    }, [navigate])
+    }, [navigate, user])
     
 
     useEffect(() => {
@@ -93,7 +86,9 @@ const CompanyDetails = () => {
                             <Form.Control type="text" disabled value={companyRole}/>
                         </FloatingLabel>
                         <div className="d-flex justify-content-center mt-2">
-                            <Button className="bgColorMain p-2 px-4 w-50" disabled={buttonActive} onClick={async () => {
+                            <Button className="bgColorMain p-2 px-4 w-50" disabled={buttonActive || loading} onClick={async () => {
+                                setLoading(true)
+                                
                                 const slug = companyRole
                                 .replace(/[ăâ]/g, "a")
                                 .replace(/[î]/g, "i")
@@ -110,11 +105,22 @@ const CompanyDetails = () => {
                                         'Authorization': `Bearer ${localStorage.getItem('googleToken')}`
                                     }
                                 })
-                                navigate(`/${slug}`, { replace: true }) 
+                                setTimeout(() => {
+                                        navigate(`/${slug}`, { replace: true })
+                                    }, 2000)
                             }}>
                                 <div className="d-flex justify-content-center align-items-center">
-                                    Continuați
-                                    <LuArrowRight className="mt-1 ms-1"/> 
+                                    {loading ? (
+                                        <>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                            Se procesează...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Continuați
+                                            <LuArrowRight className="mt-1 ms-1"/> 
+                                        </>
+                                    )}
                                 </div>
                             </Button>
                         </div>

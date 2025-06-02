@@ -2,23 +2,29 @@ import {Button, Container, Card, Row, Col} from 'react-bootstrap'
 import img1 from '../assets/image.png'
 import { useNavigate } from 'react-router-dom'
 import NavigationBar from './NavigationBar'
-import { LuSearch, LuTruck, LuBox, LuCheck } from "react-icons/lu"
+import { LuCheck } from "react-icons/lu"
+import { FaQrcode } from "react-icons/fa6";
+import { BsQrCodeScan } from "react-icons/bs";
+import { TbPigMoney } from "react-icons/tb";
 import Footer from './Footer';
+import ChatBot from './ChatBot'
+import { useAuth } from './AuthContext'
 
 const Home = () => {
 
     const navigate = useNavigate()
+    const { isAuthenticated } = useAuth()
 
     const features = [
         {
-            title: "Urmărire în timp real",
-            description: "Monitorizează-ți produsele pe tot parcursul lanțului de aprovizionare, cu actualizări în timp real despre locație și schimbările de status.",
-            icon: <LuBox className="icon" />
+            title: "Calculare venituri automate",
+            description: "Introduci prețul per unitate și sistemul calculează automat câștigurile totale pe baza cantităților înregistrate.",
+            icon: <TbPigMoney className="icon" />
         },
         {
-            title: "Vizibilitate în lanțul de aprovizionare",
-            description: "Vizualizează întregul tău rețea de aprovizionare cu hărți interactive și panouri de analiză detaliate.",
-            icon: <LuTruck className="icon" />
+            title: "Scanare pentru trasabilitate",
+            description: "Clienții pot scana codul QR de pe produs pentru a vizualiza întregul parcurs al produsului prin lanțul de aprovizionare.",
+            icon: <BsQrCodeScan className="icon" />
         },
         {
             title: "Autentificarea produselor",
@@ -26,9 +32,9 @@ const Home = () => {
             icon: <LuCheck className="icon" />
         },
         {
-            title: "Căutare și raportare",
-            description: "Capabilități puternice de căutare și rapoarte personalizabile pentru a găsi rapid informațiile de care ai nevoie.",
-            icon: <LuSearch className="icon" />
+            title: "Generare cod QR",
+            description: "Sistemul generează automat coduri QR unice pentru fiecare produs, pe care firmele le pot atașa fizic pe produsele lor.",
+            icon: <FaQrcode className="icon" />
 
         },
         {
@@ -55,6 +61,10 @@ const Home = () => {
                 </Button>
             </Container>
 
+            {isAuthenticated &&
+                <ChatBot/>
+            }
+
             <Container className='mt-5 mb-5 slide-down-fade-in' style={{}}>
                 <img className='w-100 h-100 rounded-2' style={{maxHeight: '90%'}} src={img1} alt='img'></img>
             </Container>
@@ -63,7 +73,7 @@ const Home = () => {
                 <Container className='text-center slide-down-fade-in' style={{marginTop: '10%'}}>
                     <p className='rounded-pill d-inline-flex py-1 px-3 fw-semibold' style={{fontSize: '0.75em', backgroundColor: 'rgba(141, 176, 85, 0.23)'}}>Funcționalități esențiale</p>
                     <p className='fw-bold' style={{ fontSize: '2.5rem'}}>Instrumente complete pentru trasabilitate</p>
-                    <p className='mt-3 text-secondary fs-5 mx-auto' style={{width: '70%'}}>Platforma noastră oferă funcționalități avansate, concepute pentru a-ți oferi vizibilitate și control complet asupra ciclului de viață al produsului.</p>
+                    <p className='mt-3 text-secondary col-lg-8 col-10 fs-5 mx-auto'>Platforma noastră oferă funcționalități avansate, concepute pentru a-ți oferi vizibilitate și control complet asupra ciclului de viață al produsului.</p>
                 </Container>
 
                 <Container className='mt-5'>

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import axios from 'axios'
 import TraceLinkHeader from "../TraceLinkHeader"
-import { Card, Row, Col, Button } from 'react-bootstrap'
+import { Card, Row, Col, Button, Badge } from 'react-bootstrap'
 import { IoCheckmarkCircle } from "react-icons/io5"
 import { TbXboxXFilled } from "react-icons/tb"
 import { LuPackage } from "react-icons/lu"
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io"
 import { useParams } from 'react-router-dom'
-import CommentSection from "./CommentSection"
+import FeedbackSection from "./FeedbackSection"
 
 const SingleProductHistory = () => {
     const [productInfo, setProductInfo] = useState(null)
@@ -45,7 +45,7 @@ const SingleProductHistory = () => {
                     }
                 }else{
                     if(sender && id){
-                        const response = await axios.get(`http://localhost:5000/api/client/product-history/${sender}/${id}`, {
+                        const response = await axios.get(`http://localhost:5000/api/unknown-user/product-history/${sender}/${id}`, {
                             headers: {
                                 "Content-Type": "application/json",
                             }
@@ -98,6 +98,20 @@ const SingleProductHistory = () => {
                     {active === 1 ? (
                     <div className="d-flex flex-column justify-content-center align-items-center w-100">
                     <p className="fw-bold mt-3 mb-1" style={{fontSize: '2em'}}>{productInfo.processor.productData?.productName}</p>
+                    {productInfo.farmer.productData.length > 0 && 
+                        productInfo.farmer.productData.every(product => product.bio) && (
+                            <Badge 
+                                bg="success" 
+                                className="mb-3"
+                                style={{
+                                    backgroundColor: '#28a745',
+                                    fontSize: '1.1rem',
+                                    padding: '0.5rem 1rem'
+                                }}
+                            >
+                                BIO
+                            </Badge>
+                        )}
                     <p className="text-secondary mb-0">Lot: {productInfo.processor.productData?.batch}</p>
                     
                     <Card className="mt-4 card-responsive" style={{width: '60%'}}>
@@ -116,7 +130,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Procesare</h6>
+                                            <h6 className="fs-5 text-success">Procesare</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.processor.companyInfo?.county}, {productInfo.processor.companyInfo?.country}</span>
@@ -163,9 +177,9 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Distribuitor</h6>
+                                            <h6 className="fs-5 text-success">Distribuitor</h6>
                                             <div className="text-secondary">
-                                                <p className="text-secondary mb-1">
+                                                <p className="text-secondary mb-1"> 
                                                     <span>{productInfo.distributor.companyInfo?.county}, {productInfo.distributor.companyInfo?.country}</span>
                                                     <span> • </span>
                                                     <span>primit la {new Date(productInfo.distributor.scannedAt).toLocaleDateString('ro-RO', {
@@ -177,7 +191,7 @@ const SingleProductHistory = () => {
                                                 <p className="text-secondary mb-2">
                                                     Cantitate trimisă: {productInfo.distributor.productData?.quantity} {productInfo.processor.productData?.unit}
                                                 </p>
-                                                {productInfo.distributor.wasStored ?? (
+                                                {productInfo.distributor.wasStored && (
                                                     <div>
                                                         <p className="text-secondary mb-2">
                                                             Temperatura de stocare: {productInfo.distributor.productData?.storageTemperature} °C
@@ -185,11 +199,11 @@ const SingleProductHistory = () => {
                                                         <p className="text-secondary mb-2">
                                                             Locul de stocare: {productInfo.distributor.productData?.storageCondition === 'alt tip' ? productInfo.distributor.productData?.otherStorageDetails : productInfo.distributor.productData?.storageCondition}
                                                         </p>
-                                                        <p className="text-secondary mb-2">
-                                                            Note suplimentare: {productInfo.distributor.productData?.notes || "Nu au fost adăugate note suplimentare"}
-                                                        </p>
                                                     </div>
                                                 )}
+                                                <p className="text-secondary mb-2">
+                                                            Note suplimentare: {productInfo.distributor.productData?.notes || "Nu au fost adăugate note suplimentare"}
+                                                </p>
                                             </div>
                                         </div>
                                     </Col>
@@ -208,7 +222,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Distribuitor</h6>
+                                            <h6 className="fs-5 text-danger">Distribuitor</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     Produsul nu a fost înregistrat de către distribuitor
@@ -234,7 +248,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Magazin</h6>
+                                            <h6 className="fs-5 text-success">Magazin</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.store.companyInfo?.county}, {productInfo.store.companyInfo?.country}</span>
@@ -275,7 +289,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Magazin</h6>
+                                            <h6 className="fs-5 text-danger">Magazin</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     Produsul nu a fost înregistrat de către magazin
@@ -291,7 +305,7 @@ const SingleProductHistory = () => {
                     {localStorage.getItem('googleToken') ? (
                         <>
                             <hr className="mt-5" style={{ width: '94%', borderTop: '1px solid #aaa' }} />
-                            <CommentSection productId={productInfo.processor.productData?.id} type={'processor'}/>
+                            <FeedbackSection productId={productInfo.processor.productData?.id} type={'processor'}/>
                         </>
                     ) : (
                         null
@@ -323,7 +337,22 @@ const SingleProductHistory = () => {
                                                     }
                                                 }}>
 
-                                            <div className="fw-semibold">{product.productName}</div>
+                                            <div className="d-flex">
+                                                <div className="fw-semibold">{product.productName}</div>
+                                                {product.bio && (
+                                                    <Badge 
+                                                        bg="success" 
+                                                        className="fs-6 ms-2"
+                                                        style={{
+                                                            backgroundColor: '#28a745',
+                                                            fontSize: '0.75rem',
+                                                            padding: '0.25rem 0.5rem'
+                                                        }}
+                                                    >
+                                                        BIO
+                                                    </Badge>
+                                            )}
+                                            </div>
                                             {selectedIngredient !== product ? (
                                                 <div className="me-3"><IoIosArrowDown /></div>
                                             ) : (
@@ -342,9 +371,10 @@ const SingleProductHistory = () => {
                                                                     day: 'numeric'
                                                                 })}</span>
                                                             </p>
-                                                            <p className="text-secondary">Descriere: {product.description || 'Nu există descriere disponibilă'}</p>
+                                                            {product.batch && <p className="text-secondary">Lot: {product.batch}</p>}
                                                             {product.category && <p className="text-secondary">Categorie: {product.category}</p>}
                                                             {product.quantity && <p className="text-secondary">Cantitate: {product.quantity} {product.unit || ''}</p>}
+                                                            <p className="text-secondary">Descriere: {product.description || 'Nu există descriere disponibilă'}</p>                                                       
                                                         </div>
                                                     )}
                                     </div>
@@ -359,6 +389,18 @@ const SingleProductHistory = () => {
             return(
                 <div className="d-flex flex-column justify-content-center align-items-center pb-5">
                     <h2 className="fw-bold">{productInfo.farmer.productData?.productName}</h2>
+                    {productInfo.farmer.productData?.bio && (
+                            <Badge
+                                bg="success"
+                                style={{
+                                    backgroundColor: '#28a745',
+                                    fontSize: '1.1rem',
+                                    padding: '0.5rem 1rem'
+                                }}
+                            >
+                                BIO
+                            </Badge>
+                        )}
                     <p className="text-secondary mt-2 mb-0">Lot: {productInfo.farmer.productData?.batch}</p>
                     <p className="text-secondary">Categorie: {productInfo.farmer.productData?.category}</p>
                     <Card className="mt-4 card-responsive" style={{width: '60%'}}>
@@ -377,7 +419,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Colectare</h6>
+                                            <h6 className="fs-5 text-success">Colectare</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.farmer.companyInfo?.county}, {productInfo.farmer.companyInfo?.country}</span>
@@ -392,9 +434,9 @@ const SingleProductHistory = () => {
                                                     Cantitate recoltată: {productInfo.farmer.productData?.quantity} {productInfo.farmer.productData?.unit}
                                                 </p>
                                             </div>
-                                            <div>
-                                                {productInfo.farmer.productData?.description}
-                                            </div>
+                                            <p className="text-secondary">
+                                                Descriere: {productInfo.farmer.productData?.description}
+                                            </p>
                                         </div>
                                     </Col>
                                 </Row>
@@ -414,7 +456,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Distribuitor</h6>
+                                            <h6 className="fs-5 text-success">Distribuitor</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.distributor.companyInfo?.county}, {productInfo.distributor.companyInfo?.country}</span>
@@ -459,7 +501,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Distribuitor</h6>
+                                            <h6 className="fs-5 text-danger">Distribuitor</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     Produsul nu a fost înregistrat de către distribuitor
@@ -485,7 +527,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Magazin</h6>
+                                            <h6 className="fs-5 text-success">Magazin</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.store.companyInfo?.county}, {productInfo.store.companyInfo?.country}</span>
@@ -526,7 +568,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5">Magazin</h6>
+                                            <h6 className="fs-5 text-danger">Magazin</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     Produsul nu a fost înregistrat de către magazin
@@ -542,7 +584,7 @@ const SingleProductHistory = () => {
                     {localStorage.getItem('googleToken') ? (
                         <>
                             <hr className="mt-5" style={{ width: '94%', borderTop: '1px solid #aaa' }} />
-                            <CommentSection productId={productInfo.farmer.productData?.id} type={'farmer'}/>                        
+                            <FeedbackSection productId={productInfo.farmer.productData?.id} type={'farmer'}/>                        
                         </>
                     ) : (
                         null

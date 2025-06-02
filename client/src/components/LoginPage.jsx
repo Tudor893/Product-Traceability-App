@@ -7,7 +7,7 @@ const LoginPage = () => {
         <div className="slide-down-fade-in">
             <TraceLinkHeader backPath='/'/>
 
-            <div className="d-flex justify-content-center align-items-center" style={{marginTop: '4%'}}>
+            <div className="d-flex justify-content-center align-items-center responsive-login">
                 <Card className="d-flex shadow border-0 align-items-center col-10 col-lg-4 mt-lg-0 mt-5" style={{height: '50vh'}}>
                     <Card.Title className="fw-bold fs-2 mt-lg-4 mt-5">
                         Bun venit înapoi

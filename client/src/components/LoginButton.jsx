@@ -4,11 +4,13 @@ import { Toast } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
 import {jwtDecode} from 'jwt-decode'
 import axios from 'axios'
+import { useAuth } from './AuthContext'
 
 const LoginButton = () => {
     
     const navigate = useNavigate()
     const [showToast, setShowToast] = useState(false)
+    const { login } = useAuth()
 
     useEffect(() => {
         setTimeout(() => setShowToast(false), 3000)
@@ -20,12 +22,13 @@ const LoginButton = () => {
                 onSuccess={ async (credentialResponse) => {
                     const token = credentialResponse.credential
                     const decodedToken = jwtDecode(token)
-                    await axios.post('http://localhost:5000/api/auth/google', {email: decodedToken.email, name: decodedToken.name}, {
+                    await axios.post('http://localhost:5000/api/auth/google', {}, {
                         headers: {
+                            'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         }
                     })
-                    localStorage.setItem('googleToken', token)
+                    login(token)
                     navigate('/chooseRole')
                 }}
                 onError={() => {

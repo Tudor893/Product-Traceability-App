@@ -4,7 +4,7 @@ const ProductAdvantages = () => {
             <div className="fw-semibold fs-5">
                 Avantajele înregistrării produselor
             </div>
-            <div className="mt-3">
+            <div className="mt-3 col-11">
                 Prin adăugarea produselor în sistemul nostru, oferim consumatorilor acces la informații complete despre originea, calitatea și metodele de producție ale produselor dumneavoastră, construind încredere și valoare adăugată.
             </div>
         </div>
