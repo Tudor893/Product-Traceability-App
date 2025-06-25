@@ -36,7 +36,7 @@ const AllProductHistory = () => {
     return (
         <div>
             <TraceLinkHeader backPath='/client'/>
-            <div className="d-flex justify-content-center">
+            <div className="d-flex justify-content-center responsive-text-15">
                 <h3 className="mt-2 fw-bold">Istoric produse scanate</h3>
             </div>
             {loading ? (
@@ -51,7 +51,7 @@ const AllProductHistory = () => {
                     </div>
                 ) : (
                     <div className="d-flex justify-content-center pt-4">
-                        <Card className="mt-4 card-responsive" style={{width: '60%'}}>
+                        <Card className="mt-4 card-responsive card-responsive-height" style={{width: '60%'}}>
                         <div style={{
                             maxHeight: '300px',
                             overflowY: 'auto'

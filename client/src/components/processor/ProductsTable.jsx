@@ -1,4 +1,3 @@
-import { FaEye } from "react-icons/fa"
 import { format } from 'date-fns'
 
 const ProductsTable = ({ scannedProducts, searchScanned }) => {
@@ -13,13 +12,12 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                         <th className="ps-4 text-secondary fw-normal">CATEGORIE</th>
                         <th className="ps-4 text-secondary fw-normal">CANTITATE</th>
                         <th className="ps-4 text-secondary fw-normal">LOCAȚIE</th>
-                        <th className="ps-4 text-secondary fw-normal">DETALII</th>
                     </tr>
                 </thead>
                 <tbody>
                     {scannedProducts.length === 0 ? (
                         <tr>
-                            <td colSpan="7" className="text-center py-4">Nu există produse scanate</td>
+                            <td colSpan="6" className="text-center py-4">Nu există produse scanate</td>
                         </tr>
                         ) : (scannedProducts
                             .filter(product => 
@@ -39,9 +37,6 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                                         {scannedProduct.farmerProduct?.quantity || '-'} {scannedProduct.farmerProduct?.unit || ''}
                                     </td>
                                     <td className="ps-4">{scannedProduct.farmerProduct?.location || '-'}</td>
-                                    <td className="ps-4">
-                                        <FaEye className="ms-3"/>
-                                    </td>
                                 </tr>
                             ))
                         )}

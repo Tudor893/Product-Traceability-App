@@ -117,7 +117,6 @@ function ChatBot() {
       <button
         style={styles.floatingButton}
         onClick={() => setOpen(o => !o)}
-        aria-label="Deschide chat"
       >
         💬
       </button>

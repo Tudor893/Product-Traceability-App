@@ -7,70 +7,81 @@ import ProcessorFarmerProduct from '../models/ProcessorFarmerProduct.js'
 const router = express.Router()
 
 router.post('/products', authMiddleware, async (req, res) => {
-  try {
-      const { 
-          productName,
-          batch,
-          quantity,
-          unit,
-          productionDate,
-          expirationDate,
-          storageConditions,
-          cost,
-          notes,
-          selectedIngredients
-      } = req.body
+    try {
+        const { 
+            productName,
+            batch,
+            quantity,
+            unit,
+            productionDate,
+            expirationDate,
+            storageConditions,
+            cost,
+            notes,
+            selectedIngredients
+        } = req.body
 
-      const userEmail = req.user.email
-      const user = await User.findOne({ where: { email: userEmail } });
-      if (!user) {
-        return res.status(404).json({ message: 'User not found' });
-      }
-      const userId = user.id;
+        const userEmail = req.user.email
+        const user = await User.findOne({ where: { email: userEmail } });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const userId = user.id;
   
-      if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !storageConditions || !selectedIngredients) {
-        return res.status(400).json({ message: 'Missing required fields' })
-      }
+        if (!productName || !batch || !quantity || !unit || !productionDate || !expirationDate || !storageConditions || !selectedIngredients) {
+            return res.status(400).json({ message: 'Missing required fields' })
+        }
 
-      const processorProduct = await ProcessorProduct.create({
-          userId: userId,
-          productName,
-          batch,
-          productionDate,
-          expirationDate,
-          quantity,
-          unit,
-          cost: cost || null,
-          storageConditions,
-          notes: notes || null
-      })
+        const existingProduct = await ProcessorProduct.findOne({
+            where: {
+                userId,
+                batch
+            }
+        })
 
-      if (selectedIngredients && selectedIngredients.length > 0) {
-          const associations = selectedIngredients.map(ingredient => {
-              const farmerProductId = ingredient.farmerProduct.id
+        if (existingProduct) {
+            return res.status(409).json({ message: 'Produsul cu acest lot există deja' })
+        }
 
-              return {
-                  processorProductId: processorProduct.id,
-                  farmerProductId: farmerProductId
-              }
-          })
+        const processorProduct = await ProcessorProduct.create({
+            userId: userId,
+            productName,
+            batch,
+            productionDate,
+            expirationDate,
+            quantity,
+            unit,
+            cost: cost || null,
+            storageConditions,
+            notes: notes || null
+        })
 
-          await ProcessorFarmerProduct.bulkCreate(associations)
-      }
+        if (selectedIngredients && selectedIngredients.length > 0) {
+            const associations = selectedIngredients.map(ingredient => {
+                const farmerProductId = ingredient.farmerProduct.id
 
-      return res.status(201).json({
-          success: true,
-          message: 'Produsul a fost adăugat cu succes!',
-          product: processorProduct
-      })
-  } catch (error) {
-      console.error('Error creating processor product:', error)
-      return res.status(500).json({
-          success: false,
-          message: 'A apărut o eroare la adăugarea produsului.',
-          error: error.message
-      })
-  }
+                return {
+                    processorProductId: processorProduct.id,
+                    farmerProductId: farmerProductId
+                }
+            })
+
+            await ProcessorFarmerProduct.bulkCreate(associations)
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: 'Produsul a fost adăugat cu succes!',
+            product: processorProduct
+        })
+    } catch (error) {
+        console.error('Error creating processor product:', error)
+        return res.status(500).json({
+            success: false,
+            message: 'A apărut o eroare la adăugarea produsului.',
+            error: error.message
+        })
+    }
 })
 
 router.get('/products', authMiddleware, async (req, res) => {

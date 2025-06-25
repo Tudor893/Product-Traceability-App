@@ -8,7 +8,8 @@ const companyRoles = {
   15780419: 'Fermier',
   40890617: 'Procesator',
   13603950: 'Distribuitor',
-  22891860: 'Magazin'
+  22891860: 'Magazin',
+  39817361: 'Fermier'
 }
 
 function getCompanyRole(uic) {

@@ -1,11 +1,11 @@
 import { Container, Card } from "react-bootstrap"
-import TraceLinkHeader from "./TraceLinkHeader"
 import { IoPersonOutline } from "react-icons/io5"
 import { AiOutlineMail } from "react-icons/ai"
 import { IoBusinessOutline } from "react-icons/io5"
 import { MdOutlineBusinessCenter } from "react-icons/md"
 import { LuKeyRound } from "react-icons/lu"
 import { useAuth } from "./AuthContext"
+import NavigationBar from "./NavigationBar"
 
 const Profile = () => {
     const { user, isLoading } = useAuth()
@@ -44,8 +44,8 @@ const Profile = () => {
                 <p>Loading...</p>
             ) : (
                 <div>
-                    <TraceLinkHeader backPath='/' />
-                    <Container className="w-75 mt-3 mb-5">
+                    <NavigationBar/>
+                    <Container className="w-75 mt-3 mb-5 mt-5 pt-5">
                         <div className="d-flex align-items-center mb-4">
                             <div className="rounded-circle text-white d-flex align-items-center justify-content-center fw-semibold fs-4" style={{width: '100px', height: '100px', backgroundColor: 'rgba(141, 176, 85, 0.73)'}}>
                                 {user.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
@@ -60,11 +60,12 @@ const Profile = () => {
                                 )}
                             </div>
                         </div>
-                        <Card>
+    
+                        <Card className="mt-4">
                             <Card.Body className="p-4">
                                 <h4 className="">Informații profil</h4>
                                 {details.map((detail, index) => (
-                                    <>
+                                    <div key={index}>
                                     <div className="d-flex align-items-center mb-4 mt-4 gap-3">
                                         <div className="fs-4" style={{color: 'rgba(141, 176, 85, 0.83)'}}>
                                             {detail.icon}
@@ -77,7 +78,7 @@ const Profile = () => {
                                     {index !== details.length - 1 && (
                                         <hr style={{ width: '94%', borderTop: '1.5px solid #aaa' }} />
                                     )}
-                                    </>
+                                    </div>
                                 ))}
                             </Card.Body>
                         </Card>

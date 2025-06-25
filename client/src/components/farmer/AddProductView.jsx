@@ -68,7 +68,12 @@ const AddProductView = ({ onProductAdded }) => {
             
             toast.success("Produsul a fost adăugat cu succes!")
         } catch (error) {
-            console.log("A apărut o eroare la trimiterea formularului:", error)
+            if (error.response && error.response.status === 409) {
+                toast.error("Există deja un produs cu acest lot.");
+                } else {
+                    console.log("A apărut o eroare la trimiterea formularului:", error)
+                    toast.error("A apărut o eroare. Încearcă din nou.")
+                }
         }
     }
 

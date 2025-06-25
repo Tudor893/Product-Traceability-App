@@ -35,8 +35,6 @@ app.use('/api/company', companyRoutes)
 app.use('/api/scanned-products', scannedProducts)
 app.use('/api/unknown-user', unknownUser)
 
-const OPENAI_API_KEY = process.env.OpenAI_apiKey;
-
 async function chatWithGPT(message) {
   const response = await axios.post(
     'https://api.openai.com/v1/chat/completions',
@@ -59,26 +57,26 @@ async function chatWithGPT(message) {
     },
     {
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${process.env.OpenAI_apiKey}`,
         'Content-Type': 'application/json'
       }
     }
-  );
-  return response.data.choices[0].message.content;
+  )
+  return response.data.choices[0].message.content
 }
 
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message } = req.body
     if (!message) {
-      return res.status(400).json({ error: 'Mesajul este necesar.' });
+      return res.status(400).json({ error: 'Mesajul este necesar.' })
     }
-    const raspuns = await chatWithGPT(message);
-    res.json({ response: raspuns });
+    const raspuns = await chatWithGPT(message)
+    res.json({ response: raspuns })
   } catch (err) {
-    res.status(500).json({ error: 'Eroare la comunicarea cu OpenAI.' });
+    res.status(500).json({ error: 'Eroare la comunicarea cu OpenAI.' })
   }
-});
+})
 
 app.listen(port, async () => {
   console.log(`Serverul rulează pe http://localhost:${port}`)

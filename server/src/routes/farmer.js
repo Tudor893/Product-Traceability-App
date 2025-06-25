@@ -30,6 +30,16 @@ router.post('/products', authMiddleware, async (req, res) => {
     if (!productName || !category || !quantity || !unit || !batch || !harvestDate || !location || !bio) {
       return res.status(400).json({ message: 'Missing required fields' })
     }
+    const existingProduct = await FarmerProduct.findOne({
+      where: {
+        userId,
+        batch
+      }
+    })
+
+    if (existingProduct) {
+      return res.status(409).json({ message: 'Produsul cu acest lot există deja' })
+    }
 
     const newProduct = await FarmerProduct.create({
       userId,

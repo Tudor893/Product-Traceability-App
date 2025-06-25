@@ -10,7 +10,7 @@ const Client = () => {
     const buttonInfo = [
         {
             icon: <LuQrCode size={30} color="white"/>,
-            title: "Scanează codul qr",
+            title: "Scanează codul QR",
             desc: "Scanează pentru a vedea traseul unui produs",
             navigator: '/client/scanareProduse'
         },

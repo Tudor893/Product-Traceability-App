@@ -3,7 +3,7 @@ import img1 from '../assets/image.png'
 import { useNavigate } from 'react-router-dom'
 import NavigationBar from './NavigationBar'
 import { LuCheck } from "react-icons/lu"
-import { FaQrcode } from "react-icons/fa6";
+import { FaQrcode, FaArrowRightLong } from "react-icons/fa6";
 import { BsQrCodeScan } from "react-icons/bs";
 import { TbPigMoney } from "react-icons/tb";
 import Footer from './Footer';
@@ -55,9 +55,7 @@ const Home = () => {
                 <p className='mt-3 text-secondary fs-5 fs-sm-6 mx-auto col-12 col-lg-8'>Obține vizibilitate completă asupra lanțului tău de aprovizionare. Urmărește produsele cu precizie și transparență, de la origine până la consumator</p>
                 <Button className='bgColorMain rounded-pill mt-2 text-white fw-semibold px-4' style={{padding: '10px'}} onClick={() => navigate('/login')}>
                     <span className='me-2'>Începe acum</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-arrow-right" viewBox="0 0 16 16">
-                        <path fillRule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                    </svg>
+                    <FaArrowRightLong/>
                 </Button>
             </Container>
 

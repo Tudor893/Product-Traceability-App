@@ -12,7 +12,7 @@ const Header = ({ navigate }) => {
                 </Button>
             </div>
             <p className="fw-bold fs-2">Dashboard Magazin</p>
-            <p className="text-secondary">Gestionează recepția, stocarea și vânzarea produselor, asigurând trasabilitatea până la consumatorul final</p>
+            <p className="text-secondary">Gestionează recepția și stocarea produselor, asigurând trasabilitatea până la consumatorul final</p>
         </div>
     )
 }

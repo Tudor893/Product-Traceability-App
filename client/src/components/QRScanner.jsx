@@ -3,6 +3,7 @@ import { Html5Qrcode } from "html5-qrcode"
 import { Card, Alert, Row, Col, Container, Button } from "react-bootstrap"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import CryptoJS from "crypto-js"
 
 export default function QRScanner() {
   const [scanResult, setScanResult] = useState("")
@@ -11,6 +12,7 @@ export default function QRScanner() {
   const [scanning, setScanning] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const navigate = useNavigate()
+  const secretKey = "cheie-super-secreta"
 
   useEffect(() => {
     if (typeof Html5Qrcode !== "undefined" && !scanner) {
@@ -53,10 +55,12 @@ export default function QRScanner() {
           hasProcessed = true;
 
         try {
-          const parsedData = JSON.parse(decodedText)
-          setScanResult(decodedText)
-          setScanning(false)
+          const bytes = CryptoJS.AES.decrypt(decodedText, secretKey)
+          const decryptedText = bytes.toString(CryptoJS.enc.Utf8)
+          const parsedData = JSON.parse(decryptedText)
 
+          setScanResult(decryptedText)
+          setScanning(false)
           try {
             await scanner.stop()
           } catch (err) {

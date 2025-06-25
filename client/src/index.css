@@ -131,6 +131,12 @@
   }
 }
 
+@media (max-width: 768px) {
+  .responsive-text-5 {
+      margin-top: 5%;
+  }
+}
+
 .responsive-login {
   margin-top: 4%;
 }
@@ -166,6 +172,12 @@
 @media (max-width: 576px) {
   .card-responsive {
       width: 95% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-responsive-height {
+      height: 60vh !important;
   }
 }
 

@@ -10,7 +10,7 @@ const Navigation = ({ active, setIsActive }) => {
                     color: active === 1 ? '#707d5b' : 'black'
                 }} 
                 onClick={() => setIsActive(1)}>
-                Prezentare generală
+                Produsele mele
             </Button>
             <Button className="border-0 fw-semibold"
                 style={{

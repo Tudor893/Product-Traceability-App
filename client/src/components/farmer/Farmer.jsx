@@ -3,7 +3,6 @@ import { Button } from "react-bootstrap";
 import { LuArrowLeft } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import DashboardView from "./DashboardView";
 import AddProductView from "./AddProductView";
 import ProductsListView from "./ProductsListView";
@@ -43,7 +42,7 @@ const Farmer = () => {
         } catch (error) {
             console.error('Error fetching products:', error)
         }
-    };
+    }
 
     const handleAddProduct = (newProduct) => {
         setProducts([newProduct, ...products])
@@ -51,7 +50,7 @@ const Farmer = () => {
 
         const productIncome = parseFloat(newProduct.cost) * parseFloat(newProduct.quantity)
         setTotalIncome(totalIncome + productIncome)
-    };
+    }
 
     return (
         <div className="scrollbar" style={{ backgroundColor: '#eaeaea', minHeight: '100vh' }}>
@@ -98,7 +97,7 @@ const Farmer = () => {
                 )}
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Farmer;
+export default Farmer

@@ -104,9 +104,13 @@ const AddProduct = () => {
                 toast.success("Produsul a fost înregistrat cu succes!")
             }
         } catch (error) {
-            console.error('Error submitting product:', error)
-            toast.warn("Produsul a fost deja înregistrat!")
-        }
+            if (error.response && error.response.status === 409) {
+                toast.warn("Produsul a fost deja înregistrat!")
+                } else {
+                    console.log("A apărut o eroare la trimiterea formularului:", error)
+                    toast.error("A apărut o eroare. Încearcă din nou.")
+                }
+            }
     }
 
     const handleSelectProduct = (product) => {

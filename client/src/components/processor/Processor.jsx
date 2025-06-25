@@ -1,12 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Dashboard from "./Dashboard"
+import ProductListView from "./ProductListView"
 import AddProduct from "./AddProduct"
 import QRScanner from "../QRScanner"
 import ScannedProducts from "./ScannedProducts"
 import Header from './Header'
 import Navigation from './Navigation'
 import SideNavBar from "./SideNavBar"
+import Dashboard from "./Dashboard"
 
 const Processor = () => {
     const [active, setIsActive] = useState(1)
@@ -37,8 +38,10 @@ const Processor = () => {
                 ) : active === 2 ? (
                     <AddProduct />
                 ) : active === 3 ? (
-                    <QRScanner />
+                    <ProductListView />
                 ) : active === 4 ? (
+                    <QRScanner />
+                ) : active === 5 ? (
                     <ScannedProducts />
                 ) : null}
             </div>

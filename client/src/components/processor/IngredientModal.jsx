@@ -25,13 +25,14 @@ const IngredientModal = ({
                     <Form.Control
                         value={searchIngredient}
                         onChange={(e) => setSearchIngredient(e.target.value)}
-                        placeholder="Caută ingrediente"
+                        placeholder="Caută ingrediente după nume sau lot"
                     />
                 </InputGroup>
                 <Row>
                     {scannedProducts
                         .filter(product => 
-                            product.farmerProduct.productName.toLowerCase().includes((searchIngredient).toLowerCase()))
+                            product.farmerProduct.productName.toLowerCase().includes((searchIngredient).toLowerCase())
+                            || product.farmerProduct.batch.toLowerCase().includes(searchIngredient.toLowerCase()))
                         .map((product, index) => (
                             <Col key={index} xs={12} md={4} className="mb-3">
                                 <Card onClick={() => { handleSelectIngredients(product) }} style={{cursor: 'pointer', backgroundColor: selectedIngredients.some(p => p.id === product.id) ? 'rgba(141, 176, 85, 0.50)' : 'transparent'}}>
@@ -39,8 +40,12 @@ const IngredientModal = ({
                                     <Card.Title>{product.farmerProduct.productName}</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
+                                    <Card.Text>
+                                        Lot:  {product.farmerProduct.batch}
+                                    </Card.Text>
                                     <Card.Text>Scanat la: <br/> {product.createdAt ? 
-                                            format(new Date(product.createdAt), 'dd.MM.yyyy HH:mm') : '-'}</Card.Text>
+                                            format(new Date(product.createdAt), 'dd.MM.yyyy HH:mm') : '-'}
+                                    </Card.Text>
                                 </Card.Body>
                                 </Card>
                             </Col>

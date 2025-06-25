@@ -1,5 +1,5 @@
 import { Button } from "react-bootstrap";
-import { LuMenu, LuLayoutDashboard, LuPackage } from "react-icons/lu"
+import { LuMenu, LuLayoutDashboard, LuPackage, LuHistory } from "react-icons/lu"
 import { GoPlus } from "react-icons/go"
 import { MdQrCodeScanner } from "react-icons/md"
 
@@ -21,13 +21,18 @@ const SideNavBar = ({ active, setIsActive, expanded, setExpanded }) => {
         },
         {
             id: 3,
+            title: "Produsele mele",
+            icon: <LuPackage size={18} />
+        },
+        {
+            id: 4,
             title: "Scanare produse",
             icon: <MdQrCodeScanner size={18} />
         },
         {
-            id: 4,
+            id: 5,
             title: "Vizualizare produse scanate",
-            icon: <LuPackage size={18} />
+            icon: <LuHistory size={18} />
         }
     ];
 

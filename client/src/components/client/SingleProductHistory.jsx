@@ -73,7 +73,7 @@ const SingleProductHistory = () => {
         if(productInfo.processor.productData){
 
             return(
-                <div className="d-flex flex-column justify-content-center align-items-center pb-5">
+                <div className="d-flex flex-column justify-content-center align-items-center pb-5 responsive-text-5">
                     <div className="d-flex p-2 gap-2 rounded" style={{width: '60%', backgroundColor: '#eaeaea'}}>
                         <Button className="border-0 fw-semibold w-50" 
                             style={{
@@ -149,7 +149,7 @@ const SingleProductHistory = () => {
                                                     })}
                                                 </p>
                                                 <p className="text-secondary mb-2">
-                                                    Cantitate recoltată: {productInfo.processor.productData?.quantity} {productInfo.processor.productData?.unit}
+                                                    Cantitate procesată: {productInfo.processor.productData?.quantity} {productInfo.processor.productData?.unit}
                                                 </p>
                                                 <p className="text-secondary mb-2">
                                                     Condiții de stocare: {productInfo.processor.productData?.storageConditions}
@@ -387,7 +387,7 @@ const SingleProductHistory = () => {
         }else if (productInfo.farmer.productData) {
 
             return(
-                <div className="d-flex flex-column justify-content-center align-items-center pb-5">
+                <div className="d-flex flex-column justify-content-center align-items-center pb-5 responsive-text-5">
                     <h2 className="fw-bold">{productInfo.farmer.productData?.productName}</h2>
                     {productInfo.farmer.productData?.bio && (
                             <Badge

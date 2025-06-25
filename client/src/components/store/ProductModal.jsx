@@ -25,14 +25,16 @@ const ProductModal = ({
                     <Form.Control
                         value={searchProduct}
                         onChange={(e) => setSearchProduct(e.target.value)}
-                        placeholder="Caută produse"
+                        placeholder="Caută produse după nume sau lot"
                     />
                 </InputGroup>
                 <Row>
                     {scannedProducts
                         .filter(product => 
                             product.farmerProduct?.productName?.toLowerCase().includes(searchProduct.toLowerCase())
-                                || product.processorProduct?.productName?.toLowerCase().includes(searchProduct.toLowerCase()))
+                            || product.processorProduct?.productName?.toLowerCase().includes(searchProduct.toLowerCase())
+                            || product.farmerProduct?.batch?.toLowerCase().includes(searchProduct.toLowerCase())
+                            || product.processorProduct?.batch?.toLowerCase().includes(searchProduct.toLowerCase()))
                         .map((product, index) => (
                             <Col key={index} xs={12} md={4} className="mb-3">
                                 <Card onClick={() => { handleSelectProduct(product) }} style={{cursor: 'pointer', backgroundColor: selectedProduct.some(p => p.id === product.id) ? 'rgba(141, 176, 85, 0.50)' : 'transparent'}}>
@@ -40,8 +42,12 @@ const ProductModal = ({
                                     <Card.Title>{product.farmerProduct?.productName || product.processorProduct?.productName}</Card.Title>
                                 </Card.Header>
                                 <Card.Body>
+                                    <Card.Text>
+                                        Lot: {product.farmerProduct?.batch || product.processorProduct?.batch}
+                                    </Card.Text>
                                     <Card.Text>Scanat la: <br/> {product.createdAt ? 
-                                            format(new Date(product.createdAt), 'dd.MM.yyyy HH:mm') : '-'}</Card.Text>
+                                            format(new Date(product.createdAt), 'dd.MM.yyyy HH:mm') : '-'}
+                                    </Card.Text>
                                 </Card.Body>
                                 </Card>
                             </Col>

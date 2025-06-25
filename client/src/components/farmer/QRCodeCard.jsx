@@ -2,11 +2,12 @@ import { Card, Button } from "react-bootstrap"
 import { QRCodeSVG } from "qrcode.react"
 import jsPDF from "jspdf"
 import { useRef } from "react"
+import CryptoJS from "crypto-js"
 
 const QRCodeCard = ({ selectedProduct }) => {
     const qrCodeRef = useRef(null)
 
-const downloadAsPDF = () => {
+    const downloadAsPDF = () => {
         if (!selectedProduct || !qrCodeRef.current) return
         
         const canvas = document.createElement("canvas")
@@ -45,26 +46,33 @@ const downloadAsPDF = () => {
         img.src = `data:image/svg+xml;base64,${btoa(svgData)}`
     }
 
-    return (
+     return (
         <Card className="rounded-4 border-0 w-100">
             <Card.Body className="p-4 d-flex flex-column justify-content-center align-items-center">
-                {selectedProduct ? (
-                    <div className="d-flex justify-content-center flex-column align-items-center" ref={qrCodeRef}>
-                        <h5 className="mb-3 text-center">Cod QR: {selectedProduct.productName}</h5>
-                        <QRCodeSVG 
-                            value={JSON.stringify({
-                                productId: selectedProduct.id,
-                                productName: selectedProduct.productName,
-                                sender: "fermier"
-                            })}
-                            level="H"
-                            fgColor="#606b4d"
-                            size={200}
-                        />
-                        <Button className="mt-3 bgColorMain rounded-pill fw-semibold" onClick={downloadAsPDF}>Descarcă codul QR</Button>
-                        <small className="mt-2 text-secondary text-center">Codul QR poate fi scanat pentru a accesa toate detaliile produsului</small>
-                    </div>
-                ) : (
+                {selectedProduct ? (() => {
+                    const encryptedData = CryptoJS.AES.encrypt(
+                        JSON.stringify({
+                            productId: selectedProduct.id,
+                            productName: selectedProduct.productName,
+                            sender: "fermier"
+                        }),
+                        process.env.REACT_APP_SECRET_KEY
+                    ).toString()
+
+                    return (
+                        <div className="d-flex justify-content-center flex-column align-items-center" ref={qrCodeRef}>
+                            <h5 className="mb-3 text-center">Cod QR: {selectedProduct.productName}</h5>
+                            <QRCodeSVG 
+                                value={encryptedData}
+                                level="H"
+                                fgColor="#606b4d"
+                                size={200}
+                            />
+                            <Button className="mt-3 bgColorMain rounded-pill fw-semibold" onClick={downloadAsPDF}>Descarcă codul QR</Button>
+                            <small className="mt-2 text-secondary text-center">Codul QR poate fi scanat pentru a accesa toate detaliile produsului</small>
+                        </div>
+                    )
+                })() : (
                     <div className="text-center text-secondary">
                         <p>Selectează un produs pentru a vedea codul QR</p>
                     </div>
