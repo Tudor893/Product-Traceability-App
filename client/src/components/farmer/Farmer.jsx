@@ -8,6 +8,7 @@ import AddProductView from "./AddProductView";
 import ProductsListView from "./ProductsListView";
 import SideNavBar from "./SideNavBar";
 import NavButtons from "./NavButtons";
+import PredictView from "./PredictView";
 
 const Farmer = () => {
     const [active, setIsActive] = useState(1)
@@ -94,6 +95,10 @@ const Farmer = () => {
 
                 {active === 3 && (
                     <ProductsListView products={products} />
+                )}
+
+                {active === 4 && (
+                    <PredictView products={products} />
                 )}
             </div>
         </div>

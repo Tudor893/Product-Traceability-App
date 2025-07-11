@@ -63,7 +63,7 @@ const SingleProductHistory = () => {
             }
         }
         getProductHistory()
-    }, [])
+    },[])
 
     const renderContent = () => {
         if (loading) {
@@ -130,7 +130,7 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5 text-success">Procesare</h6>
+                                            <h6 className="fs-5 text-success">Procesator</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.processor.companyInfo?.county}, {productInfo.processor.companyInfo?.country}</span>
@@ -191,13 +191,16 @@ const SingleProductHistory = () => {
                                                 <p className="text-secondary mb-2">
                                                     Cantitate trimisă: {productInfo.distributor.productData?.quantity} {productInfo.processor.productData?.unit}
                                                 </p>
-                                                {productInfo.distributor.wasStored && (
+                                                {productInfo.distributor.wasStored ?? (
                                                     <div>
+                                                        <p className="text-secondary mb-2">
+                                                            Durata de păstrare: {productInfo.distributor.productData?.storageDuration} zile
+                                                        </p>
                                                         <p className="text-secondary mb-2">
                                                             Temperatura de stocare: {productInfo.distributor.productData?.storageTemperature} °C
                                                         </p>
                                                         <p className="text-secondary mb-2">
-                                                            Locul de stocare: {productInfo.distributor.productData?.storageCondition === 'alt tip' ? productInfo.distributor.productData?.otherStorageDetails : productInfo.distributor.productData?.storageCondition}
+                                                            Mod de păstrare: {productInfo.distributor.productData?.storageCondition === 'alt tip' ? productInfo.distributor.productData?.otherStorageDetails : productInfo.distributor.productData?.storageCondition}
                                                         </p>
                                                     </div>
                                                 )}
@@ -266,7 +269,7 @@ const SingleProductHistory = () => {
                                                     Temperatura de stocare: {productInfo.store.productData?.storageTemperature} °C
                                                 </p>
                                                 <p className="text-secondary mb-2">
-                                                    Locul de stocare: {productInfo.store.productData?.storageCondition === 'alt tip' ? productInfo.store.productData?.otherStorageDetails : productInfo.store.productData?.storageCondition}
+                                                    Mod de păstrare: {productInfo.store.productData?.storageCondition === 'alt tip' ? productInfo.store.productData?.otherStorageDetails : productInfo.store.productData?.storageCondition}
                                                 </p>
                                                 <p className="text-secondary mb-2">
                                                     Note suplimentare: {productInfo.store.productData?.notes || "Nu au fost adăugate note suplimentare"}
@@ -365,7 +368,7 @@ const SingleProductHistory = () => {
                                                             <p className="text-secondary">
                                                                 <span>{product.companyInfo?.county}, {product.companyInfo?.country}</span>
                                                                 <span> • </span>
-                                                                <span>recoltat la {new Date(product.harvestDate).toLocaleDateString('ro-RO', {
+                                                                <span> obținut la {new Date(product.harvestDate).toLocaleDateString('ro-RO', {
                                                                     year: 'numeric',
                                                                     month: 'long',
                                                                     day: 'numeric'
@@ -374,6 +377,7 @@ const SingleProductHistory = () => {
                                                             {product.batch && <p className="text-secondary">Lot: {product.batch}</p>}
                                                             {product.category && <p className="text-secondary">Categorie: {product.category}</p>}
                                                             {product.quantity && <p className="text-secondary">Cantitate: {product.quantity} {product.unit || ''}</p>}
+                                                            {product.shelfLifeDays && <p className="text-secondary">Durata de păstrare recomandată: {product.shelfLifeDays} zile</p>}
                                                             <p className="text-secondary">Descriere: {product.description || 'Nu există descriere disponibilă'}</p>                                                       
                                                         </div>
                                                     )}
@@ -419,19 +423,22 @@ const SingleProductHistory = () => {
                                     </Col>
                                     <Col className="p-0">
                                         <div>
-                                            <h6 className="fs-5 text-success">Colectare</h6>
+                                            <h6 className="fs-5 text-success">Fermier</h6>
                                             <div className="text-secondary">
                                                 <p className="text-secondary mb-1">
                                                     <span>{productInfo.farmer.companyInfo?.county}, {productInfo.farmer.companyInfo?.country}</span>
                                                     <span> • </span>
-                                                    <span>recoltat la {new Date(productInfo.farmer.productData?.harvestDate).toLocaleDateString('ro-RO', {
+                                                    <span>obținut la {new Date(productInfo.farmer.productData?.harvestDate).toLocaleDateString('ro-RO', {
                                                         year: 'numeric',
                                                         month: 'long',
                                                         day: 'numeric'
                                                     })}</span>
                                                 </p>
                                                 <p className="text-secondary mb-2">
-                                                    Cantitate recoltată: {productInfo.farmer.productData?.quantity} {productInfo.farmer.productData?.unit}
+                                                    Cantitate: {productInfo.farmer.productData?.quantity} {productInfo.farmer.productData?.unit}
+                                                </p>
+                                                <p className="text-secondary mb-2">
+                                                    Durata de păstrare recomandată: {productInfo.farmer.productData?.shelfLifeDays} zile
                                                 </p>
                                             </div>
                                             <p className="text-secondary">
@@ -473,10 +480,13 @@ const SingleProductHistory = () => {
                                                 {productInfo.distributor.wasStored ?? (
                                                     <div>
                                                         <p className="text-secondary mb-2">
+                                                            Durata de păstrare: {productInfo.distributor.productData?.storageDuration} zile
+                                                        </p>
+                                                        <p className="text-secondary mb-2">
                                                             Temperatura de stocare: {productInfo.distributor.productData?.storageTemperature} °C
                                                         </p>
                                                         <p className="text-secondary mb-2">
-                                                            Locul de stocare: {productInfo.distributor.productData?.storageCondition === 'alt tip' ? productInfo.distributor.productData?.otherStorageDetails : productInfo.distributor.productData?.storageCondition}
+                                                            Mod de păstrare: {productInfo.distributor.productData?.storageCondition === 'alt tip' ? productInfo.distributor.productData?.otherStorageDetails : productInfo.distributor.productData?.storageCondition}
                                                         </p>
                                                         <p className="text-secondary mb-2">
                                                             Note suplimentare: {productInfo.distributor.productData?.notes || "Nu au fost adăugate note suplimentare"}
@@ -545,7 +555,7 @@ const SingleProductHistory = () => {
                                                     Temperatura de stocare: {productInfo.store.productData?.storageTemperature} °C
                                                 </p>
                                                 <p className="text-secondary mb-2">
-                                                    Locul de stocare: {productInfo.store.productData?.storageCondition === 'alt tip' ? productInfo.store.productData?.otherStorageDetails : productInfo.store.productData?.storageCondition}
+                                                    Mod de păstrare: {productInfo.store.productData?.storageCondition === 'alt tip' ? productInfo.store.productData?.otherStorageDetails : productInfo.store.productData?.storageCondition}
                                                 </p>
                                                 <p className="text-secondary mb-2">
                                                     Note suplimentare: {productInfo.store.productData?.notes || "Nu au fost adăugate note suplimentare"}
@@ -596,7 +606,7 @@ const SingleProductHistory = () => {
     return (
         <div className="scrollbar">
             {localStorage.getItem('googleToken') ? (
-                <TraceLinkHeader backPath='/client/scanareProduse'/>
+                <TraceLinkHeader backPath='/client'/>
             ) : (
                 <TraceLinkHeader backPath='/scanareProduse'/>
             )}

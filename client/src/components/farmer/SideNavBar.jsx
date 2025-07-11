@@ -1,5 +1,6 @@
 import { Button } from "react-bootstrap";
 import { LuMenu, LuLayoutDashboard, LuPackage } from "react-icons/lu"
+import { SiFuturelearn } from "react-icons/si"
 import { GoPlus } from "react-icons/go"
 
 const SideNavBar = ({ active, setIsActive, expanded, setExpanded }) => {
@@ -22,6 +23,11 @@ const SideNavBar = ({ active, setIsActive, expanded, setExpanded }) => {
             id: 3,
             title: "Produsele mele",
             icon: <LuPackage size={18} />
+        },
+        {
+            id: 4,
+            title: "Predicția unui produs",
+            icon: <SiFuturelearn size={18} />
         }
     ];
 
@@ -55,7 +61,7 @@ const SideNavBar = ({ active, setIsActive, expanded, setExpanded }) => {
                         height: '32px',
                         padding: 0,
                         borderRadius: '50%',
-                        transition: 'left 0.3s ease'
+                        transition: 'left 0.3s ease',
                     }}
                 >
                     <LuMenu />
@@ -77,7 +83,7 @@ const SideNavBar = ({ active, setIsActive, expanded, setExpanded }) => {
                             onClick={() => setIsActive(item.id)}
                         >
                             <span>{item.icon}</span>
-                            {expanded && <span className="ms-1 mt-1">{item.title}</span>}
+                            {expanded && <span className="ms-2 mt-1">{item.title}</span>}
                         </Button>
                     ))}
                 </div>

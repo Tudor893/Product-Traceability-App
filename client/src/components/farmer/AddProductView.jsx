@@ -11,6 +11,7 @@ const AddProductView = ({ onProductAdded }) => {
         quantity: "",
         unit: "",
         batch: "",
+        shelfLifeDays: "",
         cost: "",
         harvestDate: "",
         location: "",
@@ -28,7 +29,11 @@ const AddProductView = ({ onProductAdded }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const { productName, category, quantity, unit, batch, harvestDate, bio, location } = formData
+        const { productName, category, quantity, unit, batch, harvestDate, shelfLifeDays, bio, location } = formData
+        if(shelfLifeDays <= 0){
+            toast.error("Durata de păstrare trebuie să fie de cel puțin de 1 zi.")
+            return
+        }
         if (!productName || !category || !quantity || !unit || !batch || !harvestDate || !location || !bio) {
             toast.error("Completează toate câmpurile obligatorii.")
             return
@@ -59,6 +64,7 @@ const AddProductView = ({ onProductAdded }) => {
                 quantity: "",
                 unit: "",
                 batch: "",
+                shelfLifeDays: "",
                 cost: "",
                 harvestDate: "",
                 location: "",

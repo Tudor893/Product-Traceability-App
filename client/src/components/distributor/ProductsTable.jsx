@@ -10,13 +10,14 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                         <th className="ps-4 text-secondary fw-normal">DATA SCANĂRII</th>
                         <th className="ps-4 text-secondary fw-normal">LOT</th>
                         <th className="ps-4 text-secondary fw-normal">CANTITATE</th>
+                        <th className="ps-4 text-secondary fw-normal">UNITATE DE MĂSURĂ</th>
                         <th className="ps-4 text-secondary fw-normal">PROVINE DE LA</th>
                     </tr>
                 </thead>
                 <tbody>
                     {scannedProducts.length === 0 ? (
                         <tr>
-                            <td colSpan="5" className="text-center py-4">Nu există produse scanate</td>
+                            <td colSpan="6" className="text-center py-4">Nu există produse scanate</td>
                         </tr>
                         ) : (scannedProducts
                             .filter(product => 
@@ -37,6 +38,9 @@ const ProductsTable = ({ scannedProducts, searchScanned }) => {
                                     </td>
                                     <td className="ps-5">
                                         {scannedProduct.farmerProduct?.quantity || scannedProduct.processorProduct?.quantity || '-'}
+                                    </td>
+                                    <td className="ps-5">
+                                        {scannedProduct.farmerProduct?.unit || scannedProduct.processorProduct?.unit || '-'}
                                     </td>
                                     {scannedProduct.farmerProduct ? (
                                         <td className="ps-4">

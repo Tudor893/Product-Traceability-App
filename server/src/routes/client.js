@@ -125,10 +125,10 @@ router.get('/scanned-products', authMiddleware, async (req, res) => {
 })
 
 router.post('/feedback', authMiddleware, async (req, res) => {
-  const { farmerProductId, processorProductId, message } = req.body
+  const { farmerProductId, processorProductId, message, rating } = req.body
   const userEmail = req.user.email
 
-  if (!message || (!farmerProductId && !processorProductId)) {
+  if (!message || !rating || (!farmerProductId && !processorProductId)) {
     return res.status(400).json({message: 'Missing required fields'})
   }
 
@@ -138,14 +138,29 @@ router.post('/feedback', authMiddleware, async (req, res) => {
       return res.status(404).json({message: 'User not found'})
     }
 
-    const newComment = await Comment.create({
+    const existingFeedback = await Comment.findOne({
+      where: {
+        userId: user.id,
+        ...(farmerProductId && { farmerProductId }),
+        ...(processorProductId && { processorProductId })
+      }
+    })
+    
+    if (existingFeedback) {
+      return res.status(409).json({
+        message: 'Ai deja un feedback pentru acest produs.',
+      })
+    }
+
+    await Comment.create({
       userId: user.id,
       farmerProductId: farmerProductId || null,
       processorProductId: processorProductId || null,
       message,
+      rating
     })
 
-    res.status(201).json({message: 'Comment added'})
+    res.status(201).json({message: 'Feedback-ul a fost adăugat cu succes!'})
   } catch (error) {
     console.error('Error adding comment:', error)
     res.status(500).json({message: 'Internal server error'})

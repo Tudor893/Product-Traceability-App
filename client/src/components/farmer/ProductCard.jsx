@@ -43,6 +43,9 @@ const ProductCard = ({ product, isSelected, onSelect }) => {
                         <p className="text-muted mb-1" >
                             Locație: {product.location} | Data recoltării: {new Date(product.harvestDate).toLocaleDateString()}
                         </p>
+                        <p className="text-muted mb-1" >
+                            Durata de păstrare: {product.shelfLifeDays} zile
+                        </p>
                         {product.description && (
                             <p className="mb-0 mt-2 text-truncate">{product.description}</p>
                         )}

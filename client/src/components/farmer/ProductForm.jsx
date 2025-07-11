@@ -47,7 +47,7 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
                     </FloatingLabel>
                 </Col>
                 <Col md>
-                    <FloatingLabel controlId="floatingProductDate" label="Data recoltării">
+                    <FloatingLabel controlId="floatingProductDate" label="Data obținerii">
                         <Form.Control type="date" name="harvestDate" value={formData.harvestDate} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
                 </Col>
@@ -55,6 +55,16 @@ const ProductForm = ({ formData, handleChange, handleSubmit }) => {
                     <FloatingLabel controlId="floatingProductLocation" label="Locație">
                         <Form.Control type="text" name="location" value={formData.location} onChange={handleChange}></Form.Control>
                     </FloatingLabel>
+                </Col>
+            </Row>
+            <Row className="g-3 mx-3 my-1">
+                <Col md>
+                    <FloatingLabel controlId="floatingProductShelfLife" label="Durată de păstrare (zile)">
+                        <Form.Control type="number" name="shelfLifeDays" value={formData.shelfLifeDays} onChange={handleChange}/>
+                    </FloatingLabel>
+                    <Form.Text muted className="px-2">
+                        Câte zile se păstrează produsul în condiții optime de stocare
+                    </Form.Text>
                 </Col>
             </Row>
             <Row className="g-3 mx-3 my-1">

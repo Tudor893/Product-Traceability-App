@@ -34,7 +34,8 @@ const QRCodeCard = ({ selectedProduct }) => {
             const pdfWidth = pdf.internal.pageSize.getWidth()
             
             pdf.setFontSize(18)
-            pdf.text(`QR: ${selectedProduct.productName}`, pdfWidth/2, 30, { align: "center" });
+            pdf.text(`QR: ${selectedProduct.productName}`, pdfWidth / 2, 30, { align: "center" })
+            pdf.text(`Lot: ${selectedProduct.batch}`, pdfWidth / 2, 40, { align: "center" })
             
             const imgWidth = 100
             const imgHeight = 100

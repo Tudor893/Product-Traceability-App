@@ -15,6 +15,7 @@ router.post('/products', authMiddleware, async (req, res) => {
       batch,
       cost,
       harvestDate,
+      shelfLifeDays,
       location,
       bio,
       description
@@ -27,7 +28,7 @@ router.post('/products', authMiddleware, async (req, res) => {
     }
     const userId = user.id;
 
-    if (!productName || !category || !quantity || !unit || !batch || !harvestDate || !location || !bio) {
+    if (!productName || !category || !quantity || !unit || !batch || !harvestDate || !shelfLifeDays || !location || !bio) {
       return res.status(400).json({ message: 'Missing required fields' })
     }
     const existingProduct = await FarmerProduct.findOne({
@@ -50,6 +51,7 @@ router.post('/products', authMiddleware, async (req, res) => {
       batch,
       cost: cost || null,
       harvestDate,
+      shelfLifeDays,
       location,
       bio: bio === "1" ? true : false,
       description: description || null

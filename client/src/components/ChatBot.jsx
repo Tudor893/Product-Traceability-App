@@ -123,7 +123,7 @@ function ChatBot() {
       {open && (
         <div style={styles.chatWindow}>
           <div style={styles.chatHeader}>
-            Chatbot
+            Asistent virtual
             <span
               style={{ float: 'right', cursor: 'pointer', fontWeight: 'normal' }}
               onClick={() => setOpen(false)}

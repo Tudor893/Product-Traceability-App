@@ -43,6 +43,10 @@ const FarmerProduct = db.define('FarmerProduct', {
         type: Sequelize.DATE,
         allowNull: false
     },
+    shelfLifeDays: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
     location: {
         type: Sequelize.STRING,
         allowNull: false

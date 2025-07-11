@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap"
 
 const NavButtons = ({ active, setIsActive }) => {
     return (
-        <div className="d-inline-flex p-2 gap-2 rounded" style={{marginLeft: '2.6%', backgroundColor: 'white'}}>
+        <div className="d-inline-flex p-2 gap-2 rounded" style={{marginLeft: '1.6%', marginRight: '1.6%', backgroundColor: 'white'}}>
             <Button className="border-0 fw-semibold" 
                 style={{
                     fontSize: "80%",
@@ -29,6 +29,15 @@ const NavButtons = ({ active, setIsActive }) => {
                 }} 
                 onClick={() => setIsActive(3)}>
                 Produsele mele
+            </Button>
+            <Button className="border-0 fw-semibold"
+                style={{
+                    fontSize: "80%",
+                    backgroundColor: active === 4 ? 'rgba(141, 176, 85, 0.23)' : 'white',
+                    color: active === 4 ? '#707d5b' : 'black' 
+                }} 
+                onClick={() => setIsActive(4)}>
+                Predicția unui produs
             </Button>
         </div>
     )
